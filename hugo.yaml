@@ -2,3 +2,22 @@ baseURL: https://stondo.hithub.com/
 languageCode: en-us
 title: Bits-Entangled
 theme: ["PaperMod"]
+
+markup:
+  goldmark:
+    renderer:
+      unsafe: true
+
+params:
+  homeInfoParams:
+    Title: Hi there! <i class="ri-hearts-fill"></i>
+    Content: >
+      Welcome to my tech blog! I'm Stefano, a passionate DevOps and software engineer with a love for solving complex challenges. Here, I share insights, tutorials, and demos on topics like DevOps, software architecture, and full-stack development. Whether you're looking for technical deep-dives, practical guides, or innovative solutions, you'll find a mix of content to inspire your tech journey.
+
+      Join me as we explore the fascinating world of technology together!
+
+  socialIcons: # optional
+    - name: "LinkedIn"
+      url: "https://www.linkedin.com/in/tondostefano"
+    - name: "GitHub"
+      url: "https://github.com/stondo"
