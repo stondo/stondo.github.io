@@ -1,0 +1,20 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+ROOT_DIR="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")/.." && pwd)"
+CODEX_HOME_DIR="${CODEX_HOME:-${ROOT_DIR}/.codex-local}"
+
+mkdir -p "${CODEX_HOME_DIR}/tmp/arg0"
+
+# Seed local Codex config/auth from ~/.codex the first time.
+if [[ ! -f "${CODEX_HOME_DIR}/config.toml" && -f "${HOME}/.codex/config.toml" ]]; then
+  cp "${HOME}/.codex/config.toml" "${CODEX_HOME_DIR}/config.toml"
+fi
+
+if [[ ! -f "${CODEX_HOME_DIR}/auth.json" && -f "${HOME}/.codex/auth.json" ]]; then
+  cp "${HOME}/.codex/auth.json" "${CODEX_HOME_DIR}/auth.json"
+  chmod 600 "${CODEX_HOME_DIR}/auth.json" 2>/dev/null || true
+fi
+
+export CODEX_HOME="${CODEX_HOME_DIR}"
+exec codex "$@"
