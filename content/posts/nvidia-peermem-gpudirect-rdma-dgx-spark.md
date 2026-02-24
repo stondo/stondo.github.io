@@ -111,7 +111,7 @@ nvidia-uvm.ko:    Canonical Ltd. Kernel Module Signing
 
 Four out of five NVIDIA modules were signed by Canonical (Ubuntu's trusted key, already enrolled in MOK). But `nvidia-peermem.ko` was signed by "NVIDIA Support", a key that isn't in the MOK database.
 
-**This is an Ubuntu packaging bug.** When Canonical builds the `linux-modules-nvidia-580-open` package, they re-sign all the NVIDIA kernel modules with their own trusted key. They missed `nvidia-peermem.ko`.
+**This looks like a packaging inconsistency.** When Canonical builds the `linux-modules-nvidia-580-open` package, they re-sign all the NVIDIA kernel modules with their own trusted key. Whether intentional or an oversight, `nvidia-peermem.ko` is left with its original NVIDIA signature.
 
 ### The fix for Secure Boot (if it were the only problem)
 
@@ -408,7 +408,7 @@ This extra copy step and address translation overhead reduces effective throughp
 
 | Layer | Node | Error | Root Cause |
 |-------|------|-------|------------|
-| **1. Secure Boot** | zgx-3285 (SB enabled) | `Key was rejected by service` | Ubuntu packaging bug: `nvidia-peermem.ko` signed by "NVIDIA Support" instead of Canonical's trusted key. Other 4 NVIDIA modules were correctly re-signed. |
+| **1. Secure Boot** | zgx-3285 (SB enabled) | `Key was rejected by service` | Packaging inconsistency: `nvidia-peermem.ko` ships signed by "NVIDIA Support" while the other 4 NVIDIA modules in the same package are re-signed by Canonical. |
 | **2. Build Flags** | zgx-3852 (SB disabled) | `Invalid argument` (EINVAL) | Module compiled without `NV_MLNX_IB_PEER_MEM_SYMBOLS_PRESENT` because MLNX_OFED wasn't installed at build time. Init function is a no-op `return -EINVAL`. |
 | **3. Architecture** | Both nodes | N/A (fundamental) | GB10 Grace Blackwell SoC uses unified memory. `cudaMalloc` memory cannot be coherently accessed by PCIe devices. GPUDirect RDMA is architecturally unsupported. |
 
