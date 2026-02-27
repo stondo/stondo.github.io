@@ -44,6 +44,7 @@ keywords:
 params:
   author: "stondo"
   toc: true
+  math: true
 ---
 
 ## Prelude
