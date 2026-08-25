@@ -1,9 +1,9 @@
 ---
-title: "Porting Yosh's yo to zsh in One Long Day: How Zoysh Was Born"
+title: "Zoysh: Yosh's yo Comes to zsh"
 date: 2026-08-25T13:00:00+00:00
 draft: false
-description: "How I fell in love with Yosh, the LLM-enabled shell built by Fil Pizlo, and ported its yo command to zsh as a plain script plugin: streaming answers, Ctrl-C cancellation, multi-step plans, a ZLE widget, scrollback capture, and an experimental native module. Plus the print -z footgun I shipped first and fixed honestly."
-summary: "Yosh is Bash with an integrated LLM, built by Fil Pizlo on Fil-C. I wanted its yo command in my zsh without building a custom shell, so I ported the interaction model in one long day, then spent a second round closing the gaps: streaming, cancellation, plans, a widget, capture, and a native module. Including the prefill footgun I found in my own first release."
+description: "Zoysh is a zsh port of Yosh, the LLM-enabled shell by Fil Pizlo. It generates shell commands from natural language, prefills them for review, streams answers, runs multi-step plans, and never executes anything you did not press Enter on. Works with local models by default."
+summary: "A zsh plugin that ports Yosh's yo interaction model: natural language in, reviewed command at your prompt, streaming answers, multi-step plans, scrollback context, and an experimental native module. Local-first, multi-provider, and safe by construction."
 tags:
   - zsh
   - llm
@@ -22,44 +22,14 @@ keywords:
   - Yosh
   - Zoysh
   - natural language shell
-  - print -z
+  - zle
   - Fil Pizlo
   - Fil-C
 ---
 
-## The shell that got away
+## What it is
 
-Some weeks ago I stumbled on [Yosh](https://yoshell.ai/), and I want to be precise about what happened next, because "I found a cool tool" undersells it. Yosh is Bash with an integrated LLM. You type `yo` followed by what you want, and the model places a command at your prompt *as if you had typed it yourself*. Not a suggestion box. Not a chat window with copy-paste. The command is sitting there in your prompt buffer, cursor blinking, and you either edit it, cancel it with Ctrl-C, or press Enter. Your hands never leave the keyboard and your eyes never leave the terminal.
-
-I recommend watching what [Fil Pizlo](https://github.com/pizlonator), the author, did with the implementation, because it is gloriously unhinged in the best way: the entire stack, bash, readline, curl, openssl, zlib, libc, is compiled with [Fil-C](https://fil-c.org/), his memory-safe C runtime. A custom-built, memory-safe Bash with an LLM socket inside. It is a research-grade answer to the question "what if the shell trusted itself?"
-
-There was one problem. I do not live in Bash. I live in zsh, the way some people live in a particular chair: years of muscle memory, a prompt I am fond of, plugins, widgets, the works. Yosh is a shell you switch to. I wanted `yo` in the shell I already had.
-
-So I did the thing you do at two in the afternoon when you should be doing something else: I read Yosh's interaction model carefully and asked how much of its soul could survive a transplant into a plain zsh plugin. No custom shell. No Fil-C. Just a script you can load with zinit or antidote.
-
-Twelve hours later, including a detour through terminal Markdown rendering and an argument with myself about config file semantics, [Zoysh](https://github.com/stondo/zoysh) v0.3.0 existed. The git log is almost embarrassing in its honesty: initial scaffold at 14:22, v0.2.0 at 14:27, and the last doc polish at 02:35 the following night.
-
-Then I got greedy, in the disciplined way. The first release was a translation of Yosh's surface: the `yo` interaction, the config conventions, the providers. But Yosh has deeper machinery, and I wanted it too. So I wrote myself a six-feature plan, executed it branch by branch with a test for everything, and v0.4.0 is the result. More on what actually shipped below, including one place where porting the feature honestly meant changing my own first design.
-
-## The one zsh feature that makes it all possible
-
-Everything in Yosh's `yo` interaction hangs on a single behavior: putting text into the prompt buffer for the human to review. Bash needs a patched readline to do that from inside the shell. Zsh has it built in, and it is almost a crime how little it is used:
-
-```zsh
-print -z 'find . -type f -name "*.py" -newermt "$(date +%Y-%m-%d)"'
-```
-
-That is it. That is what I thought was the whole magic. The string lands on your prompt, editable, cancellable, runnable. The LLM never executes anything. You do, after looking at it. Zoysh's entire safety model is Yosh's safety model.
-
-Then, while porting multi-step continuation, I found a footnote in my own
-footgun: `print -z` does not put text in the editor buffer, it pushes onto
-the shell's *input stack*, and anything already queued in the terminal,
-like an Enter impatiently pressed while the model was still streaming, gets
-applied to that pushed line and can run it before you ever saw it. zpty
-made the failure visible; the fix is a small `zle-line-init` hook that
-places the command into `BUFFER` as pure editor state. Nothing executes
-until you accept the line you can actually see. The safety promise now has
-a mechanism that keeps it, not just a convention.
+[Zoysh](https://github.com/stondo/zoysh) is an LLM-powered shell assistant for zsh. It is a port and adaptation of [Yosh](https://yoshell.ai/), the LLM-enabled Bash created by [Fil Pizlo](https://github.com/pizlonator), and it brings Yosh's `yo` interaction model to zsh as a plain plugin. No custom shell, no compiled extensions required, nothing to switch away from. If you live in zsh, you keep living in zsh.
 
 ```
 $ yo find all python files modified today
@@ -70,80 +40,50 @@ $ yo -c what does the -exec flag in find do?
 The -exec flag runs a command on each matched file...
 ```
 
-The `-c` mode is the other half: inline questions answered in place, with session memory so follow-ups work. "Now exclude the tests directory" does what you hope.
+Type `yo` followed by what you want. The model generates a command and it appears at your prompt, as if you had typed it yourself. Edit it, cancel it, or press Enter. Ask with `yo -c` and the answer prints inline, right there in the terminal.
 
-## What I ported, and what porting means when you respect the original
+The core safety rule is the same one Yosh established: **zoysh never executes generated output**. Commands reach your prompt as editor buffer state through a `zle-line-init` hook, and nothing runs until you accept a line you can actually see. Not a suggestion box, not a confirmation dialog, and not the shell input stack either: the hook-based placement exists precisely because pushing text onto the input stack lets already-queued keystrokes accept a line before you reviewed it.
 
-A port is a translation, and translations have rules. Mine were:
+## What it does
 
-**The interaction model translates exactly.** `yo <intent>` prefills a command. `yo -c <question>` answers inline. Session memory bounds itself the way Yosh does, by exchange count and an approximate token budget. The keys never leave your terminal unless you configure a hosted provider.
+**Command generation.** Natural language in, zsh command out, prefilled for review. The context includes your OS, zsh version, working directory, and git branch, so the commands fit where you are.
 
-**The config file is Yosh's config file.** Zoysh reads `~/.yoconf` and understands every portable directive Yosh defines, including the display styling ones: `chat_prefix`, `enable_bold`, `code_delimiter`, all of it. If Yosh documents a directive and it makes sense without a custom shell, Zoysh honors it. My additions are additive: OpenRouter as a provider, and local OpenAI-compatible servers as the *default* rather than an afterthought.
+**Streaming answers.** Chat responses stream over SSE as they are generated. Reasoning models stream with their `<think>` blocks hidden, including tags that split across chunk boundaries, and the settled text is rendered as terminal Markdown, byte-identical to the non-streaming path. That equality is enforced by tests. A `streaming 0` directive restores the old blocking behavior, and non-SSE responses fall back automatically.
 
-**The defaults are mine, and they are opinionated.** With no config file at all, Zoysh talks to `http://127.0.0.1:8001/v1/`. That number is not random: it is my fleet's model router. [I wrote about that stack earlier](/posts/aios-three-node-agentic-coding-stack/); the short version is that `yo` in my terminal lands on whatever model the router decides is on duty, usually a 27B running on the GPU next to my desk. A shell assistant that defaults to local hardware is a small statement, and I wanted to make it.
+**Cancellation.** Ctrl-C kills the in-flight request and its whole process group, keeps whatever partial answer already printed, and returns you to the prompt with a short notice. The interrupt trap is verified not to leak into normal shell behavior afterwards.
 
-**The thinking models get de-thinked.** Local reasoning models emit `<think>` blocks before the answer. Zoysh strips them, because a terminal is not a place for watching a model deliberate, it is a place for the command.
+**A ZLE widget.** `M-y` on what you are typing turns the buffer into a generated command without leaving the line editor. On an empty buffer it opens an inline mini-prompt. The result is assigned to `BUFFER` and `CURSOR` directly, so you stay in ZLE from question to command.
 
-**The API keys stay out of `ps`.** This one I am unreasonably proud of. Keys are passed to curl through a file-descriptor-backed header source, so they never appear in curl's process arguments. Small thing, habitual thing, the kind of thing you do because you looked at `ps aux` once at the wrong moment and never recovered.
+**Multi-step plans.** With `continuation 1`, the model may answer with a fenced `zoysh:plan` block: one command per line, executed as a queue you drive. Each step is prefilled for review, and the queue advances only when the prefilled command itself ran. Type anything else and the queue drops. `yo --skip` and `yo --abort` manage it. Follow-up queries carry the plan and completed steps as context, so the model can adjust what remains.
 
-## What I did not port (yet), and why that is the honest choice
+**Scrollback capture.** With `scrollback_enabled 1`, plan steps prefill as `zoysh-run <command>`, a wrapper that tees the command and its output into a bounded ring and preserves the exit status. Later queries carry that ring, so "what did the last command print" just works. You can see exactly what will be captured before you press Enter. Ambient capture of the whole terminal stays a Yosh feature; the design notes in `doc/pty-design.md` explain why a script-honest port stops here and what a native implementation would take.
 
-When the first draft of this post was written, two Yosh flagship features
-were missing and the post said so plainly. Both have since landed, in
-shapes that respect what a script can honestly do, and one gap remains.
+**Session memory.** Follow-ups work. "Now exclude the tests directory" does what you hope. Memory is bounded by exchange count and an approximate token budget.
 
-**Scrollback awareness.** Yosh runs a transparent PTY proxy and shows the
-LLM what your terminal sees. I investigated porting that wholesale, using
-zsh's own `zpty` and a fork/exec PTY pair, and wrote the verdict down in
-`doc/pty-design.md` before writing code: both reduce to building a
-terminal multiplexer, with resize and signal forwarding across a pty
-boundary, which is a bug farm out of all proportion to the value. So v1
-capture is narrower and truthful: with `scrollback_enabled 1`, plan steps
-prefill as `zoysh-run <command>`, a wrapper that tees the command and its
-output into a bounded ring, and later questions carry that ring as
-context. You can see exactly what will be captured before you press
-Enter. Ambient whole-terminal capture stays Yosh-only until the native
-module grows it, and the README says exactly that.
+**An experimental native module.** Phase 2 of the port has begun behind an opt-in switch: vendored cJSON, a `zoysh-status` builtin with a C port of the config parser, and a `zoysh-call` streaming client that speaks the exact same record protocol as the script engine. The two engines are verified byte-identical by gated tests (`make check-module`), the script engine remains the default, and `make check` never requires the module.
 
-**Multi-step continuation.** Now opt-in via `continuation 1`: the model
-may answer with a fenced `zoysh:plan` block, one command per line, and
-zoysh prefills each step in order, advancing only when the prefilled
-command itself ran. Type anything else and the queue drops. `yo --skip`
-and `yo --abort` manage it, and no step ever runs without your Enter.
+## Providers
 
-Along the way the port grew the rest of the Yosh feel, one branch at a
-time: answers stream over SSE with `<think>` reasoning hidden live, then
-settle into rendered Markdown byte-identical to the non-streaming path;
-Ctrl-C kills the request's whole process group and keeps your partial
-answer; `M-y` turns the buffer you are typing into a generated command
-without ever leaving the line editor; and an experimental native module
-(`zoysh-status`, a C config parser, a curl streaming client speaking the
-exact same record protocol) proves the Phase 2 pipeline, with the script
-engine still the default and the two engines verified byte-identical by
-tests.
+Zoysh is local-first. With no configuration at all it talks to an OpenAI-compatible endpoint at `http://127.0.0.1:8001/v1/`, auto-detects the served model through `/models`, and explains what to start if the server is down. In my setup that endpoint is a router in front of a small GPU fleet, so `yo` lands on whichever model is on duty that day.
 
-There is a philosophical line here worth spelling out: a port that quietly
-drops features is lying to its users. A port that names the gaps is a
-roadmap, and then, slowly and honestly, closes them.
+Hosted providers are supported when you want them: Anthropic, OpenAI, OpenRouter, Kimi, DeepSeek, Qwen, and z.ai, each with sane defaults and key-file conventions. Keys resolve from the config, the environment, or provider key files, and they are passed to curl through a file-descriptor-backed header source, so they never appear in `ps` output.
 
-## Under the hood, or: zsh is not a JSON runtime
+Configuration lives in `~/.yoconf` and follows Yosh's conventions: every portable directive Yosh defines is honored, including the display styling ones (`chat_prefix`, `enable_bold`, `code_delimiter`, and friends). The file is re-read before every command, so edits take effect immediately. Zoysh's additions, like `streaming`, `continuation`, and `scrollback_enabled`, are additive.
 
-The plugin is now about 1,800 lines of zsh, which is roughly 1,750 more zsh than any sane person should write before lunch. Zsh is a glorious, cursed language where quoting is an extreme sport and associative arrays are considered a modern convenience. For anything that touches JSON, Zoysh shells out to a small Python helper, because parsing model responses in pure zsh would be a betrayal of both the model and the reader.
+## Installing
 
-The rest is the boring, durable stuff: provider tables for Anthropic, OpenAI, OpenRouter, Kimi, DeepSeek, Qwen, and z.ai; model auto-detection against a local server's `/models` endpoint; a Markdown renderer that knows what to do with bold, italics, headings, lists, and fenced code in a terminal; and a test suite wired into CI, because "it is just a shell script" stops being an excuse the moment other people install it.
-
-It installs the way zsh people expect:
+Any zsh framework works, or none:
 
 ```zsh
 zinit light stondo/zoysh
 ```
 
-or antidote, or zplug, or oh-my-zsh, or literally `source` it if you enjoy minimalism.
+antidote, zplug, and oh-my-zsh are equally supported, and `source zoysh.plugin.zsh` is fine if you enjoy minimalism. Dependencies are zsh 5.8+, curl, and python3 3.8+ for the JSON handling. The test suite runs on GitHub Actions against a bundled OpenAI-compatible stub server, so nothing in CI needs a model or a GPU.
 
-## Standing on a giant's shell
+## Privacy and provenance
 
-Let me be clear about the credit hierarchy, because Zoysh has a family tree and I am the smallest branch on it. Yosh's design, its `yo` interaction model, its config conventions, and its actual `yo.c` implementation are Fil Pizlo's work. The man built a memory-safe C runtime and then recompiled the whole GNU stack with it *to make a shell*, which is exactly the kind of excessive, principled engineering the rest of us get to enjoy from downhill. Zoysh is GPL-3.0-only precisely because it is a port of his GPL work, the NOTICE file records the provenance down to who holds which copyright, and if Zoysh sends anyone curious toward Yosh and Fil-C, it has done its job twice.
+The query, current directory, OS, zsh version, git branch, bounded session history, and (if you opt in) the scrollback ring are sent to the configured API endpoint. No telemetry, no persisted conversation history, no keys in process arguments.
 
-Try it if you live in zsh: [github.com/stondo/zoysh](https://github.com/stondo/zoysh). And whether or not you do, go look at [Yosh](https://yoshell.ai/). Some tools are worth knowing about even when you cannot switch to them.
+Zoysh exists because of Yosh. The design, the `yo` interaction model, the config conventions, and the original `yo.c` implementation are Fil Pizlo's work; the man built a memory-safe C runtime, [Fil-C](https://fil-c.org/), and recompiled the entire GNU stack with it to make a shell. Zoysh is GPL-3.0-only because it is a port of that GPL work, the NOTICE file records provenance down to the copyright holders, and it is an independent project, not affiliated with or endorsed by Fil Pizlo or Epic Games. If Zoysh makes you curious about Yosh and Fil-C, it has done its job twice.
 
-As for me, the next time I catch myself writing `| xargs grep -l` wrong twice in a row, I just type what I meant. The prompt fills in the rest, and my chair, my widgets, and my shell all stay exactly where I left them.
+The repo has the full picture: [github.com/stondo/zoysh](https://github.com/stondo/zoysh). Try it if you live in zsh. The commands are yours to review, and the shell stays exactly where you left it.
