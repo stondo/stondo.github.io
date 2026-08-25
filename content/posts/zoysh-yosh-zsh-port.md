@@ -1,7 +1,7 @@
 ---
 title: "Porting Yosh's yo to zsh in One Long Day: How Zoysh Was Born"
 date: 2026-08-25T13:00:00+00:00
-draft: false
+draft: true
 description: "How I fell in love with Yosh, the LLM-enabled shell built by Fil Pizlo, and ported its yo command to zsh as a plain script plugin. The print -z trick, Yosh-compatible config, local-first defaults, and everything I deliberately did not port (yet)."
 summary: "Yosh is Bash with an integrated LLM, built by Fil Pizlo on Fil-C. I wanted its yo command in my zsh without building a custom shell, so I ported the whole interaction model to a 900-line script plugin in one long day. Here is what made the port possible, what stays honest about being a port, and why the safety model survives translation."
 tags:
