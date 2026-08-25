@@ -55,7 +55,7 @@ I call it AIOS. Everything below is running in production on my desk right now, 
 | `fast` | The workhorse (also my daily desktop) | RTX 5090 32 GB | Fedora |
 | `perception` | The senses: embeddings, audio, monitoring, routing | RTX 4080 | Debian |
 
-The machines talk over my LAN, with Tailscale as the overlay so everything also works when I am away from home.
+The machines talk over my LAN, with a self-hosted Tailscale control plane (headscale, on my own VPS) as the overlay so everything also works when I am away from home. Zero SaaS in the coordination path: if the control server dies, existing tunnels keep working, and it is my server to fix.
 
 ## The layers
 
