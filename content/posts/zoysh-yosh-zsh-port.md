@@ -1,9 +1,9 @@
 ---
 title: "Porting Yosh's yo to zsh in One Long Day: How Zoysh Was Born"
 date: 2026-08-25T13:00:00+00:00
-draft: true
-description: "How I fell in love with Yosh, the LLM-enabled shell built by Fil Pizlo, and ported its yo command to zsh as a plain script plugin. The print -z trick, Yosh-compatible config, local-first defaults, and everything I deliberately did not port (yet)."
-summary: "Yosh is Bash with an integrated LLM, built by Fil Pizlo on Fil-C. I wanted its yo command in my zsh without building a custom shell, so I ported the whole interaction model to a 900-line script plugin in one long day. Here is what made the port possible, what stays honest about being a port, and why the safety model survives translation."
+draft: false
+description: "How I fell in love with Yosh, the LLM-enabled shell built by Fil Pizlo, and ported its yo command to zsh as a plain script plugin: streaming answers, Ctrl-C cancellation, multi-step plans, a ZLE widget, scrollback capture, and an experimental native module. Plus the print -z footgun I shipped first and fixed honestly."
+summary: "Yosh is Bash with an integrated LLM, built by Fil Pizlo on Fil-C. I wanted its yo command in my zsh without building a custom shell, so I ported the interaction model in one long day, then spent a second round closing the gaps: streaming, cancellation, plans, a widget, capture, and a native module. Including the prefill footgun I found in my own first release."
 tags:
   - zsh
   - llm
@@ -38,6 +38,8 @@ There was one problem. I do not live in Bash. I live in zsh, the way some people
 So I did the thing you do at two in the afternoon when you should be doing something else: I read Yosh's interaction model carefully and asked how much of its soul could survive a transplant into a plain zsh plugin. No custom shell. No Fil-C. Just a script you can load with zinit or antidote.
 
 Twelve hours later, including a detour through terminal Markdown rendering and an argument with myself about config file semantics, [Zoysh](https://github.com/stondo/zoysh) v0.3.0 existed. The git log is almost embarrassing in its honesty: initial scaffold at 14:22, v0.2.0 at 14:27, and the last doc polish at 02:35 the following night.
+
+Then I got greedy, in the disciplined way. The first release was a translation of Yosh's surface: the `yo` interaction, the config conventions, the providers. But Yosh has deeper machinery, and I wanted it too. So I wrote myself a six-feature plan, executed it branch by branch with a test for everything, and v0.4.0 is the result. More on what actually shipped below, including one place where porting the feature honestly meant changing my own first design.
 
 ## The one zsh feature that makes it all possible
 
@@ -126,7 +128,7 @@ roadmap, and then, slowly and honestly, closes them.
 
 ## Under the hood, or: zsh is not a JSON runtime
 
-The plugin is about 900 lines of zsh, which is 850 more zsh than any sane person should write before lunch. Zsh is a glorious, cursed language where quoting is an extreme sport and associative arrays are considered a modern convenience. For anything that touches JSON, Zoysh shells out to a small Python helper, because parsing model responses in pure zsh would be a betrayal of both the model and the reader.
+The plugin is now about 1,800 lines of zsh, which is roughly 1,750 more zsh than any sane person should write before lunch. Zsh is a glorious, cursed language where quoting is an extreme sport and associative arrays are considered a modern convenience. For anything that touches JSON, Zoysh shells out to a small Python helper, because parsing model responses in pure zsh would be a betrayal of both the model and the reader.
 
 The rest is the boring, durable stuff: provider tables for Anthropic, OpenAI, OpenRouter, Kimi, DeepSeek, Qwen, and z.ai; model auto-detection against a local server's `/models` endpoint; a Markdown renderer that knows what to do with bold, italics, headings, lists, and fenced code in a terminal; and a test suite wired into CI, because "it is just a shell script" stops being an excuse the moment other people install it.
 
