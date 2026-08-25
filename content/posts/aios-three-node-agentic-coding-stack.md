@@ -1,7 +1,7 @@
 ---
 title: "AIOS: a Three-Node Self-Hosted Agentic Coding Stack with DeepSeek V4 Flash, vLLM, and a Custom Model Router"
 date: 2026-08-21T00:00:00+00:00
-lastmod: 2026-08-21T00:00:00+00:00
+lastmod: 2026-08-25T00:00:00+00:00
 draft: false
 description: "How I wired three GPU machines (2x RTX PRO 6000, RTX 5090, RTX 4080) into a single agentic coding stack: SGLang serving DeepSeek V4 Flash as the brain, a Qwen3.8 27B NVFP4 on the 5090 as the workhorse for subagents and vision, a custom chain-based router for failover and code exploration, and persistent agent memory across opencode, pi, and qwen CLI."
 summary: "Instead of picking one model per task, I made three machines cooperate: a big thinking model for primary reasoning, a fast local 27B for subagent loops and images, a router with automatic failover in front of everything, and shared agent memory. Total cost: electricity. Here is the full architecture, the benchmarks, and the lessons learned the hard way."
@@ -78,15 +78,17 @@ Prompt processing north of 6k tok/s even at 32k context, generation steady aroun
 
 ### fast: subagents, vision, and speed
 
-My desktop runs **Qwen3.8 27B, NVFP4 W4A4** (the Unsloth quant) under **vLLM**, with three things that make it punch above its weight:
+My desktop runs **Qwen3.8 27B in NVFP4** under **vLLM**, with three things that make it punch above its weight:
 
 - **LMCache** with an L2 tier on a dedicated NVMe: KV cache survives across sessions, so repeated work in the same repo gets near-instant prefill on cache hits.
 - **MTP speculative decoding** for extra generation speed.
 - **Multimodal enabled**: it accepts images, which matters more than I expected (see the vision section below).
 
+An update since I first wrote this: the 27B on this node is no longer the stock Unsloth build. I swapped it for a **self-quantized NVFP4 build of the OBLITERATUS abliterated variant**, because a growing share of my subagent work is security research and the uncensored model gives straight technical answers instead of refusal fluff. The fun part is that no client needed to change: it serves under the same `qwen3.8-27b-coder` alias, so the router, the CLIs, and every subagent pin kept working. Same speed too, about 40 tok/s single stream and 317 tok/s aggregate with 8 concurrent subagents. The full quantization saga, including every ModelOpt trap I fell into, [is a post of its own](/posts/obliteratus-qwen38-27b-nvfp4-rtx5090/), and the weights are [on my Hugging Face](https://huggingface.co/Joestar79/Qwen3.8-27B-OBLITERATED-NVFP4).
+
 The 27B's job in the stack is everything that should *not* disturb the big model: subagent loops (explore, review, research workers), quick questions, and image understanding. It is fast enough that a subagent fan-out feels instant, and SGLang's RadixCache on deep handles in-session prefix reuse for the brain, so each model's cache does what it is best at.
 
-One hard-won lesson: **a 5090 under stock power limit crashes with dense models**. The fix was a systemd unit that runs `nvidia-smi -pl 450` at boot. Since then, rock solid. Also note for desktop users: set `--gpu-memory-utilization` conservatively (0.92 works, 0.94 crash-loops) because your browser and desktop apps eat a couple of GiB that vLLM cannot plan around.
+One hard-won lesson: **a 5090 under stock power limit crashes with dense models**. The fix was a systemd unit that runs `nvidia-smi -pl 450` at boot. Since then, rock solid. Also note for desktop users: set `--gpu-memory-utilization` with your desktop's appetite in mind. Your browser and compositor eat a couple of GiB that vLLM cannot plan around. I run 0.94 now, but only because I treat the GPU as the model's: when I need it for something heavy like video encoding, I stop the lane first instead of sharing.
 
 ### perception: embeddings, reranking, and the router
 
