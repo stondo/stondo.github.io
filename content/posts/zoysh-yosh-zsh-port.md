@@ -47,7 +47,17 @@ Everything in Yosh's `yo` interaction hangs on a single behavior: putting text i
 print -z 'find . -type f -name "*.py" -newermt "$(date +%Y-%m-%d)"'
 ```
 
-That is it. That is the whole magic. The string lands on your prompt, editable, cancellable, runnable. The LLM never executes anything. You do, after looking at it. Zoysh's entire safety model is Yosh's safety model, and `print -z` is what carries it across.
+That is it. That is what I thought was the whole magic. The string lands on your prompt, editable, cancellable, runnable. The LLM never executes anything. You do, after looking at it. Zoysh's entire safety model is Yosh's safety model.
+
+Then, while porting multi-step continuation, I found a footnote in my own
+footgun: `print -z` does not put text in the editor buffer, it pushes onto
+the shell's *input stack*, and anything already queued in the terminal,
+like an Enter impatiently pressed while the model was still streaming, gets
+applied to that pushed line and can run it before you ever saw it. zpty
+made the failure visible; the fix is a small `zle-line-init` hook that
+places the command into `BUFFER` as pure editor state. Nothing executes
+until you accept the line you can actually see. The safety promise now has
+a mechanism that keeps it, not just a convention.
 
 ```
 $ yo find all python files modified today
@@ -76,13 +86,43 @@ A port is a translation, and translations have rules. Mine were:
 
 ## What I did not port (yet), and why that is the honest choice
 
-Yosh has two flagship features that a script plugin cannot honestly deliver, and rather than fake them, Zoysh tells you.
+When the first draft of this post was written, two Yosh flagship features
+were missing and the post said so plainly. Both have since landed, in
+shapes that respect what a script can honestly do, and one gap remains.
 
-**Scrollback awareness.** Yosh runs a transparent PTY proxy and shows the LLM what your terminal sees. That requires a native module, so Zoysh recognizes the `scrollback_enabled` directives for forward compatibility, refuses to pretend, and warns if you enable them. The PTY proxy is Phase 2, alongside a ZLE widget, and the repository carries the module scaffolding to prove the direction is real.
+**Scrollback awareness.** Yosh runs a transparent PTY proxy and shows the
+LLM what your terminal sees. I investigated porting that wholesale, using
+zsh's own `zpty` and a fork/exec PTY pair, and wrote the verdict down in
+`doc/pty-design.md` before writing code: both reduce to building a
+terminal multiplexer, with resize and signal forwarding across a pty
+boundary, which is a bug farm out of all proportion to the value. So v1
+capture is narrower and truthful: with `scrollback_enabled 1`, plan steps
+prefill as `zoysh-run <command>`, a wrapper that tees the command and its
+output into a bounded ring, and later questions carry that ring as
+context. You can see exactly what will be captured before you press
+Enter. Ambient whole-terminal capture stays Yosh-only until the native
+module grows it, and the README says exactly that.
 
-**Multi-step continuation.** Yosh chains commands automatically for complex tasks. In a pure script, without controlling the terminal, auto-chaining is how you get a half-executed pipeline and a sad evening. It waits for Phase 2 too.
+**Multi-step continuation.** Now opt-in via `continuation 1`: the model
+may answer with a fenced `zoysh:plan` block, one command per line, and
+zoysh prefills each step in order, advancing only when the prefilled
+command itself ran. Type anything else and the queue drops. `yo --skip`
+and `yo --abort` manage it, and no step ever runs without your Enter.
 
-There is a philosophical line here worth spelling out: a port that quietly drops features is lying to its users. A port that names the gaps is a roadmap.
+Along the way the port grew the rest of the Yosh feel, one branch at a
+time: answers stream over SSE with `<think>` reasoning hidden live, then
+settle into rendered Markdown byte-identical to the non-streaming path;
+Ctrl-C kills the request's whole process group and keeps your partial
+answer; `M-y` turns the buffer you are typing into a generated command
+without ever leaving the line editor; and an experimental native module
+(`zoysh-status`, a C config parser, a curl streaming client speaking the
+exact same record protocol) proves the Phase 2 pipeline, with the script
+engine still the default and the two engines verified byte-identical by
+tests.
+
+There is a philosophical line here worth spelling out: a port that quietly
+drops features is lying to its users. A port that names the gaps is a
+roadmap, and then, slowly and honestly, closes them.
 
 ## Under the hood, or: zsh is not a JSON runtime
 
