@@ -1,7 +1,7 @@
 ---
 title: "AIOS: a Three-Node Self-Hosted Agentic Coding Stack with DeepSeek V4 Flash, vLLM, and a Custom Model Router"
 date: 2026-08-21T00:00:00+00:00
-lastmod: 2026-08-25T00:00:00+00:00
+lastmod: 2026-08-26T00:00:00+00:00
 draft: false
 description: "How I wired three GPU machines (2x RTX PRO 6000, RTX 5090, RTX 4080) into a single agentic coding stack: SGLang serving DeepSeek V4 Flash as the brain, a Qwen3.8 27B NVFP4 on the 5090 as the workhorse for subagents and vision, a custom chain-based router for failover and code exploration, and persistent agent memory across opencode, pi, and qwen CLI."
 summary: "Instead of picking one model per task, I made three machines cooperate: a big thinking model for primary reasoning, a fast local 27B for subagent loops and images, a router with automatic failover in front of everything, and shared agent memory. Total cost: electricity. Here is the full architecture, the benchmarks, and the lessons learned the hard way."
@@ -88,7 +88,9 @@ An update since I first wrote this: the 27B on this node is no longer the stock 
 
 The 27B's job in the stack is everything that should *not* disturb the big model: subagent loops (explore, review, research workers), quick questions, and image understanding. It is fast enough that a subagent fan-out feels instant, and SGLang's RadixCache on deep handles in-session prefix reuse for the brain, so each model's cache does what it is best at.
 
-One hard-won lesson: **a 5090 under stock power limit crashes with dense models**. The fix was a systemd unit that runs `nvidia-smi -pl 450` at boot. Since then, rock solid. Also note for desktop users: set `--gpu-memory-utilization` with your desktop's appetite in mind. Your browser and compositor eat a couple of GiB that vLLM cannot plan around. I run 0.94 now, but only because I treat the GPU as the model's: when I need it for something heavy like video encoding, I stop the lane first instead of sharing.
+One hard-won lesson, with an honest correction. For months I believed **a 5090 at stock power crashes with dense models**, because mine did, and a systemd unit capping it to 450 W at boot made the crashes stop. Case closed, or so I thought. The real culprit turned out to be the GPU-boxed 4x8-pin to 12V-2x6 adapter cable: sharp load transients were tripping its protection, not the card. After switching to the PSU's native 12V-2x6 cable, stock 600 W has been rock solid, the cap is gone, and the box now runs a clock-lock plus undervolt profile instead (cooler and slightly faster than stock). Two lessons for the price of one: when a fix works, that does not mean the theory behind it was right, and always suspect the cheapest component in the chain first.
+
+Also note for desktop users: set `--gpu-memory-utilization` with your desktop's appetite in mind. Your browser and compositor eat a couple of GiB that vLLM cannot plan around. I run 0.94 now, but only because I treat the GPU as the model's: when I need it for something heavy like video encoding, I stop the lane first instead of sharing.
 
 ### perception: embeddings, audio, monitoring, and the router
 
