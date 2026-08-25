@@ -1,0 +1,20 @@
+languageCode: en
+title: Bits-Entangled
+weight: 1
+
+params:
+  displayName: EN
+  isoCode: en
+  rtl: false
+  dateFormat: "2 January 2006"
+  description: "Self-hosted LLM stacks, quantization adventures, Linux and GPU deep dives, and the tools that come out of them."
+
+  author:
+    name: "Stefano Tondo"
+    headline: "Software engineer, Zürich"
+    bio: "I write down what I build and what breaks: self-hosted LLM stacks, quantization adventures, Linux and GPU deep dives, and the tools I end up open sourcing along the way."
+    links:
+      - github: "https://github.com/stondo"
+      - linkedin: "https://www.linkedin.com/in/tondostefano"
+      - youtube: "https://www.youtube.com/@bitsentangled"
+      - rss: ""

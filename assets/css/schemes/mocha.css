@@ -1,0 +1,37 @@
+/* Mocha scheme: taupe #8c6e63 (Bits-Entangled brand) + sage-slate secondary */
+:root {
+  --color-neutral: 255, 255, 255;
+  /* Stone */
+  --color-neutral-50: 250, 250, 249;
+  --color-neutral-100: 245, 245, 244;
+  --color-neutral-200: 231, 229, 228;
+  --color-neutral-300: 214, 211, 209;
+  --color-neutral-400: 168, 162, 158;
+  --color-neutral-500: 120, 113, 108;
+  --color-neutral-600: 87, 83, 78;
+  --color-neutral-700: 68, 64, 60;
+  --color-neutral-800: 41, 37, 36;
+  --color-neutral-900: 28, 25, 23;
+  /* Taupe */
+  --color-primary-50: 247, 242, 239;
+  --color-primary-100: 238, 230, 226;
+  --color-primary-200: 221, 206, 198;
+  --color-primary-300: 199, 177, 166;
+  --color-primary-400: 168, 143, 131;
+  --color-primary-500: 140, 110, 99;
+  --color-primary-600: 119, 92, 82;
+  --color-primary-700: 97, 74, 66;
+  --color-primary-800: 76, 58, 52;
+  --color-primary-900: 60, 46, 41;
+  /* Sage slate */
+  --color-secondary-50: 240, 245, 243;
+  --color-secondary-100: 222, 233, 229;
+  --color-secondary-200: 190, 211, 205;
+  --color-secondary-300: 152, 184, 177;
+  --color-secondary-400: 122, 158, 150;
+  --color-secondary-500: 101, 133, 126;
+  --color-secondary-600: 84, 111, 105;
+  --color-secondary-700: 69, 91, 86;
+  --color-secondary-800: 54, 71, 67;
+  --color-secondary-900: 44, 58, 55;
+}
