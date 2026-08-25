@@ -52,7 +52,7 @@ That is it. That is the whole magic. The string lands on your prompt, editable, 
 ```
 $ yo find all python files modified today
 find . -type f -name "*.py" -newermt "$(date +%Y-%m-%d)"
-# ↑ prefilled at your prompt — press Enter to run, or edit first
+# ↑ prefilled at your prompt, press Enter to run or edit first
 
 $ yo -c what does the -exec flag in find do?
 The -exec flag runs a command on each matched file...
