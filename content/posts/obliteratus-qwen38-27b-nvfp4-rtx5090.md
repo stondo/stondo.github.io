@@ -146,6 +146,6 @@ The concurrency scaling is the part I care about most, because the whole point w
 7. When a load fails with a bare assertion, do not read tea leaves. Patch the code in a container, write the shapes to a file, run once. One instrumented run beat a day of hypotheses.
 8. Watch `NRestarts`, not `is-active`. `activating` is how a crash loop looks you in the eye and lies.
 
-The weights are on my Hugging Face if you want to skip the fun part. But honestly? The fun part taught me more than the model ever will.
+The weights are on my Hugging Face if you want to skip the fun part: [Joestar79/Qwen3.8-27B-OBLITERATED-NVFP4](https://huggingface.co/Joestar79/Qwen3.8-27B-OBLITERATED-NVFP4). But honestly? The fun part taught me more than the model ever will.
 
 If this saved you an evening, or you are fighting an assertion right now at 2 AM, my sympathies. Instrument first. The assertions are always telling the truth. It is the rest of the pipeline that lies.
