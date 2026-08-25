@@ -53,7 +53,7 @@ I call it AIOS. Everything below is running in production on my desk right now, 
 |:-----|:-----|:----|:---|
 | `deep` | The brain | 2x RTX PRO 6000 (192 GB VRAM) | Fedora Silverblue |
 | `fast` | The workhorse (also my daily desktop) | RTX 5090 32 GB | Fedora |
-| `perception` | The senses | RTX 4080 | Debian |
+| `perception` | The senses: embeddings, audio, monitoring, routing | RTX 4080 | Debian |
 
 The machines talk over my LAN, with Tailscale as the overlay so everything also works when I am away from home.
 
@@ -90,11 +90,16 @@ The 27B's job in the stack is everything that should *not* disturb the big model
 
 One hard-won lesson: **a 5090 under stock power limit crashes with dense models**. The fix was a systemd unit that runs `nvidia-smi -pl 450` at boot. Since then, rock solid. Also note for desktop users: set `--gpu-memory-utilization` with your desktop's appetite in mind. Your browser and compositor eat a couple of GiB that vLLM cannot plan around. I run 0.94 now, but only because I treat the GPU as the model's: when I need it for something heavy like video encoding, I stop the lane first instead of sharing.
 
-### perception: embeddings, reranking, and the router
+### perception: embeddings, audio, monitoring, and the router
 
-The 4080 box runs the small but essential services: an embedding endpoint, a reranker endpoint, and **token-miser**, the piece that ties the fleet together.
+The 4080 box runs the small but essential services, and it has picked up new senses since the first version of this post:
 
-token-miser is a custom model router with two tricks:
+- An **embedding endpoint** (Qwen3-Embedding-4B) and a **reranker** (bge-reranker-v2-m3) feeding the memory and retrieval stack.
+- **Ears and a voice.** Speech to text runs on faster-whisper large-v3-turbo (through speaches), text to speech on Qwen3-TTS 1.7B with preset voices. Both share the 4080 with everything else and I never notice them.
+- **A Telegram bot as front door and pager.** It bridges Telegram to the STT and TTS endpoints and the router: I send a voice note, it transcribes, the router picks whichever model is on duty, and I get the answer back as audio. The same bot is how the stack notifies me when something deserves attention, which beats discovering a dead lane mid session.
+- **Prometheus and Grafana watching the whole fleet.** Every node exports host metrics, the GPUs export NVML/DCGM counters, and the vLLM and SGLang engines expose their own request and cache metrics. One Prometheus scrapes it all, Grafana draws it, and there is a live tok/s speedometer dashboard I check more often than I should admit.
+
+The piece that ties the fleet together also lives here: **token-miser**, a custom model router with two tricks:
 
 1. **Chain-based failover.** Clients point at a single logical model (`auto`), and the router walks a configured chain until something answers. My fast lane is `v4flash@deep` then `qwen38@fast`: if the big model ever goes down, requests silently land on the 27B instead of erroring out mid-session.
 2. **An explore agent loop.** Given a natural-language question about a codebase, it drives an agent that navigates the repo and answers with `file:line` citations. This loop runs on the 27B on fast, so exploration never competes with the brain for VRAM.
@@ -118,7 +123,7 @@ Everything starts at boot, no manual steps:
 
 - **deep**: a systemd quadlet for the SGLang container, with `[Install] WantedBy=default.target` *inside the .container file*. Gotcha: `systemctl enable` on a generated quadlet unit fails with "transient or generated", which is expected. The Install section in the quadlet itself is what wires autostart.
 - **fast**: user services for the vLLM launch script, plus the nvidia power-limit unit.
-- **perception**: services for embedder, reranker, and the router.
+- **perception**: services for the embedder, reranker, STT and TTS, the Telegram voice bot, Prometheus and Grafana, and the router.
 
 ## Things I tried and removed
 
