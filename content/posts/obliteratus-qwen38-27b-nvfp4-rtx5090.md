@@ -1,6 +1,6 @@
 ---
 title: "Three Days, Four Wrong Hypotheses, and One Uncensored 27B That Finally Serves on a Single RTX 5090"
-date: 2026-08-25T14:00:00+00:00
+date: 2026-08-25T12:00:00+00:00
 draft: false
 description: "The full story of quantizing OBLITERATUS/Qwen3.8-27B-OBLITERATED to NVFP4 for a single RTX 5090 with vLLM and LMCache: every ModelOpt trap I fell into, the assertion that survived three fixes, and the one debugging trick that cracked it in a single run."
 summary: "No NVFP4 build of the uncensored Qwen3.8-27B existed, so I made one. It took a fake-quantization scare, a rename odyssey across 800 tensors, an MTP file that quietly loaded the vision tower twice, and one instrumented container run that proved everything I believed was wrong. 40 tok/s single stream, 317 tok/s with 8 concurrent subagents."
