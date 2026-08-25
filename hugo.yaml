@@ -1,0 +1,36 @@
+baseURL: https://stondo.github.io/
+languageCode: en-us
+title: Bits-Entangled
+theme: ["PaperMod"]
+
+markup:
+  goldmark:
+    renderer:
+      unsafe: true
+    extensions:
+      passthrough:
+        enable: true
+        delimiters:
+          block:
+            - - '\['
+              - '\]'
+            - - '$$'
+              - '$$'
+          inline:
+            - - '\('
+              - '\)'
+params:
+  homeInfoParams:
+    Title: Bits-Entangled
+    Content: >
+      I'm Stefano Tondo, a software engineer in Zürich. This is where I write
+      down what I build and what breaks: self-hosted LLM stacks, quantization
+      adventures, Linux and GPU deep dives, and the tools I end up open
+      sourcing along the way.
+  socialIcons:
+    - name: "LinkedIn"
+      url: "https://www.linkedin.com/in/tondostefano"
+    - name: "GitHub"
+      url: "https://github.com/stondo"
+    - name: "YouTube"
+      url: "https://www.youtube.com/@bitsentangled"

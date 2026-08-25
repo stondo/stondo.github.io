@@ -1,0 +1,93 @@
+/* Bits-Entangled brand restyle for PaperMod.
+   Taupe #8c6e63 from the channel icon; warm neutrals; monospace headings. */
+
+:root {
+  --theme: #f5f1ee;            /* warm paper */
+  --entry: #ffffff;
+  --primary: #8c6e63;          /* brand taupe */
+  --primary-rgb: 140, 110, 99;
+  --secondary: #5f7a72;        /* sage slate */
+  --tertiary: #a1887f;
+  --content: #2b2724;          /* warm ink */
+  --code-bg: #efe9e4;
+  --border: #ddd2ca;
+  --link: #6d4c41;
+  --link-hover: #8c6e63;
+}
+
+.dark {
+  --theme: #1c1917;            /* warm charcoal */
+  --entry: #242020;
+  --primary: #bcaaa4;          /* light taupe for dark mode */
+  --primary-rgb: 188, 170, 164;
+  --secondary: #8fb3a9;
+  --tertiary: #8d6e63;
+  --content: #e8e2dd;
+  --code-bg: #2a2523;
+  --border: #3a332f;
+  --link: #bcaaa4;
+  --link-hover: #d7ccc8;
+}
+
+/* Headings: tighter, monospace accent for the technical voice */
+h1, h2, h3, h4 {
+  letter-spacing: -0.015em;
+}
+h1 { font-weight: 700; }
+.header, .site-title, .first-entry .entry-header h1 {
+  font-weight: 700;
+}
+
+/* Brand accent on links and entry titles */
+.entry-header h2 a, .entry-header h1 a { color: var(--content); }
+.entry-header h2 a:hover, .entry-header h1 a:hover { color: var(--link-hover); }
+.post-title { color: var(--content); }
+a { color: var(--link); }
+a:hover { color: var(--link-hover); }
+
+/* Entry cards: softer, branded border */
+.list .entry {
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: var(--entry);
+  box-shadow: 0 1px 2px rgba(var(--primary-rgb), 0.06);
+  transition: border-color .15s ease, box-shadow .15s ease;
+}
+.list .entry:hover {
+  border-color: var(--primary);
+  box-shadow: 0 3px 10px rgba(var(--primary-rgb), 0.14);
+}
+
+/* Terms/tags in taupe */
+.terms-tags a, .post-tags a {
+  border: 1px solid var(--border);
+  color: var(--secondary);
+  border-radius: 999px;
+}
+.terms-tags a:hover, .post-tags a:hover { border-color: var(--secondary); }
+
+/* Code blocks: warm background, no harsh contrast */
+.post-content code {
+  background: var(--code-bg);
+  border-radius: 4px;
+  padding: 0.1em 0.35em;
+}
+.highlight pre {
+  border-radius: 10px;
+  border: 1px solid var(--border);
+}
+
+/* Homepage hero: left accent rule in brand color */
+.first-entry .entry-content {
+  border-left: 3px solid var(--primary);
+  padding-left: 1rem;
+}
+
+/* Buttons (copy-code, theme toggle area) */
+.copy-code {
+  border-color: var(--border);
+  color: var(--secondary);
+}
+
+/* Footer subtle */
+.footer { border-top: 1px solid var(--border); }
