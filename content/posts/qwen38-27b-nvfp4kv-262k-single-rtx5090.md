@@ -1,6 +1,6 @@
 ---
 title: "262,144 Tokens on One RTX 5090: Qwen3.8-27B with an NVFP4 KV Cache That Actually Works"
-date: 2026-08-27T18:30:00+00:00
+date: 2026-08-27T13:00:00+00:00
 draft: false
 description: "How I got the full native 256K context of Qwen3.8-27B serving on a single 32 GB RTX 5090 — NVFP4 everything checkpoint, a patched vLLM nightly that unlocks NVFP4 KV cache on consumer Blackwell, 380K tokens of resident KV pool, and every landmine I stepped on: silent download stalls, a tokenizer that cost me an hour, an MTP setting that benched 18% faster and then exploded in production."
 summary: "My 27B coding brain was hard-capped at ~107K context by fp8 KV and fat weights. A stranger's gist promised a 451K-token KV pool on the same GPU via NVFP4 KV cache and a patched vLLM. I ported it, pinned it, validated it with planted-password recall tests at 235K tokens — and then watched it crash spectacularly the first time a real agent used it. The final stack: full 262,144-token context, ~125 tok/s decode, vision, MTP speculative decoding, all on one card."
