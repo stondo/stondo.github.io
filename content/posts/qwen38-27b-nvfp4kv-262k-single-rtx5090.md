@@ -107,6 +107,26 @@ VLLM_KV_CACHE_LAYOUT=HND   # leave this out and output is garbage
 
 The three invariants that will bite anyone who skips them: the **HND layout env** must reach the container, cudagraphs must stay **PIECEWISE** (FULL capture *succeeds* and then replays corrupted reasoning — the nastiest failure mode in this stack because nothing crashes), and **ns=3** until someone validates 4 under real load.
 
+## One recipe, three checkpoints
+
+The recipe isn't married to the gittensor checkpoint — it's the KV cache doing the work, so any NVFP4 Qwen3.8-27B that loads in this vLLM build can ride it. I A/B'd the two other checkpoints I had on disk (same image, same flags, same validation harness):
+
+| | gittensor (everything-FP4) | unsloth NVFP4 (FP8 attn) | heretic-ara NVFP4 (W4A16) |
+|---|---|---|---|
+| Weights in VRAM | 17.9 GiB | 21.3 GiB | 19.6 GiB |
+| Max context | **262,144** | 196,608* | **262,144** |
+| KV pool | ~388K tokens | ~217-326K* | ~352K tokens |
+| Prefill (8K, cold) | **11,730 t/s** | 7,554 t/s | 3,569 t/s |
+| Decode (512) | **108-125 t/s** | 88.5 t/s | 91.5 t/s |
+| 140K-token needle | PASS | PASS | PASS |
+| Uncensored | — | — | **yes** |
+
+\* the unsloth weights leave less room; pool varies with how much VRAM the desktop happens to hold.
+
+Three takeaways. The everything-FP4 checkpoint keeps both crowns — its lighter weights feed the KV pool *and* the decode path (the full-vocab lm_head in FP4 is not a rounding error). The unsloth build on this recipe gains context (106K → 196K on my old fp8-KV setup) but no speed: FP8-attention dequant dominates. And the pleasant surprise: the **abliterated heretic build holds the full 262,144-token window too** — the uncensored lane used to cap at 127K, so that's a straight 2x for a model family that usually eats a quality-or-context tax.
+
+One hygiene note while I was in there: `--trust-remote-code` was cargo cult in every serve line I'd copied (the gist's, mine). None of these checkpoints ship `auto_map` or a single `.py` file — the architecture is native in vLLM — so I proved a flag-less boot and dropped it everywhere. If a checkpoint ever genuinely needs remote code, that's a decision to make consciously, not a flag to inherit.
+
 ## Credits and expiry date
 
 The patch stack is [co-l's gist](https://gist.github.com/co-l/c2aeaf40b53fcacfe9dd3293be75f23a) — genuinely one of the best day-0 engineering write-ups I've read, and this post is mostly me standing on it with a validation harness. The upstream endgame already exists as open PRs (vLLM #46329 and friends wire SM120 NVFP4 KV in natively); when they merge, stock vLLM takes these flags, the patched image retires, and this becomes just a config file. That's the good kind of obsolescence.
