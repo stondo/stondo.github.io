@@ -40,7 +40,7 @@ This is the story of getting from "static pictures only" to "all modes, one serv
 | Mode | Task | Inputs | What it's for |
 |---|---|---|---|
 | T2VA | text-to-audio-video | text only | pure generation |
-| FL2VA | first/last-frame | 0–2 images | keyframe-driven generation |
+| FL2VA | first/last-frame | 0-2 images | keyframe-driven generation |
 | Ref2VA | omni-reference | ≤9 images, ≤3 videos, ≤3 audio (≤12 files) | video-in generation, editing, style/identity transfer |
 
 (There are also two pipeline modules, H3-Context-IR for prompt refinement and H3-Regenerate-2K for a 2K upscale pass, but they're workflow stages, not separately servable checkpoints.)
