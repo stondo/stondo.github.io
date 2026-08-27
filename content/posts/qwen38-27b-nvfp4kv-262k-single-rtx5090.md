@@ -94,6 +94,8 @@ One operational truth worth knowing before you promise anyone "256K interactive"
 
 Pinned base `nightly-e9d1398d9...`, the gist's flashinfer.py diff + V-scale writer kernel baked into a local image, and a serve line that boils down to:
 
+**Turnkey bundle (builder + serve script, tested): [stondo/33016facc72c6439d836be64e87ffb8e](https://gist.github.com/stondo/33016facc72c6439d836be64e87ffb8e)**
+
 ```
 VLLM_KV_CACHE_LAYOUT=HND   # leave this out and output is garbage
 --kv-cache-dtype nvfp4 --max-model-len 262144
