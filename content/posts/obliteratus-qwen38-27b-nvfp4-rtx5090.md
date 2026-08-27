@@ -36,7 +36,11 @@ I run a small fleet of machines that serve local models for my daily work. The w
 
 The problem: I wanted an uncensored variant for security research work. Not because I have exotic needs, but because abliterated models stop wasting your time. You ask for a stack smashing proof of concept for a vulnerability class and you get the proof of concept, not a paragraph about responsible disclosure you did not ask for.
 
+> **⚠️ Update (Aug 27, 2026):** these weights have a known defect — generation can degenerate into loops under conditions I'm still investigating. The quantization walkthrough below (the ModelOpt traps, the instrumented-run trick, the checklist) remains valid, but **I don't currently recommend deploying the published build**. For an uncensored Qwen3.8-27B validated end-to-end on the same GPU — 262K context, needle-tested, tool-calling — see my follow-up: [262,144 Tokens on One RTX 5090](/posts/qwen38-27b-nvfp4kv-262k-single-rtx5090/), which uses a third-party checkpoint instead.
+
 The obvious candidate was [OBLITERATUS/Qwen3.8-27B-OBLITERATED](https://huggingface.co/OBLITERATUS/Qwen3.8-27B-OBLITERATED). The V3 release is good work: iterative refinement on top of direction ablation, zero hard refusals, zero soft deflection lectures, and only a 2.1 point MMLU drop from stock. It ships GGUF files, MLX, and bf16 safetensors.
+
+
 
 What it does not ship is NVFP4. And on a Blackwell card, NVFP4 is the format you want. The 5090 has a native FP4 tensor core path and roughly 1.8 TB/s of memory bandwidth, so a 27B in FP4 is about 20 GB of weights, which leaves real room for KV cache at 126K context. BF16 does not fit. Full stop.
 
