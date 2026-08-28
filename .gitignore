@@ -14,3 +14,6 @@ hugo.linux
 
 # Local Codex runtime home for sandbox-safe MCP usage
 .codex-local/
+
+# Local cluster guide with real hostnames/IPs - never publish
+GUIDE-CLUSTER.md

@@ -31,7 +31,7 @@ keywords:
   - systemd quadlet
 ---
 
-I have been running [MiniMax H3](https://huggingface.co/MiniMaxAI/MiniMax-H3) on `deep`, my two-RTX-PRO-6000 box, since it shipped, but only half of it. The deployment served the **FL2VA** checkpoint: text-to-video, or a video grown out of one or two still keyframes. That is the mode for storyboarding from images. What I actually wanted was the other half of the model: **Ref2VA**, the omni-reference mode that starts from real inputs (up to nine images, three video clips, three audio clips) and does instructed *editing*: feed it a clip and say "make this a rainy night", and it regenerates the clip with the car, the motion, and the camera work intact.
+I have been running [MiniMax H3](https://huggingface.co/MiniMaxAI/MiniMax-H3) on my two-RTX-PRO-6000 box since it shipped, but only half of it. The deployment served the **FL2VA** checkpoint: text-to-video, or a video grown out of one or two still keyframes. That is the mode for storyboarding from images. What I actually wanted was the other half of the model: **Ref2VA**, the omni-reference mode that starts from real inputs (up to nine images, three video clips, three audio clips) and does instructed *editing*: feed it a clip and say "make this a rainy night", and it regenerates the clip with the car, the motion, and the camera work intact.
 
 This is the story of getting from "static pictures only" to "all modes, one server, one systemd unit", which turned out to be less about GPUs and more about how vLLM-Omni decides what a model directory *is*.
 
@@ -81,7 +81,7 @@ I assumed the combined-serving feature was too new for my (Aug 19) nightly image
 My quadlet mounted the repo at `/models`. Basename: `models`. No match. The fix was one character of path:
 
 ```
-Volume=/var/aios/models/minimax-h3:/models/MiniMax-H3:ro,Z
+Volume=/path/to/minimax-h3:/models/MiniMax-H3:ro,Z
 Exec=vllm serve /models/MiniMax-H3 --omni ...
 ```
 
@@ -118,7 +118,7 @@ RuntimeError: ref2va accepts at most 3 video references
 [Container]
 Image=docker.io/vllm/vllm-omni:nightly
 PublishPort=8091:8091
-Volume=/var/aios/models/minimax-h3:/models/MiniMax-H3:ro,Z
+Volume=/path/to/minimax-h3:/models/MiniMax-H3:ro,Z
 Environment=VLLM_WORKER_MULTIPROC_METHOD=spawn
 Environment=VLLM_OMNI_VIDEO_SYNC_TIMEOUT=14400
 Exec=vllm serve /models/MiniMax-H3 --omni --trust-remote-code \
@@ -145,7 +145,7 @@ For the Ref2VA check I compared frames numerically (this session's coding model 
 The curl that matters, for posterity:
 
 ```bash
-curl -X POST http://deep:8091/v1/videos/sync \
+curl -X POST http://your-server:8091/v1/videos/sync \
   -F prompt="Edit this clip: rainy night, wet asphalt, keep motion unchanged" \
   -F "input_references=@source.mp4;type=video/mp4" \
   -F fps=24 -F num_inference_steps=50 -F flow_shift=12 -F seed=1101 \

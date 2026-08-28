@@ -98,7 +98,7 @@ The 4080 box runs the small but essential services, and it has picked up new sen
 
 - An **embedding endpoint** (Qwen3-Embedding-4B) and a **reranker** (bge-reranker-v2-m3) feeding the memory and retrieval stack.
 - **Ears and a voice.** Speech to text runs on faster-whisper large-v3-turbo (through speaches), text to speech on Qwen3-TTS 1.7B with preset voices. Both share the 4080 with everything else and I never notice them.
-- **A Telegram bot as front door and pager.** It bridges Telegram to the STT and TTS endpoints and the router: I send a voice note, it transcribes, the router picks whichever model is on duty, and I get the answer back as audio. The same bot is how the stack notifies me when something deserves attention, which beats discovering a dead lane mid session.
+- **A private Telegram bot as my remote control and pager.** It bridges chat to the STT and TTS endpoints and the router: I send a voice note, it transcribes, the router picks whichever model is on duty, and I get the answer back as audio. The same bot is how the stack notifies me when something deserves attention, which beats discovering a dead lane mid session.
 - **Prometheus and Grafana watching the whole fleet.** Every node exports host metrics, the GPUs export NVML/DCGM counters, and the vLLM and SGLang engines expose their own request and cache metrics. One Prometheus scrapes it all, Grafana draws it, and there is a live tok/s speedometer dashboard I check more often than I should admit.
 
 The piece that ties the fleet together also lives here: **token-miser**, a custom model router with two tricks:

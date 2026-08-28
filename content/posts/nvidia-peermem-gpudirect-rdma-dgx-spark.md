@@ -144,7 +144,7 @@ But I never got to deploy either fix, because the problem ran deeper.
 
 ## Layer 2: testing on the second node
 
-My second node (zgx-3852) already had Secure Boot disabled:
+My second node already had Secure Boot disabled:
 
 ```bash
 $ mokutil --sb-state
@@ -401,16 +401,16 @@ For most LLM serving workloads across two nodes, the PCIe bottleneck is **not th
 GPU ↔ unified memory → cudaMemcpy → host buffer → RDMA → wire
 ```
 
-This extra copy step and address translation overhead reduces effective throughput to roughly **12–15 GB/s** in practice, well below even the PCIe Gen5 x4 ceiling. So the PCIe width becomes irrelevant because the software path saturates before the hardware link does.
+This extra copy step and address translation overhead reduces effective throughput to roughly **12-15 GB/s** in practice, well below even the PCIe Gen5 x4 ceiling. So the PCIe width becomes irrelevant because the software path saturates before the hardware link does.
 
-**Bottom line:** for two-node LLM inference serving, the ~12–15 GB/s effective throughput from the NCCL fallback path is sufficient. The interconnect adds a few milliseconds of latency per layer during prefill, but token generation, the latency-critical path, is dominated by memory bandwidth. You'd need much larger clusters (4+ nodes) or extremely latency-sensitive workloads for the PCIe bottleneck to matter more than the missing GPUDirect RDMA.
+**Bottom line:** for two-node LLM inference serving, the ~12-15 GB/s effective throughput from the NCCL fallback path is sufficient. The interconnect adds a few milliseconds of latency per layer during prefill, but token generation, the latency-critical path, is dominated by memory bandwidth. You'd need much larger clusters (4+ nodes) or extremely latency-sensitive workloads for the PCIe bottleneck to matter more than the missing GPUDirect RDMA.
 
 ## Summary of the three failure layers
 
 | Layer | Node | Error | Root Cause |
 |-------|------|-------|------------|
-| **1. Secure Boot** | zgx-3285 (SB enabled) | `Key was rejected by service` | Packaging inconsistency: `nvidia-peermem.ko` ships signed by "NVIDIA Support" while the other 4 NVIDIA modules in the same package are re-signed by Canonical. |
-| **2. Build Flags** | zgx-3852 (SB disabled) | `Invalid argument` (EINVAL) | Module compiled without `NV_MLNX_IB_PEER_MEM_SYMBOLS_PRESENT` because MLNX_OFED wasn't installed at build time. Init function is a no-op `return -EINVAL`. |
+| **1. Secure Boot** | node A (SB enabled) | `Key was rejected by service` | Packaging inconsistency: `nvidia-peermem.ko` ships signed by "NVIDIA Support" while the other 4 NVIDIA modules in the same package are re-signed by Canonical. |
+| **2. Build Flags** | node B (SB disabled) | `Invalid argument` (EINVAL) | Module compiled without `NV_MLNX_IB_PEER_MEM_SYMBOLS_PRESENT` because MLNX_OFED wasn't installed at build time. Init function is a no-op `return -EINVAL`. |
 | **3. Architecture** | Both nodes | N/A (fundamental) | GB10 Grace Blackwell SoC uses unified memory. `cudaMalloc` memory cannot be coherently accessed by PCIe devices. GPUDirect RDMA is architecturally unsupported. |
 
 Even if you fix layers 1 and 2 (disable Secure Boot + install MOFED + rebuild the module), layer 3 is an immovable hardware constraint. The `nvidia_peermem` module would load but the underlying `nvidia_p2p_get_pages` kernel API would fail because the GB10 doesn't support peer-to-peer DMA to its memory.

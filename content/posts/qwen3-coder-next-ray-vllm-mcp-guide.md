@@ -38,11 +38,11 @@ This keeps the control plane simple while letting the GPUs do focused inference 
          +---------+---------+
          |                   |
          v                   v
- +----------------+   +----------------+
- | Worker Node A  |   | Worker Node B  |
- | <CLUSTER_WORKER_IP> | <CLUSTER_WORKER_IP> |
- | vLLM / GPU(s)  |   | vLLM / GPU(s)  |
- +----------------+   +----------------+
+ +---------------------+   +-------------------+
+ | Worker Node A       |   | Worker Node B     |
+ | <CLUSTER_WORKER_IP> |   |<CLUSTER_WORKER_IP>|
+ | vLLM / GPU(s)       |   | vLLM / GPU(s)     |
+ +---------------------+   +-------------------+
 ```
 
 ## FP8 vs AWQ: Choosing the Mode

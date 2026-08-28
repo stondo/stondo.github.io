@@ -32,13 +32,15 @@ keywords:
 [Zoysh](https://github.com/stondo/zoysh) is an LLM-powered shell assistant for zsh. It is a port and adaptation of [Yosh](https://yoshell.ai/), the LLM-enabled Bash created by [Fil Pizlo](https://github.com/pizlonator), and it brings Yosh's `yo` interaction model to zsh as a plain plugin. No custom shell, no compiled extensions required, nothing to switch away from. If you live in zsh, you keep living in zsh.
 
 ```
-$ yo find all python files modified today
+$ yo "find all python files modified today"
 find . -type f -name "*.py" -newermt "$(date +%Y-%m-%d)"
 # ↑ prefilled at your prompt, press Enter to run or edit first
 
-$ yo -c what does the -exec flag in find do?
+$ yo -c "what does the -exec flag in find do?"
 The -exec flag runs a command on each matched file...
 ```
+
+One zsh note that will save you a raised eyebrow: quote the query. Natural language is full of `?`, `*`, and `[`, and zsh (unlike bash) aborts the whole command line when a glob has no match, so an unquoted question ending in `?` dies with `no matches found` before `yo` ever runs. Quoting is the zsh-native answer.
 
 Type `yo` followed by what you want. The model generates a command and it appears at your prompt, as if you had typed it yourself. Edit it, cancel it, or press Enter. Ask with `yo -c` and the answer prints inline, right there in the terminal.
 

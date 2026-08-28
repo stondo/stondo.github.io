@@ -37,7 +37,7 @@ keywords:
 
 My rule for new frontier-ish releases: the day the official recipe lands, try to break it on the hardware you actually own. Qwen3.8-Flash-Next is the new entry in Qwen's sparse-attention Flash line: hybrid GDN linear-attention layers plus QSA (query sparse attention) full-attention layers, an always-on thinking mode, native image and video input, and a multi-token prediction head for self-drafting. The official FP8 checkpoint is **172.78 GiB**, and the official vLLM recipe (vLLM 0.28.0+, served from the `vllm/vllm-openai:qwen38-flash-next` image; PyPI installs are explicitly not supported for this model) was validated on GB300 at TP4.
 
-My `deep` box is two RTX PRO 6000 cards: 96 GB each, workstation Blackwell (SM120), 123 GB of host RAM. Half the GPUs, same architecture family, and a recipe that says TP2 is the validated *minimum* for FP8. So the question was never "does it fit" but "what has to move out of video memory to make room for context".
+The target is my two-GPU inference box: RTX PRO 6000 cards, 96 GB each, workstation Blackwell (SM120), 123 GB of host RAM. Half the GPUs, same architecture family, and a recipe that says TP2 is the validated *minimum* for FP8. So the question was never "does it fit" but "what has to move out of video memory to make room for context".
 
 The answer turned out to be a lookup table. And the failure modes along the way were better teachers than the success.
 
@@ -143,7 +143,7 @@ The vLLM unit was restarting 65 times in a row at one point, and the error was `
 
 The fix is ugly and mandatory: backslash-escape every quote inside JSON passed through quadlet `Exec=`. Sixty-five restarts for four backslashes. Related operational notes from the field: the image's entrypoint is `vllm serve` itself, so `Exec=` is arguments-only (a leading command prefix crashes the container); `TimeoutStartSec=1800` is not paranoia when cold start means 173 GiB of shards plus compile; and when you stop either lane, **port 8001 drains for up to 180 seconds**. Starting the next brain during the drain fails with "Address already in use" no matter how dead the previous one looks. Wait out the drain, `systemctl --user reset-failed`, then start.
 
-Last ops fact, by design not accident: this lane owns port 8001, which is also the home of my usual deep brain. The quadlet's `Conflicts=` handles the handover atomically, and the router loses its default model until the lane stops again. Test windows, planned as such.
+Last ops fact, by design not accident: this lane owns port 8001, which is also the home of my usual daily brain. The quadlet's `Conflicts=` handles the handover atomically, and the router loses its default model until the lane stops again. Test windows, planned as such.
 
 ## Footnote: GLM-5.3-Flash
 
@@ -161,7 +161,7 @@ The vLLM unit distilled to its load-bearing lines:
 ```ini
 [Container]
 Image=docker.io/vllm/vllm-openai:qwen38-flash-next
-Volume=/var/aios/models/qwen38-flashnext-fp8:/models:ro,Z
+Volume=/path/to/qwen3.8-flash-next-fp8:/models:ro,Z
 PodmanArgs=--ipc=host --ulimit memlock=-1:-1
 Environment=VLLM_PLE_CPU_OFFLOAD=1
 Environment=VLLM_ALLOW_LONG_MAX_MODEL_LEN=1
@@ -191,7 +191,7 @@ systemctl --user stop  qwen38flashnext-vllm   # then wait out the 180s port drai
                                                # starting any other brain on :8001
 ```
 
-The lane graduated from test lane to production candidate on my fleet: wired as the `deep-flashnext` provider (model `flashnext`) in my agents, one start away, one Conflicts-driven stop away from handing the port back.
+The lane graduated from test lane to production candidate on my fleet: wired as a dedicated provider with its own model alias in my agents, one start away, one Conflicts-driven stop away from handing the port back.
 
 ## What I'd tell past me
 

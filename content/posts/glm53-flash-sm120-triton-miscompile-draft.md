@@ -9,8 +9,9 @@ description: "Draft seed parked from the Flash-Next post (2026-08-28): the full 
 > hardware (user decision 2026-08-27). Watch
 > [upstream issue #4](https://github.com/tonyd2wild/GLM-5.3-Flash-NVFP4-2x-DGX-Spark/issues/4)
 > and [vLLM PR #53906](https://github.com/vllm-project/vllm/pull/53906).
-> Fresh facts live in project memory key
-> `local-ai/reference/2026-08-27/glm53-flash-deep-status-update`.
+> Fresh facts live in private project notes from the debugging session.
+> SANITIZE BEFORE PUBLISH: no hostnames, no internal service names, no
+> personal paths (same policy as the 2026-08-28 sanitization pass).
 
 ## From one gigabyte short to a Triton miscompile
 
