@@ -102,3 +102,21 @@ One podman quirk for reproducers: `--shm-size` is rejected alongside `--ipc=host
 The full evidence trail, including the exonerations and the footguns, is on the vLLM PR thread and in the issue where this started. My thanks to the recipe authors, and to the person who ran my first broken repro on their GB10 fleet before anyone knew it was broken; their coherence data was the clue that the difference was in my stack, not my silicon.
 
 GLM-5.3-Flash now serves from a systemd unit on the GPU box, behind the same OpenAI-compatible endpoint as everything else I run. Total timeline from first boot to verified serving: four days, of which three were my own bugs and one was reading someone else's README properly.
+
+## Epilogue, same day: the crash that looks like a clean stop
+
+The recipe above survived four days of debugging and a 261.9K needle test. It did not survive its first afternoon as the production brain.
+
+Under a multi-agent workload — dozens of concurrent long-prompt prefills sharing one system prefix, adaptive MTP spec decode active — the EngineCore died:
+
+```
+ValueError: ReplaySSM prefill source/state row count mismatch
+  vllm/third_party/flash_linear_attention/ops/kda_replayssm_spec_decode.py:482
+  (materialize_kda_replayssm_state, called from the KDA layer forward, kda.py:651)
+```
+
+The irony is not lost on me: the crash lives in the KDA stack I spent three days exonerating — but in the ReplaySSM state materialization for speculative decode, not in the attention numerics. Solo calls and light batches are fine; this needed sustained batching to trigger, which is why four days of interactive testing never produced it and one afternoon of agent fan-out did. There is a softer failure mode on the same path, too: under batching, requests stochastically run away into tens of thousands of thinking tokens for a kilobyte answer, while the identical request solo answers in seconds.
+
+The worse bug was operational. When the EngineCore raises, the vLLM API server shuts down *cleanly* — exit status 0. My quadlet had `Restart=on-failure`, so systemd read a dead engine as a deliberate stop and left the default model offline, mid-workload, without a word. The fix is one word: `Restart=always`. An explicit `systemctl stop` never triggers a restart, so deliberate downtime still works; only self-exits — crash or "clean" — bring the service back. I applied it to every serving unit on the box, not just this one. The v4flash unit already had it; that lesson had been learned once and not propagated.
+
+If you run this stack under real concurrency: check your `Restart=` line before you trust the dashboard, and watch for the ReplaySSM signature under batched prefill. Reported upstream: [glm-5.3-flash-ext3-4-bit-2x-rtx#1](https://github.com/tpurtell/glm-5.3-flash-ext3-4-bit-2x-rtx/issues/1).
