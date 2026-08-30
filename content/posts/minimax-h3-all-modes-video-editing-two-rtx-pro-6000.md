@@ -142,6 +142,10 @@ And the three smoke tests, all first-try after the fixes (4-second clips, 24 ste
 
 For the Ref2VA check I compared frames numerically (this session's coding model doesn't do images, so no eyeballs): per-pixel mean absolute difference of 20-28 across frames: a genuine regeneration, not a re-encode (which would sit under 5), with a consistent cooling color shift, which is what "sunset → rainy night" should look like to a histogram. Reference-video soundtracks ride along as audio conditions, so an edit inherits its source's sound bed.
 
+The edit itself, regenerated at the full 50-step reference quality (left: T2VA source, right: Ref2VA rainy-night edit):
+
+{{< youtube NBhZ4EsXlSE >}}
+
 The curl that matters, for posterity:
 
 ```bash
