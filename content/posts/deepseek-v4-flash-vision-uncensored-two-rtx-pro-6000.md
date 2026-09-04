@@ -1,6 +1,6 @@
 ---
 title: "An Uncensored 305B With Eyes: DeepSeek-V4-Flash-Vision on 2× RTX PRO 6000, and the Two-Engine Week That Tamed It"
-date: 2026-09-04T17:00:00+00:00
+date: 2026-09-04T16:45:00+00:00
 draft: false
 description: "Replacing DeepSeek-V4-Flash-0731 with the abliterated Vision-Exp build on two RTX PRO 6000s: the SM120 kernel that rejected vision prefill, the DSML tool-call bugs that only fired in real sessions, and why I swapped sglang for a community-qualified vLLM image mid-flight — plus a router fix this adventure forced into existence."
 summary: "The uncensored build of DeepSeek's Vision-Exp is a byte-for-byte drop-in — which meant every failure afterwards was mine to fix. A sparse-MLA kernel that rejects vision prefill on SM120, a streaming tool-call parser that corrupted exactly the arguments coding agents live on, and a health check that proved the port but not the model. 142 tok/s single-stream, native vision, zero refusals, one new router feature."
