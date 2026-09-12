@@ -97,7 +97,7 @@ The lane runs as a plain systemd user unit over rootless podman, on port 8004, s
 
 One deliberate text-only flag: `--language-model-only`. The vision tower ships in the pack, but the serving recipe is text-first, day-zero code — and this lane's job is being the biggest brain in the fleet, not reading screenshots.
 
-The follow-up post is about the week's actual mystery: the lane that benchmarked clean and then, in real sessions, occasionally started answering in fluent nonsense — [the word salad only opencode could see](/posts/dsv41-flash-word-salad-top-p-opencode/).
+The follow-up post is about the week's actual mystery: the lane that benchmarked clean and then, in real sessions, occasionally started answering in fluent nonsense — [the word salad only opencode could see](/posts/dsv41-flash-word-salad-top-p-opencode/). The complete serving configuration — every file the lane runs, every flag justified — is in [the companion recipe post](/posts/dsv41-flash-complete-recipe-two-rtx-pro-6000/).
 
 ## What I'd tell past me
 
