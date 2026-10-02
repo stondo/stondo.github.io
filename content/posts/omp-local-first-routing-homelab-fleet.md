@@ -246,15 +246,62 @@ fallback lands somewhere that can't see the image. It only matters in that
 narrow intersection and I've left it — but a vision-scoped chain ending in
 `deepseek-flash` (which has vision) is the correct fix if it ever bites.
 
+## Two kinds of memory
+
+The [Context Language Models](https://github.com/facebookresearch/context-language-models)
+extension went in during the audit and turned out to be the interesting
+compatibility surprise: it's built against upstream Pi's `@earendil-works/*`
+packages, while omp is the `@oh-my-pi/*` fork — and omp's plugin installer
+resolves those peer dependencies anyway. Verified live: the extension's
+`live_context_annotate` and `live_context_recall` tools register in every
+fresh session, and a `/clm` panel shows the budget the overflow guard is
+enforcing. (License note, corrected from my first draft: the extension itself
+is MIT; only Facebook's reference implementation carries CC BY-NC.)
+
+Which raises the obvious question: I already run
+[Cairnkeep](/posts/announcing-cairnkeep-durable-memory-coding-agents/), my
+durable memory layer, wired into the same agent. Do they fight?
+
+No — they're different layers with different lifetimes:
+
+- **CLM is working memory.** It curates what the model can see *right now*,
+  inside this session's window: withhold the oldest tool results near budget,
+  let the model edit its own context file, keep prefills lean.
+- **Cairnkeep is durable memory.** It holds what must survive *after* the
+  session — accepted decisions, pitfalls, root causes — project-scoped,
+  cross-harness, retrieval-first, and never an authority over the repo.
+
+But there is one real seam, and it's the kind that bites quietly: **the more
+aggressively you prune the window, the more it matters that everything durable
+was already persisted.** A fat context hides sloppy memory hygiene — the model
+"remembers" because the transcript is still in view. A CLM-curated context
+doesn't forgive that. When the guard withholds an observation, it leaves a
+note pointing at the saved file — and re-reading that file is a fresh prefill.
+
+The integration, then, is not code. Both surfaces are already model-facing
+tools, so the whole thing is one steering document — the extension's
+`PI_CLM_STEERING` appends a policy to the system prompt, and mine encodes
+four rules:
+
+```markdown
+1. Persist before pruning — a durable conclusion about to leave the window
+   gets memory_write'd first.
+2. Recall before re-reading — memory_search beats re-prefilling a saved file.
+3. Memory is context, never authority — a memory that conflicts with the
+   repo, a test, or a config file loses.
+4. Distill — no raw transcripts into durable memory.
+```
+
+Working memory forgets on purpose. Durable memory is the part that's
+supposed to stick. Point each at its own job and they compose instead of
+compete.
+
 ## What's next
 
 The audit left a queue: point omp's memory backend at mnemopi with the local
 embeddings server doing the vectors; offload the `tiny` roles to omp's
-embedded tiny models and raise subagent concurrency; wire the senses node's
-jury and dispatch MCPs into the agent; and try the [Context Language
-Models](https://github.com/facebookresearch/context-language-models)
-extension — context-as-file self-management, which their benchmarks claim
-cuts long-agent compute substantially (mind the CC BY-NC license).
+embedded tiny models and raise subagent concurrency; and wire the senses
+node's jury and dispatch MCPs into the agent.
 
 ## Verdict
 
