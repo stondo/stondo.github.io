@@ -228,9 +228,14 @@ This section then wrote its own epilogue: when I automated exactly that test
 `qwen3.8-flash-next` with *"a soft red or pink"* — a correct answer from a
 vLLM build that had quietly been multimodal all along. "The local option
 doesn't exist" was the same categorical mistake this section warns about,
-made by the author of the section. A local vision path exists now; I just
-haven't routed `vision` to it. Model names tell you nothing about the build
-behind them — query every endpoint, including the ones you are sure about.
+made by the author of the section. Model names tell you nothing about the
+build behind them — query every endpoint, including the ones you are sure
+about.
+
+And the routing followed the receipt: `vision` still leads with the cloud
+model — quality first, and vision volume is low — but its fallback chain is
+now all-VLM, with the local `flash-next` as hop one. Five identical
+consecutive probes name the color in 0.3 s on hardware I own.
 
 ## The lattice
 
@@ -249,11 +254,13 @@ retry:
 A cloud outage degrades to my hardware. A hardware reboot degrades to the
 other cloud. No single failure takes the agent down.
 
-One honest footnote: the `zai/*` chain technically serves `vision` too, and
-its fallbacks are text-only models. If z.ai 429s mid-screenshot-analysis, the
-fallback lands somewhere that can't see the image. It only matters in that
-narrow intersection and I've left it — but a vision-scoped chain ending in
-`deepseek-flash` (which has vision) is the correct fix if it ever bites.
+One honest footnote — since fixed. The `zai/*` chain technically serves
+`vision` too, and when this post was published its fallbacks were text-only
+models: a z.ai 429 mid-screenshot-analysis would have landed somewhere that
+couldn't see the image. The day the deep box proved itself a real VLM (next
+section), `vision` got its own role-scoped chain — local `flash-next` first,
+`deepseek-flash` second — so every hop of it can actually see. A z.ai outage
+now degrades to hardware I own instead of a model that's blind.
 
 ## Two kinds of memory
 
@@ -358,3 +365,12 @@ kept working.
 The lesson the tool exists to enforce, re-learned by the tool: a green check
 is a claim, not a fact. Query the endpoints. Then query them again after you
 pull the lever.
+
+Final coda, same day: the tool's own vision probe spent its first timer runs
+reporting the deep box as `unsure` — accepted image, no color in the answer.
+Not model flakiness; `max_tokens: 16`, swallowed whole by the reasoning
+prefix (`finish=length`, empty content) before the answer was ever emitted.
+Raise the cap to 512, make the probe image non-degenerate, pin both in a
+regression test — and the receipt reads `verified`, five for five, at 0.3 s.
+Even the verifier needed the lecture: a green check is a claim, not a fact.
+Including mine.
