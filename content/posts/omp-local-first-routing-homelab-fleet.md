@@ -210,8 +210,8 @@ multimodal one: native vision encoder, 1M context, image/video/file input.
 If you skim model names the way I do, "use the bigger model for vision" is
 exactly the mistake you'd make.
 
-And the local option? Doesn't exist. My 27B workhorse is not a VLM, and I
-now have the receipt — a live image request returning:
+And the local option? At audit time, no. My 27B workhorse is not a VLM, and
+the receipt still stands — a live image request returning:
 
 ```
 HTTP 400: "At most 0 image(s) may be provided in one prompt."
@@ -222,6 +222,15 @@ So `vision` lives on `zai/glm-5.3-flash:high`, which is genuinely good at it
 3× quota on the coding plan. Test your assumptions with actual requests; the
 config comment that says "not a VLM" might be stale, and the one that says
 nothing might be wrong too.
+
+This section then wrote its own epilogue: when I automated exactly that test
+(see the P.S.), the red-pixel probe came back from the deep box's
+`qwen3.8-flash-next` with *"a soft red or pink"* — a correct answer from a
+vLLM build that had quietly been multimodal all along. "The local option
+doesn't exist" was the same categorical mistake this section warns about,
+made by the author of the section. A local vision path exists now; I just
+haven't routed `vision` to it. Model names tell you nothing about the build
+behind them — query every endpoint, including the ones you are sure about.
 
 ## The lattice
 
@@ -313,3 +322,39 @@ verification. Dead promotion targets, silent judge degradation, and phantom
 model names all share one cure:
 
 Don't read the config. **Query the endpoints.**
+
+---
+
+## P.S. (2026-10-04): "Query the endpoints" is a command now
+
+The line above shipped as a tool two days later: **fleet-doctor**, a small
+Python CLI that reads the same `config.yml`/`models.yml` omp reads and does
+four things. `probe` checks endpoint health, catalog-vs-roster drift,
+credential resolution for every promotion and fallback target, live vision
+receipts, and judge reachability. `bench` produces TTFT-vs-context curves per
+tier plus a cost-per-role table (local tiers read `free`; the cloud meters
+tick in the same table). `chaos` runs induced-failure drills — dry-run is the
+default, a live run needs two flags, every drill ships with a documented
+recovery. `judge` asks the decision model ad-hoc questions directly. Exit
+codes are 0 clean / 1 degraded / 2 broken, and a systemd timer runs the
+check every 30 minutes and feeds the series to the existing Grafana.
+
+Two receipts worth the price of admission. The audit bugs are now regression
+tests: a planted ghost promotion target exits 2, a planted `-old` model id
+behind a catalog claim exits 1, and the suite stays red until the tools learn
+to catch them.
+
+And the better story: the first live `stop-service` drill *passed* —
+`systemctl stop` returned 0, the verification probe stayed green, recovery
+looked trivial. It was a lie. The unit I stopped was a same-named
+**system-scope decoy**; the live vLLM container belonged to a user-scope
+quadlet, and its orphaned conmon kept serving through the whole "drill". The
+tool caught it precisely because it verifies the endpoint and not the
+command's exit status. Re-run with the right lever: real teardown, connection
+reset, measured cold reload — **MTTR 236 s** — while the coding agent riding
+that very endpoint failed over from the deep box to the 5090 mid-drill and
+kept working.
+
+The lesson the tool exists to enforce, re-learned by the tool: a green check
+is a claim, not a fact. Query the endpoints. Then query them again after you
+pull the lever.
