@@ -112,6 +112,8 @@ turn 22, every token still formally in context:
 | 24 | 443K | **no (4/8 — oldest four LOST)** |
 | 32–48 | 517K → 664K | never recovered, even on the cloud model |
 
+![Verbatim canary recall (two runs) collapses inside the 74–85% attention cliff, before the 84–85% managed boundary fires](/canary-cliff.png)
+
 Between 389K and 443K — **74% to 85% of the window** — the agent stopped
 being able to see the oldest verbatim content, while gist recall stayed
 perfect. Classic lost-in-the-middle, measured on a real local fleet under
