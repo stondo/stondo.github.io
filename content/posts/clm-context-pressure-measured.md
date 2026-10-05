@@ -1,6 +1,6 @@
 ---
 title: "Attention Fails Before the Guard Does: Measuring Context Management at 700K Tokens"
-date: 2026-10-05T21:30:00+02:00
+date: 2026-10-05T15:30:00+02:00
 draft: false
 description: "Everyone has opinions about long-context agents; nobody had measurements of what the machinery actually does under sustained pressure on a local fleet. I built a harness that drives a real coding-agent session past a 524K-token model window, unattended, and measured five things: where promotion fires, what compaction destroys, when verbatim recall collapses, why the truncation guard I was testing never fired, and how the whole story reorders my assumptions about agent memory hygiene."
 summary: "fleet-brain's CLM harness drove real omp sessions past the local 524K window: promotion fires at 84% of the window and rides the prompt cache; with promotion disabled, a snapcompact compaction cut 445K tokens to 45K while preserving gist and destroying every verbatim canary; the headline surprise — canary recall collapsed between 389K and 443K with no context-management event at all, meaning attention had already failed exactly where the managed boundary sits. Plus: the overflow-withhold mechanism I set out to observe is unreachable on the tool surface, because every tool result is capped upstream."
