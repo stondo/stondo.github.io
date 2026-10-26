@@ -1,6 +1,6 @@
 ---
 title: "hxr: One fzf Picker for Every AI Coding CLI"
-date: 2026-10-26T12:00:00+00:00
+date: 2026-10-26T02:00:00+00:00
 draft: false
 description: "Seven coding agents run on my machines, and every one of them hides its session history in a different place: two generations of sqlite schema, a decoy sessions directory, AI-generated titles buried at the tail of JSONL transcripts, and a database column that sometimes contains an entire pasted conversation. hxr reads all of them read-only in about 50 milliseconds and gives me one fzf picker to find a past session and resume it in the right directory with the right command. This is the story of mapping seven storage formats, the fzf tab problem that forced a state file, and the drift guards that keep the whole thing from silently rotting."
 summary: "A single Rust binary over seven undocumented session stores: bounded reads and parallel discovery at 900 sessions in 50ms, per-CLI resume semantics, fzf tabs cycled through a reload state file, and fixture tests with synthetic stores so upstream format drift fails loudly instead of hiding a tab."
