@@ -95,3 +95,5 @@ The package name is `hxr-picker` because someone took `hxr` on crates.io in 2024
 - Crate: [crates.io/crates/hxr-picker](https://crates.io/crates/hxr-picker)
 
 If you use a coding CLI that is not on the list, the adapter trait is two functions, `discover()` and `resume()`, and the fixture file shows exactly what a new adapter has to prove. Pull requests welcome, and bring your archaeology notes.
+
+**Update, later the same day:** minutes after publishing I remembered the eighth CLI on my machines. Kimi (the kimi-code CLI) is now supported as of [0.2.0](https://crates.io/crates/hxr-picker): its index is one jsonl with `sessionId` and `workDir`, transcripts are event streams where the first `turn.prompt` holds the opening prompt, and resume is `kimi -S <id>`. The count above is now eight harnesses and 1,069 sessions. The "I forgot one" tax was one adapter, one fixture, one registry line.
