@@ -2,6 +2,8 @@
 
 ## Flash-Next on one RTX 5090 — IQ4_XS v3.1 at native 256K (2026-11-06; image: static/qwen38-strata-5090-card.png)
 
+Published: https://www.linkedin.com/feed/update/urn:li:activity:7524253981922148353/
+
 I rebuilt my workstation from Fedora 44 to Omarchy, then questioned which model deserved to come back onto the NVMe.
 
 One RTX 5090. 96 GB RAM. A native 256K context for coding agents. NVFP4 was my first pick.
