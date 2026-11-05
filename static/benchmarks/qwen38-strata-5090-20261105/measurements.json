@@ -1,0 +1,90 @@
+{
+  "measured_date": "2026-11-05",
+  "hardware": {
+    "gpu": "RTX5090 32GB",
+    "system_ram_gb": 96,
+    "power_limit_w": 450
+  },
+  "engine": "Strata0.1.57",
+  "context_tokens": 262144,
+  "models": {
+    "iq4-v31": {
+      "direct": {
+        "passed": 16,
+        "total": 16,
+        "failures": [],
+        "errors": [],
+        "total_seconds": 53.356,
+        "length_flag_tasks": []
+      },
+      "thinking": {
+        "passed": 16,
+        "total": 16,
+        "failures": [],
+        "errors": [],
+        "total_seconds": 184.838,
+        "length_flag_tasks": []
+      },
+      "humaneval_subset": {
+        "passed": 31,
+        "total": 32,
+        "failures": [
+          "HumanEval/127"
+        ],
+        "total_seconds": 82.456,
+        "length_flag_tasks": []
+      },
+      "recommended_settings_reruns": {
+        "passed": 6,
+        "total": 6,
+        "failures": [],
+        "total_seconds": 161.829
+      },
+      "short_prompt_decode_tps": 175.651,
+      "minimum_available_ram_gib": 14.629,
+      "context_api_prompt_tokens": 256553,
+      "context_recall_passed": true,
+      "context_ttft_seconds": 40.83537
+    },
+    "nvfp4": {
+      "direct": {
+        "passed": 16,
+        "total": 16,
+        "failures": [],
+        "errors": [],
+        "total_seconds": 50.174,
+        "length_flag_tasks": []
+      },
+      "thinking": {
+        "passed": 16,
+        "total": 16,
+        "failures": [],
+        "errors": [],
+        "total_seconds": 208.359,
+        "length_flag_tasks": []
+      },
+      "humaneval_subset": {
+        "passed": 31,
+        "total": 32,
+        "failures": [
+          "HumanEval/127"
+        ],
+        "total_seconds": 99.346,
+        "length_flag_tasks": []
+      },
+      "recommended_settings_reruns": {
+        "passed": 5,
+        "total": 6,
+        "failures": [
+          "batch_transactions"
+        ],
+        "total_seconds": 180.919
+      },
+      "short_prompt_decode_tps": 145.311,
+      "minimum_available_ram_gib": 6.74,
+      "context_api_prompt_tokens": 256553,
+      "context_recall_passed": true,
+      "context_ttft_seconds": 41.36983
+    }
+  }
+}

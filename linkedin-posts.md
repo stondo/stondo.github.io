@@ -1,4 +1,31 @@
 # LinkedIn posts for the three newest blog articles
+
+## Flash-Next on one RTX 5090 — IQ4_XS v3.1 at native 256K (2026-11-06; image: static/qwen38-strata-5090-card.png)
+
+I rebuilt my workstation from Fedora 44 to Omarchy, then questioned which model deserved to come back onto the NVMe.
+
+One RTX 5090. 96 GB RAM. A native 256K context for coding agents. NVFP4 was my first pick.
+
+Then I discovered that my Unsloth files came from September while the quality charts I was reading described November's Dynamic v3.1. Same familiar quant name, different candidate. And one more trap: the new Q4_K_XL upload was just a reshard of the same weights; IQ4_XS-v31 actually changed tensor formats.
+
+I updated Strata and remeasured both candidates on engine 0.1.57, at 450 W:
+
+• Short-prompt decode: IQ4 v3.1 176 tok/s, NVFP4 145.
+• Minimum available system RAM: 14.6 GiB versus 6.7.
+• Core coding/tool checks: both 16/16 directly and 16/16 with thinking.
+• A frozen 32-problem HumanEval subset: both 31/32, same failure.
+• Six selected cases rerun with xhigh and preserved thinking: 6/6 versus 5/6. NVFP4 generated an UnboundLocalError in the accounting task.
+
+Both also recalled three markers from a genuine 256,553-token prompt, taking about 41 seconds to start answering.
+
+These are small local tests. The 176 tok/s figure is short-prompt speed, and three recovered markers do not certify long-context coding. But the combination gave me a useful decision: keep IQ4_XS v3.1 at native 256K, with nearly 8 GiB more RAM headroom around the desktop. 512K remains a separate experiment.
+
+The unused weights went to the NAS. My agent initially wanted full read-back hashes over the network for every public model download. I cut that back to transfer checks and file sizes. Configurations and agent memory deserve more care than replaceable weights.
+
+Exact versions, launch flags, measurements, runnable tests, and the limits of the comparison:
+https://stondo.github.io/posts/qwen38-flash-next-strata-rtx5090-quant-comparison/
+
+---
 # Paste each block separately. Both hook line and body are inside each block.
 
 ---

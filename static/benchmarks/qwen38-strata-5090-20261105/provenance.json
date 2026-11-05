@@ -1,0 +1,25 @@
+{
+  "date": "2026-11-05",
+  "strata_version": "CLI0.2.11; control/engine0.1.57",
+  "nvfp4_weights_revision": "640a1db97446ddd5e89d2b70ecd0297987192c93",
+  "v31_weights_revision": "d96201194f103c906994f283f504209dc8d2a10c",
+  "context_tokens": 262144,
+  "kv": "int8",
+  "parallel": 1,
+  "vision": false,
+  "power_limit_watts": 450,
+  "core_quality_max_output": 4096,
+  "additional_quality_max_output": 8192,
+  "additional_sampling": {
+    "temperature": 1.0,
+    "top_p": 0.95,
+    "top_k": 20,
+    "min_p": 0.0,
+    "presence_penalty": 0.0,
+    "repetition_penalty": 1.0,
+    "reasoning_effort": "xhigh",
+    "preserve_thinking": true,
+    "seed": 729
+  },
+  "limitations": "Small local fixed suite and focused recommended-settings checks, not a full benchmark or a general quality ranking. Native256K retrieval is a three-anchor smoke test, not long-context coding-quality validation."
+}
