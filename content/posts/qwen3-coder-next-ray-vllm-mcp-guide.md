@@ -12,7 +12,7 @@ tags:
 description: "Practical guide to running Qwen3-Coder-Next on a two-node GPU cluster with Ray orchestration, vLLM serving, and an MCP bridge for local orchestrators."
 ---
 
-## Why This Architecture
+## Why this architecture
 
 For coding-model workloads, the split between orchestration and inference matters:
 
@@ -20,7 +20,7 @@ For coding-model workloads, the split between orchestration and inference matter
 - `vLLM` handles OpenAI-compatible serving with strong throughput and long-context support.
 - `MCP` exposes cluster capabilities to laptop orchestrators without embedding cluster logic in every client.
 
-This keeps the control plane simple while letting the GPUs do focused inference work.
+This keeps the control plane simple, and the GPUs do focused inference work.
 
 ```text
 [Orchestrator: Codex / Claude / Copilot]
@@ -45,7 +45,7 @@ This keeps the control plane simple while letting the GPUs do focused inference 
  +---------------------+   +-------------------+
 ```
 
-## FP8 vs AWQ: Choosing the Mode
+## FP8 vs AWQ: choosing the mode
 
 Both modes are valid for Qwen3-Coder-Next. Pick based on your bottleneck.
 
@@ -56,7 +56,7 @@ Both modes are valid for Qwen3-Coder-Next. Pick based on your bottleneck.
 | FP8 KV cache | More context at similar memory envelope | Needs compatible stack tuning | Large-repo prompts |
 | AWQ + tuned limits | Stable throughput under constrained VRAM | More careful parameter tuning | Multi-tenant serving |
 
-Rule of thumb: start with FP8 when quality is priority; use AWQ when capacity and concurrency are priority.
+Rule of thumb: start with FP8 when quality is the priority. Use AWQ when capacity and concurrency are the priority.
 
 ## Prerequisites
 
@@ -69,9 +69,9 @@ Rule of thumb: start with FP8 when quality is priority; use AWQ when capacity an
 - Passwordless node-to-node SSH for automation.
 - Pinned versions for Ray, vLLM, and MCP dependencies.
 
-## Step-by-Step Setup
+## Step-by-step setup
 
-1. Prepare the virtual environment on head and worker with identical paths.
+1. Prepare the virtual environment on head and worker with the same paths.
 2. Install Ray, vLLM, and supporting dependencies.
 3. Configure NCCL and control-plane interfaces.
 4. Start Ray head, then attach worker.
@@ -98,7 +98,7 @@ ssh <USER>@<CLUSTER_WORKER_IP> \
   "source <PROJECT_PATH>/.venv/bin/activate && ray start --address <CLUSTER_HEAD_IP>:6379 --node-ip-address <CLUSTER_WORKER_IP>"
 ```
 
-## Launch and Validate
+## Launch and validate
 
 After Ray is healthy, start vLLM and run quick API checks.
 
@@ -129,9 +129,9 @@ resp = client.chat.completions.create(
 print(resp.choices[0].message.content)
 ```
 
-## MCP Bridge for Orchestrators
+## MCP bridge for orchestrators
 
-MCP gives your orchestrator one stable interface while the cluster backend can evolve independently.
+MCP gives your orchestrator one stable interface. The cluster backend can then evolve independently.
 
 ```json
 {
@@ -158,16 +158,16 @@ With this bridge, Codex/Claude/Copilot-style orchestrators can call model-aware 
 | vLLM takes too long to start | Cold model load + kernel initialization | Warm once, then reuse process; keep model cached |
 | MCP calls timeout | Endpoint mismatch or backend unavailable | Validate `<MCP_ENDPOINT>` and `/v1/models` first |
 
-## Operational Lessons
+## Operational lessons
 
-- Keep head and worker environments identical to avoid hard-to-debug drift.
+- Keep head and worker environments the same to avoid hard-to-debug drift.
 - Treat networking variables as first-class config, not ad-hoc shell state.
 - Validate with small deterministic prompts before heavy coding tasks.
-- Separate launch scripts for setup, start, and stop keeps recovery faster.
+- Separate launch scripts for setup, start, and stop make recovery faster.
 - Use placeholders in docs from day one to avoid accidental data leaks.
 - Keep this post `draft: true` until a final redaction pass is complete.
 
 ## Conclusion
 
-Ray + vLLM + MCP is a practical pattern for self-hosted coding-model inference: Ray distributes compute, vLLM serves efficiently, and MCP makes orchestration integration clean. The setup is straightforward when environment parity, network config, and launch discipline are handled early. Start with a minimal, validated path, then scale concurrency and context gradually. This draft keeps sensitive values abstracted and is ready for your final narrative polish before publishing.
+Ray + vLLM + MCP is a practical pattern for self-hosted coding-model inference: Ray distributes compute, vLLM serves efficiently, and MCP makes orchestration integration clean. The setup is straightforward when you handle environment parity, network config, and launch discipline early. Start with a minimal, validated path, then scale concurrency and context gradually. This draft keeps sensitive values abstracted and still needs a final narrative polish before publishing.
 
