@@ -32,7 +32,7 @@ keywords:
 
 The [deployment post](/posts/deepseek-v41-flash-552b-exl3-two-rtx-pro-6000/) explains why this lane exists and where its ceiling sits. The [debugging post](/posts/dsv41-flash-word-salad-top-p-opencode/) explains the two-line sampling fix. This one is the thing you came for: every file the lane runs in production right now, in order, with nothing paraphrased.
 
-Hardware assumption throughout: two RTX PRO 6000 Blackwell (96 GB each, sm_120), a consumer AM5 board with 123 GB of host RAM, and a fast local NVMe. If your host RAM is north of ~280 GB, stop reading this and go pin the Engram tables instead. The recipe's own ladder will thank you.
+Hardware assumption throughout: two RTX PRO 6000 Blackwell (96 GB each, sm_120), a consumer AM5 board with 128 GB of host RAM, of which Linux sees 123 GiB, and a fast local NVMe. If your host RAM is north of ~280 GB, stop reading this and go pin the Engram tables instead. The recipe's own ladder will thank you.
 
 ## 1. The pack
 

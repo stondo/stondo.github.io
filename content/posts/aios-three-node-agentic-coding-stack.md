@@ -82,7 +82,7 @@ My desktop runs **Qwen3.8 27B in NVFP4** under **vLLM**, with three things that 
 
 - **LMCache** with an L2 tier on a dedicated NVMe: KV cache survives across sessions, so repeated work in the same repo gets near-instant prefill on cache hits.
 - **MTP speculative decoding** for extra generation speed.
-- **Multimodal enabled**: it accepts images, which matters more than I expected (see the vision section below).
+- **Multimodal enabled**: it accepts images, which matters more than I expected.
 
 An update since I first wrote this: the 27B on this node is no longer the stock Unsloth build. I swapped it for a **self-quantized NVFP4 build of the OBLITERATUS abliterated variant**. A growing share of my subagent work is security research, and the uncensored model gives straight technical answers instead of refusal fluff. The fun part is that no client needed to change: it serves under the same `qwen3.8-27b-coder` alias, so the router, the CLIs, and every subagent pin kept working. Same speed too, about 40 tok/s single stream and 317 tok/s aggregate with 8 concurrent subagents. The full quantization saga, with every ModelOpt trap I fell into, [is a post of its own](/posts/obliteratus-qwen38-27b-nvfp4-rtx5090/). The weights are [on my Hugging Face](https://huggingface.co/Joestar79/Qwen3.8-27B-OBLITERATED-NVFP4).
 

@@ -123,7 +123,7 @@ Round 66, playing White, my engine played 24.Qd2 and the evaluation started to s
 
 So round 94's build shipped a **sink-guard**: when two consecutive own evaluations drop by ≥150 cp and at least 20 seconds remain, the soft deadline doubles. The doubled deadline pushes the stability factors past the hard deadline, so the search spends its approved budget instead of stopping early at shallow depth. A/B arenas validated it (54.0% at fast TC, zero false terminations). An audit of 218 in-tournament decisions found zero false triggers, and the guard stayed silent for all 109 rounds. The losses that remained were honest ones.
 
-That forensics pass produced the finding I consider the most valuable single fact of the event: **of 40 losses, 34 were gradual positional bleeds** (a hundred centipawns here, a hundred there, confirmed by a Stockfish referee pass). Blunders, the clock, and the openings were not the cause. The separation in this field is middlegame evaluation quality times search depth. No gimmick fixes that. Only a better evaluator at more nodes does.
+That forensics pass produced the finding I consider the most valuable single fact of the event: **of 39 losses, 34 were gradual positional bleeds** (a hundred centipawns here, a hundred there, confirmed by a Stockfish referee pass). Blunders, the clock, and the openings were not the cause. The separation in this field is middlegame evaluation quality times search depth. No gimmick fixes that. Only a better evaluator at more nodes does.
 
 ## Everything I did not ship
 
