@@ -32,17 +32,17 @@ keywords:
 
 ## What I wanted, and why the internet could not give it to me
 
-I run a small fleet of machines that serve local models for my daily work. The workhorse is a single RTX 5090 with 32 GB of VRAM, and on it I had the stock Qwen3.8-27B in Unsloth's NVFP4 build, served through vLLM with tiered KV caching. That lane answers as `qwen3.8-27b-coder` and everything from my editor to my job dispatcher is configured to talk to it.
+I run a small fleet of machines that serve local models for my daily work. The workhorse is a single RTX 5090 with 32 GB of VRAM. On it I had the stock Qwen3.8-27B in Unsloth's NVFP4 build, served through vLLM with tiered KV caching. That lane answers as `qwen3.8-27b-coder`, and I configured everything from my editor to my job dispatcher to talk to it.
 
 The problem: I wanted an uncensored variant for security research work. Not because I have exotic needs, but because abliterated models stop wasting your time. You ask for a stack smashing proof of concept for a vulnerability class and you get the proof of concept, not a paragraph about responsible disclosure you did not ask for.
 
-> **⚠️ Update (Aug 27, 2026):** these weights have a known defect — generation can degenerate into loops under conditions I'm still investigating. The quantization walkthrough below (the ModelOpt traps, the instrumented-run trick, the checklist) remains valid, but **I don't currently recommend deploying the published build**. For an uncensored Qwen3.8-27B validated end-to-end on the same GPU — 262K context, needle-tested, tool-calling — see my follow-up: [262,144 Tokens on One RTX 5090](/posts/qwen38-27b-nvfp4kv-262k-single-rtx5090/), which uses a third-party checkpoint instead.
+> **⚠️ Update (Aug 27, 2026):** these weights have a known defect: generation can degenerate into loops under conditions I'm still investigating. The quantization walkthrough below (the ModelOpt traps, the instrumented-run trick, the checklist) remains valid, but **I don't currently recommend deploying the published build**. For an uncensored Qwen3.8-27B validated end-to-end on the same GPU (262K context, needle-tested, tool-calling), see my follow-up: [262,144 Tokens on One RTX 5090](/posts/qwen38-27b-nvfp4kv-262k-single-rtx5090/), which uses a third-party checkpoint instead.
 
 The obvious candidate was [OBLITERATUS/Qwen3.8-27B-OBLITERATED](https://huggingface.co/OBLITERATUS/Qwen3.8-27B-OBLITERATED). The V3 release is good work: iterative refinement on top of direction ablation, zero hard refusals, zero soft deflection lectures, and only a 2.1 point MMLU drop from stock. It ships GGUF files, MLX, and bf16 safetensors.
 
 
 
-What it does not ship is NVFP4. And on a Blackwell card, NVFP4 is the format you want. The 5090 has a native FP4 tensor core path and roughly 1.8 TB/s of memory bandwidth, so a 27B in FP4 is about 20 GB of weights, which leaves real room for KV cache at 126K context. BF16 does not fit. Full stop.
+What it does not ship is NVFP4. And on a Blackwell card, NVFP4 is the format you want. The 5090 has a native FP4 tensor core path and roughly 1.8 TB/s of memory bandwidth. A 27B in FP4 is about 20 GB of weights, which leaves real room for KV cache at 126K context. BF16 does not fit. Full stop.
 
 There were community NVFP4 builds of other uncensored variants, and I had even run one of them before and not loved the model. So I did the reasonable thing: I quantized OBLITERATUS myself. How hard could it be? NVIDIA's ModelOpt does this in a few lines.
 
@@ -52,15 +52,19 @@ Reader, it took three days.
 
 The quantization script itself is short. Load the model in bf16 on a big GPU, call `mtq.quantize()` with the NVFP4 config, save. I ran it on a machine with two 96 GB RTX PRO 6000 cards so I did not have to think about memory. It finished quickly. Too quickly, I would later understand.
 
-The first crash was honest at least: `quantize() got an unexpected keyword argument 'filter_fn'`. Fine. ModelOpt 0.45 does filtering differently. You express exclusions as ordered rules in the config, appended after the enabling rules, and the last matching rule wins. Want the vision tower in bf16? Append `{"quantizer_name": "*visual*", "enable": False}`. The base `W4A16_NVFP4_CFG` already excludes `lm_head`, the vision tower, and the small internal projections of the hybrid attention layers, which saved me some work.
+The first crash was honest at least: `quantize() got an unexpected keyword argument 'filter_fn'`. Fine. ModelOpt 0.45 does filtering differently. You express exclusions as ordered rules in the config, appended after the enabling rules, and the last matching rule wins.
+
+Want the vision tower in bf16? Append `{"quantizer_name": "*visual*", "enable": False}`. The base `W4A16_NVFP4_CFG` already excludes `lm_head`, the vision tower, and the small internal projections of the hybrid attention layers, which saved me some work.
 
 The second crash was subtler and it is the one I want on a mug: after a "successful" run, my output directory was **51 GB**. For comparison, the reference NVFP4 build I was cloning ideas from is 20 GB. What had I produced? A beautiful fake.
 
-Here is the thing nobody told me: `mtq.quantize()` installs *fake quantization* modules. The weights stay in bf16 and the quantization is simulated at forward time. That is useful for accuracy evaluation and completely useless for deployment. To get real packed FP4 weights you must call `mtq.compress(model)`. And when you call it, you must call it bare, with no arguments, because the config you passed to `quantize()` contains a field literally named `"algorithm"` whose value is the string `"max"` (it is a calibration setting), and if you pass that config to `compress()` a pydantic validator somewhere dies of embarrassment.
+Nobody told me this: `mtq.quantize()` installs *fake quantization* modules. The weights stay in bf16 and the quantization is simulated at forward time. That is useful for accuracy evaluation and completely useless for deployment.
+
+To get real packed FP4 weights you must call `mtq.compress(model)`. And you must call it bare, with no arguments. The config you passed to `quantize()` contains a field literally named `"algorithm"`, and its value is the string `"max"`. That field is a calibration setting. If you pass that config to `compress()`, a pydantic validator somewhere dies of embarrassment.
 
 After that, the save produced 19.7 GB of properly packed uint8 weights. I could see the tensors shrink. Progress.
 
-Then transformers 5.15 ambushed me twice more. It saved everything as a single unindexed `model.safetensors` with no shard index file. And it silently dropped the MTP head, because the source repo ships the multi token prediction weights in a separate file following a vLLM convention that `AutoModelForImageTextToText` simply does not know about. So I wrote a post processing script: build the index myself, copy the MTP file in, merge its fifteen tensors into the index. All CPU work, no GPU needed.
+Then transformers 5.15 ambushed me twice more. It saved everything as a single unindexed `model.safetensors` with no shard index file. And it silently dropped the MTP head. The source repo ships the multi token prediction weights in a separate file, following a vLLM convention that `AutoModelForImageTextToText` simply does not know about. So I wrote a post processing script: build the index myself, copy the MTP file in, merge its fifteen tensors into the index. All CPU work, no GPU needed.
 
 The GPU part, by the way, took about **eight minutes**. Everything else was archaeology.
 
@@ -78,19 +82,19 @@ No tensor names. No shapes. Just the assertion and my self confidence leaving th
 
 What followed was a comedy of reasonable hypotheses, each wrong:
 
-**Hypothesis one: the config format.** My `config.json` embedded the quantization config in the nested form ModelOpt writes, and I found that a vLLM pre flight checker only accepts a flat, merged form for this quant method. The reference build ships exactly that flat form, with compressed-tensors style `config_groups` plus a top level `quant_algo`. I rebuilt my config to match, byte for byte in structure. The assertion stayed.
+**Hypothesis one: the config format.** My `config.json` embedded the quantization config in the nested form ModelOpt writes. I found that a vLLM pre flight checker only accepts a flat, merged form for this quant method. The reference build ships exactly that flat form, with compressed-tensors style `config_groups` plus a top level `quant_algo`. I rebuilt my config to match, byte for byte in structure. The assertion stayed.
 
-**Hypothesis two: tensor naming.** Comparing safetensors headers tensor by tensor, I found my export used the transformers style names, `weight_quantizer._scale` and friends, while the loader expects deployment names: `weight_scale`, `weight_scale_2`. I renamed 608 tensors and dropped 304 calibration leftovers in one pass. The assertion stayed.
+**Hypothesis two: tensor naming.** I compared the safetensors headers tensor by tensor. My export used the transformers style names, `weight_quantizer._scale` and friends, while the loader expects deployment names: `weight_scale`, `weight_scale_2`. I renamed 608 tensors and dropped 304 calibration leftovers in one pass. The assertion stayed.
 
-**Hypothesis three: the MTP file.** This one was a genuine find. The file I copied as `model_mtp.safetensors` contained the fifteen MTP tensors *and the entire 333 tensor vision tower*. The same vision tower already lived in the main checkpoint. vLLM was loading it twice, and the second load path hit a fused projection without the context it needed. I stripped the file down to MTP only. The assertion stayed.
+**Hypothesis three: the MTP file.** This one was a genuine find. The file I copied as `model_mtp.safetensors` contained the fifteen MTP tensors *and the entire 333 tensor vision tower*. The same vision tower already lived in the main checkpoint. vLLM loaded it twice, and the second load path hit a fused projection without the context it needed. I stripped the file down to MTP only. The assertion stayed.
 
-At this point I did the thing I should feel worse about: I ran manual tests, each flag isolated, and they all passed, so I told myself the service must have been reading a stale mmap or something. That was wrong in an instructive way. My manual containers had a five minute timeout, and this build spends the first several minutes in torch.compile before it ever touches a weight file. I was killing every test before the failing code ran. My "passes" were silent no ops.
+At this point I did the thing I should feel worse about. I ran manual tests, each flag isolated, and they all passed. So I told myself the service must have been reading a stale mmap or something. That was wrong in an instructive way. My manual containers had a five minute timeout, and this build spends the first several minutes in torch.compile before it ever touches a weight file. I killed every test before the failing code ran. My "passes" were silent no ops.
 
-Meanwhile the unit kept flapping. I learned something valuable about systemd here that is worth sharing: while a service is in its restart loop, `is-active` reports `activating`, which sounds like progress. My monitoring treated that as "still starting". The machine cycled through **27 crashes** while my dashboards showed a calm, slow boot. If you want to detect flapping, watch the `NRestarts` counter, never the state string. I now have a shell loop doing exactly that and it is embarrassing how much grief it would have saved.
+Meanwhile the unit kept flapping. I learned something about systemd here: while a service is in its restart loop, `is-active` reports `activating`, which sounds like progress. My monitoring treated that as "still starting". The machine cycled through **27 crashes** while my dashboards showed a calm, slow boot. If you want to detect flapping, watch the `NRestarts` counter, never the state string. I now have a shell loop doing exactly that and it is embarrassing how much grief it would have saved.
 
 ## Day three: stop guessing, instrument
 
-The breakthrough was abandoning hypothesis testing entirely. I patched the vLLM source *inside a throwaway container*: the assertion in `parameter.py` now wrote the actual parameter shape, the loaded shape, the module prefix, and the dtype to a file before dying. Same for the fused layer loader in `linear.py`, and for the exclusion checker in the ModelOpt integration. One run. One log file. Every question answered.
+The breakthrough came when I abandoned hypothesis testing entirely. I patched the vLLM source *inside a throwaway container*. The assertion in `parameter.py` now wrote the actual parameter shape, the loaded shape, the module prefix, and the dtype to a file before it died. Same for the fused layer loader in `linear.py`, and for the exclusion checker in the ModelOpt integration. One run. One log file. Every question answered.
 
 The log said:
 
@@ -108,9 +112,11 @@ EXCL prefix=...linear_attn.in_proj_qkvz verdict=False
 EXCL prefix=...linear_attn.in_proj_ba    verdict=True
 ```
 
-Now the story was readable. Qwen3.8 uses a hybrid architecture: 48 of 64 layers use linear attention (a Mamba style recurrent path) and vLLM implements the input projection as one fused module with four shards, `in_proj_qkvz`. The quantization config excluded the small projections fine, but for the two big ones my exclude patterns had been mangled by vLLM's own name remapper, which rewrites `something*` into `something` plus `something.*`. A pattern written against the checkpoint name can never match the remapped module name. So the fused module stayed quantized, its parameter was a packed uint8 blob, and my checkpoint (where I had spliced bf16 originals in during an earlier fix attempt) handed it a bf16 matrix. Shape mismatch. Assertion.
+Now the story was readable. Qwen3.8 uses a hybrid architecture: 48 of 64 layers use linear attention (a Mamba style recurrent path) and vLLM implements the input projection as one fused module with four shards, `in_proj_qkvz`. The quantization config excluded the small projections fine, but for the two big ones, vLLM's own name remapper had mangled my exclude patterns. The remapper rewrites `something*` into `something` plus `something.*`. A pattern written against the checkpoint name can never match the remapped module name.
 
-Two more facts fell out of the same log. The module parameter in bf16 would be `(16384, 5120)`, and my checkpoint's tensor was `(10240, 5120)`, which is only the qkv part. So even with correct exclusion, my splice could never have loaded. And the exclusion path itself was a dead end for a different reason: leaving those projections in bf16 costs roughly 6 GB across 48 layers, and on a 32 GB card that is the difference between 191K tokens of KV cache and no KV cache at all.
+So the fused module stayed quantized and its parameter was a packed uint8 blob. My checkpoint, where I had spliced bf16 originals in during an earlier fix attempt, handed it a bf16 matrix. Shape mismatch. Assertion.
+
+Two more facts fell out of the same log. The module parameter in bf16 would be `(16384, 5120)`, and my checkpoint's tensor was `(10240, 5120)`, which is only the qkv part. So even with correct exclusion, my splice could never have loaded. And the exclusion path itself was a dead end for a different reason. Leaving those projections in bf16 costs roughly 6 GB across 48 layers. On a 32 GB card, that is the difference between 191K tokens of KV cache and no KV cache at all.
 
 The reference build had the answer all along, visible in its safetensors headers if I had known how to read them: it ships those projections **quantized**. The packed FP4 path loads fused tensors whole, no shard splitting, no assertion. My very first quantization run had actually produced exactly that, and I had spent a day surgically breaking it.
 
@@ -137,14 +143,14 @@ Same alias as the stock lane, so zero client configuration changed anywhere. Sam
 | GPU KV cache | 191K tokens at 126K context |
 | Startup | 140 seconds warm |
 
-The concurrency scaling is the part I care about most, because the whole point was a swarm of security research subagents sharing one GPU. Eight agents each get full single stream speed. Coherence checks pass, multi turn conversations hold together, and the uncensored behavior is exactly what the OBLITERATUS card promised: a direct technical answer about frame pointer overwrites with no preamble and no lecture.
+The concurrency scaling is the part I care about most, because the whole point was a swarm of security research subagents sharing one GPU. Eight agents each get full single stream speed. Coherence checks pass and multi turn conversations hold together. The uncensored behavior is exactly what the OBLITERATUS card promised: a direct technical answer about frame pointer overwrites with no preamble and no lecture.
 
 ## The checklist I would hand my past self
 
 1. `mtq.quantize()` fakes it. `mtq.compress()` makes it real. Call it bare.
 2. Exclusion rules are an ordered list and the base NVFP4 config already covers `lm_head`, vision, and the small linear attention internals. Add less than you think.
 3. transformers 5.15 saves one big file with no index and drops vLLM convention MTP extras. Write your own finisher.
-4. Scale tensors must be renamed to `weight_scale` / `weight_scale_2` for the deployment loader.
+4. Rename the scale tensors to `weight_scale` / `weight_scale_2` for the deployment loader.
 5. The quantization config in `config.json` must be the flat form: `config_groups` plus a top level `quant_algo` plus `quant_method: modelopt`.
 6. Never exclude a fused module from quantization on a memory constrained card. If the reference build ships it packed, ship it packed.
 7. When a load fails with a bare assertion, do not read tea leaves. Patch the code in a container, write the shapes to a file, run once. One instrumented run beat a day of hypotheses.
@@ -152,4 +158,4 @@ The concurrency scaling is the part I care about most, because the whole point w
 
 The weights are on my Hugging Face if you want to skip the fun part: [Joestar79/Qwen3.8-27B-OBLITERATED-NVFP4](https://huggingface.co/Joestar79/Qwen3.8-27B-OBLITERATED-NVFP4). But honestly? The fun part taught me more than the model ever will.
 
-If this saved you an evening, or you are fighting an assertion right now at 2 AM, my sympathies. Instrument first. The assertions are always telling the truth. It is the rest of the pipeline that lies.
+If this saved you an evening, or you are fighting an assertion right now at 2 AM, my sympathies. Instrument first. The assertions always tell the truth. It is the rest of the pipeline that lies.
