@@ -1,6 +1,8 @@
 # LinkedIn posts for the three newest blog articles
 
-## Inkling 2 Mini vs Flash-Next on one RTX 5090 (2026-11-25, image: static/inkling2-flashnext-card.png, post this next)
+## Inkling 2 Mini vs Flash-Next on one RTX 5090 (2026-11-25, image: static/inkling2-flashnext-card.png)
+
+Published: https://www.linkedin.com/feed/update/urn:li:activity:7531431174485889024/
 
 My daily local model holds about 74 GB of RAM. Inkling 2 Mini, the 26.4B MoE from Thinking Machines Lab, holds about 1 GB.
 
