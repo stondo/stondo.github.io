@@ -1,5 +1,31 @@
 # LinkedIn posts for the three newest blog articles
 
+## Inkling 2 Mini vs Flash-Next on one RTX 5090 (2026-11-25, image: static/inkling2-flashnext-card.png, post this next)
+
+My daily local model holds about 74 GB of RAM. Inkling 2 Mini, the 26.4B MoE from Thinking Machines Lab, holds about 1 GB.
+
+So I ran it against my Flash-Next deployment on the same RTX 5090, with the same tests. Inkling ran three times on Basalt with the settings its publisher recommends.
+
+• Generation on a short prompt: 325 tok/s against 239.
+• Prompt read, same text: 16,929 tok/s against 7,560.
+• RAM free during a 256K check: 70 GiB against 16.
+• Core cases with thinking on: 15 to 16 of 16 against 16 of 16.
+• HumanEval subset: 30 to 31 of 32 against 31 of 32.
+• GSM8K, first 200 problems: 194 against 195.
+
+At temperature 0 it stalls. On hard cases it reasons for 52,000 to 75,000 characters and never writes the code. I ran it with its publisher's settings instead: temperature 1.0, top_p 1.0, top_k 0, min_p 0.
+
+It cannot switch thinking off. Where Flash-Next answers at once, it spends six to seven times the tokens.
+
+Inkling's answers are samples, so I ran the tests three times. Two of the runs differed by three cases. The figures above are ranges. The tests are small and local. I did not measure a full agent session on Inkling 2 Mini.
+
+Flash-Next stays my default. Inkling 2 Mini is now my second model, for when I need the RAM or a fast prompt read.
+
+Settings, token cost, the five problems it misses, and a runnable test bundle:
+https://stondo.github.io/posts/inkling-2-mini-vs-flash-next-basalt-rtx5090/
+
+---
+
 ## Flash-Next on one RTX 5090 — IQ4_XS v3.1 at native 256K (2026-11-06; image: static/qwen38-strata-5090-card.png)
 
 Published: https://www.linkedin.com/feed/update/urn:li:activity:7524253981922148353/

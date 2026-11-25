@@ -1,0 +1,704 @@
+{
+  "measured_date": "2026-11-25 (Inkling 2 Mini; Flash-Next speed calibration on Basalt) and 2026-11-05 (Flash-Next quality)",
+  "hardware": {
+    "gpu": "RTX 5090 32 GB",
+    "system_ram_gb": 96,
+    "power_limit_w": 450
+  },
+  "engines": {
+    "basalt": "0.5.7 (Inkling, and the Flash-Next speed and GSM8K numbers)",
+    "strata": "0.1.57 engine (the Flash-Next quality and 256K numbers of 2026-11-05)",
+    "llama.cpp": "Unsloth prebuilt b12649-mix-c7059d6 (the UD-Q8_K_XL reference pass)"
+  },
+  "quality_suite_source": "the Flash-Next quant comparison of 2026-11-05: https://stondo.github.io/benchmarks/qwen38-strata-5090-20261105/",
+  "models": {
+    "flash-next-iq4xs": {
+      "pack": "Qwen3.8-FN-UD-IQ4_XS.basalt on Basalt for speed; Unsloth UD-IQ4_XS v3.1 on Strata 0.1.57 for quality",
+      "quality_source": "archived run of 2026-11-05 (Strata 0.1.57), temperature 0, output budget 4,096",
+      "core_thinking_off": {
+        "passed": 16,
+        "total": 16,
+        "ran_out_of_output_budget": [],
+        "answered_wrong": [],
+        "completion_tokens": 5851,
+        "seconds": 53.356
+      },
+      "core_thinking_on": {
+        "passed": 16,
+        "total": 16,
+        "ran_out_of_output_budget": [],
+        "answered_wrong": [],
+        "completion_tokens": 26502,
+        "seconds": 184.838
+      },
+      "humaneval_subset": {
+        "passed": 31,
+        "total": 32,
+        "failed": [
+          "HumanEval/127"
+        ]
+      },
+      "focused_reruns": {
+        "passed": 6,
+        "total": 6,
+        "failures": [],
+        "total_seconds": 161.829
+      },
+      "context_256k": {
+        "retrieval_passed": true,
+        "api_prompt_tokens": 256553,
+        "completion_tokens": 46,
+        "finish_reason": "stop",
+        "ttft_seconds": 40.84,
+        "peak_vram_mib": 29315.0,
+        "minimum_available_ram_gib": 15.9
+      },
+      "speed_on_basalt_2026_11_25": {
+        "short_prompt_decode_tps_runs": [
+          236.6,
+          245.7,
+          239.1
+        ],
+        "short_prompt_decode_tps_median": 239.1,
+        "short_prompt_decode_ttft_s_median": 0.248,
+        "short_prompt_tokens_median": 94,
+        "prefill_4k_tps_median": 4055,
+        "prefill_4k_tokens_median": 4115,
+        "prefill_16k_tps_median": 7560,
+        "prefill_16k_tokens_median": 16285
+      },
+      "source": "the Flash-Next pack's own trial of 2026-11-24 on Basalt: UD-IQ4_XS pack, int8 KV, 262,144 context, 3,072 MiB reserve",
+      "basalt_bench_prefill_tps": {
+        "16384": 8181.0,
+        "65536": 8638.0,
+        "131072": 8368.0
+      },
+      "basalt_bench_decode_tps": {
+        "conversation": 258.0,
+        "structured": 495.0,
+        "prose": 261.0
+      },
+      "gsm8k_first_200_passed": 195,
+      "thinking_on_per_solved_case": {
+        "seconds_per_solved_case": 11.6,
+        "completion_tokens_per_solved_case": 1656
+      },
+      "server_on_basalt_2026_11_25": {
+        "parallel": 4,
+        "max_context": 1048576,
+        "kv": "int8",
+        "vision": "dynamic",
+        "note": "its usual configuration; the harness sent one request at a time"
+      }
+    },
+    "inkling-2-mini": {
+      "pack": "Inkling-2-Mini-NVFP4-MX8.basalt",
+      "pack_sha256": "28ec70723feaa037942a02f55b9d5e898276f3e62a3b1fa083745f932a041b99",
+      "temperature_0_budget_4096": {
+        "core_thinking_off": {
+          "passed": 12,
+          "total": 16,
+          "ran_out_of_output_budget": [
+            "async_ordered_map",
+            "batch_transactions",
+            "merge_patch",
+            "sse_parser"
+          ],
+          "answered_wrong": [],
+          "completion_tokens": 26034,
+          "seconds": 62.338
+        }
+      },
+      "temperature_0_budget_16384": {
+        "core_thinking_off": {
+          "passed": 13,
+          "total": 16,
+          "ran_out_of_output_budget": [
+            "async_ordered_map",
+            "merge_patch",
+            "sse_parser"
+          ],
+          "answered_wrong": [],
+          "completion_tokens": 64014,
+          "seconds": 120.468
+        },
+        "core_thinking_on": {
+          "passed": 11,
+          "total": 16,
+          "ran_out_of_output_budget": [
+            "async_ordered_map",
+            "batch_transactions",
+            "merge_patch",
+            "sse_parser"
+          ],
+          "answered_wrong": [
+            "dependency_tool_chain"
+          ],
+          "completion_tokens": 79186,
+          "seconds": 161.094
+        },
+        "humaneval_subset": {
+          "passed": 29,
+          "total": 32,
+          "failed": [
+            {
+              "task": "HumanEval/116",
+              "finish_reason": "length",
+              "completion_tokens": 8192,
+              "code_emitted": false
+            },
+            {
+              "task": "HumanEval/132",
+              "finish_reason": "length",
+              "completion_tokens": 8192,
+              "code_emitted": false
+            },
+            {
+              "task": "HumanEval/147",
+              "finish_reason": "length",
+              "completion_tokens": 8192,
+              "code_emitted": false
+            }
+          ]
+        },
+        "focused_reruns": {
+          "passed": 5,
+          "total": 6,
+          "failures": [
+            "async_ordered_map"
+          ],
+          "total_seconds": 60.311
+        }
+      },
+      "recommended_sampling_budget_16384": {
+        "sampling": {
+          "temperature": 1.0,
+          "top_p": 1.0,
+          "top_k": 0,
+          "min_p": 0.0,
+          "seed": 729
+        },
+        "core_thinking_off": {
+          "passed": 16,
+          "total": 16,
+          "ran_out_of_output_budget": [],
+          "answered_wrong": [],
+          "completion_tokens": 35999,
+          "seconds": 101.914
+        },
+        "core_thinking_on": {
+          "passed": 15,
+          "total": 16,
+          "ran_out_of_output_budget": [
+            "async_ordered_map"
+          ],
+          "answered_wrong": [],
+          "completion_tokens": 62973,
+          "seconds": 170.605
+        },
+        "humaneval_subset": {
+          "passed": 31,
+          "total": 32,
+          "failed": [
+            {
+              "task": "HumanEval/116",
+              "finish_reason": "length",
+              "completion_tokens": 8192,
+              "code_emitted": false
+            }
+          ]
+        },
+        "focused_reruns": {
+          "passed": 5,
+          "total": 6,
+          "failures": [
+            "async_ordered_map"
+          ],
+          "total_seconds": 59.363
+        },
+        "context_256k_first_attempt": {
+          "reply_budget_tokens": 256,
+          "retrieval_passed": false,
+          "markers_named_in_reasoning": true,
+          "api_prompt_tokens": 249972,
+          "completion_tokens": 256,
+          "finish_reason": "length",
+          "ttft_seconds": 34.23,
+          "peak_vram_mib": 26962.0,
+          "minimum_available_ram_gib": 71.1,
+          "kv_cache": "int8"
+        },
+        "context_256k_second_attempt": {
+          "reply_budget_tokens": 2048,
+          "retrieval_passed": true,
+          "markers_named_in_reasoning": true,
+          "api_prompt_tokens": 249972,
+          "completion_tokens": 343,
+          "finish_reason": "stop",
+          "ttft_seconds": 34.61,
+          "peak_vram_mib": 26976.0,
+          "minimum_available_ram_gib": 70.8,
+          "kv_cache": "int8"
+        },
+        "speed": {
+          "short_prompt_decode_tps_runs": [
+            338.9,
+            320.0,
+            325.7
+          ],
+          "short_prompt_decode_tps_median": 325.7,
+          "short_prompt_decode_ttft_s_median": 0.055,
+          "short_prompt_tokens_median": 82,
+          "prefill_4k_tps_median": 16995,
+          "prefill_4k_tokens_median": 2716,
+          "prefill_16k_tps_median": 17119,
+          "prefill_16k_tokens_median": 10505
+        },
+        "context_256k_fp16_kv": {
+          "reply_budget_tokens": 2048,
+          "retrieval_passed": true,
+          "markers_named_in_reasoning": true,
+          "api_prompt_tokens": 249972,
+          "completion_tokens": 352,
+          "finish_reason": "stop",
+          "ttft_seconds": 34.18,
+          "peak_vram_mib": 30720.0,
+          "minimum_available_ram_gib": 70.2,
+          "kv_cache": "fp16"
+        }
+      },
+      "speed_by_run": {
+        "inkling2-mx8-basalt": 316.0,
+        "inkling2-mx8-basalt-b16k": 323.8,
+        "inkling2-mx8-basalt-rec": 325.7
+      },
+      "basalt_bench": {
+        "repetitions": 2,
+        "power_limit": "450 W",
+        "kv": "fp16",
+        "prefill_tps": {
+          "16384": 16286,
+          "65536": 12918,
+          "131072": 9389
+        },
+        "decode_tps": {
+          "conv": 360,
+          "struct": 642,
+          "prose": 288
+        },
+        "drafts_accepted_pct": {
+          "conv": 67.1,
+          "struct": 96.1,
+          "prose": 46.5
+        }
+      },
+      "gsm8k_first_200": {
+        "passed": 194,
+        "total": 200,
+        "mean_completion_tokens": 564,
+        "cut_by_max_tokens_3072": 2,
+        "wall_seconds_one_request_at_a_time": 263,
+        "sampling": "greedy (temperature 0), thinking on (engine default effort)",
+        "source": "tools/flashnext-lane-tests/gsm8k.py"
+      },
+      "sampling_runs": {
+        "what": "three Basalt runs at temperature 1.0, top_p 1.0, top_k 0, min_p 0; output budget 16,384 (HumanEval 8,192)",
+        "runs": [
+          "int8 KV, seed 729",
+          "fp16 KV, seed 729",
+          "fp16 KV, seed 730"
+        ],
+        "core_thinking_off": {
+          "scores": [
+            16,
+            14,
+            13
+          ],
+          "of": 16,
+          "case_runs": {
+            "passed": 43,
+            "total": 48
+          },
+          "not_passed_in_every_run": {
+            "async_ordered_map": [
+              "pass",
+              "pass",
+              "ran out"
+            ],
+            "literal_tool_payload": [
+              "pass",
+              "wrong",
+              "wrong"
+            ],
+            "merge_patch": [
+              "pass",
+              "wrong",
+              "wrong"
+            ]
+          },
+          "completion_tokens_per_run": [
+            35999,
+            41317,
+            39026
+          ],
+          "completion_tokens_median": 39026,
+          "seconds_per_run": [
+            102,
+            117,
+            115
+          ],
+          "seconds_median": 115
+        },
+        "core_thinking_on": {
+          "scores": [
+            15,
+            16,
+            15
+          ],
+          "of": 16,
+          "case_runs": {
+            "passed": 46,
+            "total": 48
+          },
+          "not_passed_in_every_run": {
+            "async_ordered_map": [
+              "ran out",
+              "pass",
+              "pass"
+            ],
+            "merge_patch": [
+              "pass",
+              "pass",
+              "wrong"
+            ]
+          },
+          "completion_tokens_per_run": [
+            62973,
+            52228,
+            56492
+          ],
+          "completion_tokens_median": 56492,
+          "seconds_per_run": [
+            171,
+            149,
+            159
+          ],
+          "seconds_median": 159,
+          "see": "thinking_on_per_solved_case at the model's top level"
+        },
+        "humaneval_subset": {
+          "scores": [
+            31,
+            31,
+            30
+          ],
+          "of": 32,
+          "case_runs": {
+            "passed": 92,
+            "total": 96
+          },
+          "not_passed_in_every_run": {
+            "HumanEval-116": [
+              "ran out",
+              "ran out",
+              "wrong"
+            ],
+            "HumanEval-32": [
+              "pass",
+              "pass",
+              "ran out"
+            ]
+          }
+        },
+        "focused_reruns_by_visit": [
+          {
+            "visit": "inkling2-mx8-basalt-b16k",
+            "passed": 5,
+            "total": 6,
+            "failures": [
+              "async_ordered_map"
+            ],
+            "total_seconds": 60.3
+          },
+          {
+            "visit": "inkling2-mx8-basalt-rec",
+            "passed": 5,
+            "total": 6,
+            "failures": [
+              "async_ordered_map"
+            ],
+            "total_seconds": 59.4
+          },
+          {
+            "visit": "inkling2-mx8-basalt-rec-fp16kv",
+            "passed": 6,
+            "total": 6,
+            "failures": [],
+            "total_seconds": 64.7
+          }
+        ],
+        "focused_reruns_note": "the first two visits share seed and cache format; their async_ordered_map reruns are the same text"
+      },
+      "speed_on_basalt_median_of_visits": {
+        "visits": 4,
+        "short_prompt_decode_tps": 324.8,
+        "short_prompt_decode_tps_all_visits": [
+          316.0,
+          323.8,
+          325.7,
+          328.6
+        ],
+        "short_prompt_decode_ttft_s": 0.055,
+        "prefill_4k_tps": 16854.5,
+        "prefill_16k_tps": 16929.0,
+        "short_prompt_tokens": 82.0,
+        "prefill_4k_tokens": 2716.0,
+        "prefill_16k_tokens": 10505.0,
+        "decode_runs_per_visit": 3,
+        "prefill_runs_per_visit": 3,
+        "sampling": "temperature 0.6; decode up to 512 output tokens after a warm-up run; prefill probes ask for one token"
+      },
+      "async_ordered_map_attempts": [
+        {
+          "run": "int8 KV, seed 729",
+          "mode": "thinking off",
+          "outcome": "pass",
+          "completion_tokens": 5712
+        },
+        {
+          "run": "int8 KV, seed 729",
+          "mode": "thinking on",
+          "outcome": "ran out of output budget",
+          "completion_tokens": 16384
+        },
+        {
+          "run": "fp16 KV, seed 729",
+          "mode": "thinking off",
+          "outcome": "pass",
+          "completion_tokens": 8926
+        },
+        {
+          "run": "fp16 KV, seed 729",
+          "mode": "thinking on",
+          "outcome": "pass",
+          "completion_tokens": 12711
+        },
+        {
+          "run": "fp16 KV, seed 730",
+          "mode": "thinking off",
+          "outcome": "ran out of output budget",
+          "completion_tokens": 16384
+        },
+        {
+          "run": "fp16 KV, seed 730",
+          "mode": "thinking on",
+          "outcome": "pass",
+          "completion_tokens": 12761
+        },
+        {
+          "run": "int8 KV, seed 729 (the temperature-0 visit; its reruns use the publisher settings)",
+          "mode": "focused rerun, budget 8,192",
+          "completion_tokens": 6543,
+          "outcome": "NameError: asyncio not imported"
+        },
+        {
+          "run": "int8 KV, seed 729",
+          "mode": "focused rerun, budget 8,192",
+          "completion_tokens": 6543,
+          "outcome": "NameError: asyncio not imported"
+        },
+        {
+          "run": "fp16 KV, seed 729",
+          "mode": "focused rerun, budget 8,192",
+          "completion_tokens": 6562,
+          "outcome": "pass"
+        }
+      ],
+      "thinking_on_per_solved_case": {
+        "definition": "with thinking on, the solved cases' own seconds and completion tokens, divided by their number; failed attempts are not counted here",
+        "by_run": [
+          {
+            "seconds_per_solved_case": 8.1,
+            "completion_tokens_per_solved_case": 3106
+          },
+          {
+            "seconds_per_solved_case": 9.3,
+            "completion_tokens_per_solved_case": 3264
+          },
+          {
+            "seconds_per_solved_case": 8.2,
+            "completion_tokens_per_solved_case": 2935
+          }
+        ],
+        "median_of_runs": {
+          "seconds_per_solved_case": 8.2,
+          "completion_tokens_per_solved_case": 3106
+        }
+      },
+      "llama_cpp_q8kxl_reference": {
+        "what": "Unsloth UD-Q8_K_XL GGUF (22.9 GB) in Unsloth's llama.cpp build b12649-mix-c7059d6",
+        "server": "context 65,536; one slot; f16 KV cache (the default); every layer on the card; no drafter",
+        "sampling": "temperature 1.0, top_p 1.0, top_k 0, min_p 0; effort none for HumanEval, the template default for the focused reruns",
+        "humaneval_subset": {
+          "passed": 32,
+          "total": 32,
+          "failed": []
+        },
+        "focused_reruns": {
+          "passed": 4,
+          "total": 6,
+          "failures": [
+            "sse_parser",
+            "async_ordered_map"
+          ],
+          "total_seconds": 235.323
+        },
+        "async_ordered_map_thinking_off": {
+          "passed": true,
+          "completion_tokens": 5094,
+          "seconds": 46.1,
+          "finish_reason": "stop"
+        },
+        "async_ordered_map_thinking_on": {
+          "passed": true,
+          "completion_tokens": 8507,
+          "seconds": 77.1,
+          "finish_reason": "stop"
+        },
+        "speed": {
+          "short_prompt_decode_tps_runs": [
+            113.9,
+            113.7,
+            113.6
+          ],
+          "short_prompt_decode_tps_median": 113.7,
+          "short_prompt_decode_ttft_s_median": 0.095,
+          "short_prompt_tokens_median": 84,
+          "prefill_4k_tps_median": 4732,
+          "prefill_4k_tokens_median": 2718,
+          "prefill_16k_tps_median": 6268,
+          "prefill_16k_tokens_median": 10507
+        }
+      },
+      "server_on_basalt": {
+        "int8_kv_runs": {
+          "parallel": 1,
+          "max_context": 262144,
+          "kv": "int8",
+          "vision": "dynamic"
+        },
+        "fp16_kv_runs": {
+          "parallel": 1,
+          "max_context": 262144,
+          "kv": "fp16",
+          "vision": "dynamic"
+        }
+      },
+      "loaded_gib": {
+        "total": 17.0,
+        "seconds": 3.2,
+        "gpu": 15.8,
+        "ram": 1.2
+      },
+      "temperature_0_runs_out_of_budget": {
+        "attempts": 11,
+        "with_one_sentence_repeated_20_times_or_more": 7,
+        "most_repeats_of_one_sentence": 340,
+        "reasoning_characters_with_budget_16384": [
+          52170,
+          75458
+        ],
+        "by_attempt": [
+          {
+            "run": "inkling2-mx8-basalt",
+            "case": "async_ordered_map",
+            "thinking": false,
+            "output_budget_tokens": 4096,
+            "reasoning_characters": 16700,
+            "most_repeated_sentence_times": 1
+          },
+          {
+            "run": "inkling2-mx8-basalt",
+            "case": "batch_transactions",
+            "thinking": false,
+            "output_budget_tokens": 4096,
+            "reasoning_characters": 15520,
+            "most_repeated_sentence_times": 1
+          },
+          {
+            "run": "inkling2-mx8-basalt",
+            "case": "merge_patch",
+            "thinking": false,
+            "output_budget_tokens": 4096,
+            "reasoning_characters": 17448,
+            "most_repeated_sentence_times": 60
+          },
+          {
+            "run": "inkling2-mx8-basalt",
+            "case": "sse_parser",
+            "thinking": false,
+            "output_budget_tokens": 4096,
+            "reasoning_characters": 13882,
+            "most_repeated_sentence_times": 2
+          },
+          {
+            "run": "inkling2-mx8-basalt-b16k",
+            "case": "async_ordered_map",
+            "thinking": false,
+            "output_budget_tokens": 16384,
+            "reasoning_characters": 67152,
+            "most_repeated_sentence_times": 177
+          },
+          {
+            "run": "inkling2-mx8-basalt-b16k",
+            "case": "async_ordered_map",
+            "thinking": true,
+            "output_budget_tokens": 16384,
+            "reasoning_characters": 62854,
+            "most_repeated_sentence_times": 7
+          },
+          {
+            "run": "inkling2-mx8-basalt-b16k",
+            "case": "batch_transactions",
+            "thinking": true,
+            "output_budget_tokens": 16384,
+            "reasoning_characters": 75458,
+            "most_repeated_sentence_times": 340
+          },
+          {
+            "run": "inkling2-mx8-basalt-b16k",
+            "case": "merge_patch",
+            "thinking": false,
+            "output_budget_tokens": 16384,
+            "reasoning_characters": 71106,
+            "most_repeated_sentence_times": 296
+          },
+          {
+            "run": "inkling2-mx8-basalt-b16k",
+            "case": "merge_patch",
+            "thinking": true,
+            "output_budget_tokens": 16384,
+            "reasoning_characters": 68369,
+            "most_repeated_sentence_times": 205
+          },
+          {
+            "run": "inkling2-mx8-basalt-b16k",
+            "case": "sse_parser",
+            "thinking": false,
+            "output_budget_tokens": 16384,
+            "reasoning_characters": 58014,
+            "most_repeated_sentence_times": 287
+          },
+          {
+            "run": "inkling2-mx8-basalt-b16k",
+            "case": "sse_parser",
+            "thinking": true,
+            "output_budget_tokens": 16384,
+            "reasoning_characters": 52170,
+            "most_repeated_sentence_times": 64
+          }
+        ]
+      }
+    }
+  }
+}

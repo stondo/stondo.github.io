@@ -1,0 +1,48 @@
+{
+  "date": "2026-11-25",
+  "hardware": {
+    "gpu": "RTX 5090, 32 GB",
+    "system_ram_gb": 96,
+    "power_limit_watts": 450
+  },
+  "engines": {
+    "basalt": "0.5.7",
+    "strata": "0.1.57 engine, used for the Flash-Next quality run and its 256K check on 2026-11-05",
+    "llama_cpp": "Unsloth prebuilt b12649-mix-c7059d6, linux-x64 cuda13-portable"
+  },
+  "flash_next": {
+    "pack_for_speed_and_gsm8k": "Qwen3.8-FN-UD-IQ4_XS.basalt, Basalt format, 90.9 GiB",
+    "weights": "Unsloth Dynamic v3.1 IQ4_XS",
+    "quality_run": "the archived run of 2026-11-05 on Strata: context 262,144, int8 KV, one slot, vision off; see /benchmarks/qwen38-strata-5090-20261105/",
+    "server_on_basalt": "its usual configuration: four slots that share a 1,048,576-token context, int8 KV, images on. The harness sent one request at a time.",
+    "sampling": "temperature 0 on the core cases and HumanEval; temperature 1.0, top_p 0.95, top_k 20, min_p 0, reasoning effort xhigh on the focused reruns; temperature 0.6 on the speed probes",
+    "output_budget_tokens": {
+      "core": 4096,
+      "humaneval": 4096,
+      "focused_reruns": 8192,
+      "recall_reply": 256
+    },
+    "gsm8k": "195 of the first 200 problems, greedy, thinking on, one request at a time, on Basalt on 2026-11-24"
+  },
+  "inkling_2_mini": {
+    "pack": "Inkling-2-Mini-NVFP4-MX8.basalt, Basalt format, 19,606,374,189 bytes",
+    "pack_sha256": "28ec70723feaa037942a02f55b9d5e898276f3e62a3b1fa083745f932a041b99",
+    "pack_repository": "https://huggingface.co/jesdga/Inkling-2-Mini-Basalt/tree/c2afac3adb772e14d77b2ea2ac7068ad4460e932",
+    "weights": "the official release: NVFP4 experts for layers 0 to 19 and MXFP8 for layers 20 to 23, kept bit for bit; attention, gate, convolution and output projections 8-bit",
+    "gguf_for_the_llama_cpp_pass": "unsloth/Inkling-2-Mini-GGUF, Inkling-2-Mini-UD-Q8_K_XL.gguf, 22,867,452,896 bytes",
+    "gguf_sha256": "2da51788d43a17e1f033bec420fa83ba9cb87ac1f0130dc9135a4d2ed2678b68",
+    "gguf_repository": "https://huggingface.co/unsloth/Inkling-2-Mini-GGUF/tree/8078d149286eec7193795413b9e0643da6d11fa1",
+    "server_on_basalt": "context 262,144, one slot, drafting on (DSpark), images on; KV cache int8 in the first runs and fp16 in the later ones, as measurements.json records per run",
+    "server_on_llama_cpp": "ctx-size 65,536; one slot; f16 KV cache; every layer on the GPU; no drafter",
+    "sampling": "temperature 1.0, top_p 1.0, top_k 0, min_p 0, as the publisher recommends; seed 729 in the first two runs and 730 in the third",
+    "thinking_off_means": "reasoning effort none, the lowest level; the model still writes a short reasoning block",
+    "output_budget_tokens": {
+      "core": 16384,
+      "humaneval": 8192,
+      "focused_reruns": 8192,
+      "recall_reply": 2048
+    },
+    "gsm8k": "194 of the first 200 problems, greedy, thinking on, one request at a time, on Basalt"
+  },
+  "limitations": "Small fixed suites, not a general quality ranking. Inkling answers are sampled, so its scores are ranges over three runs. Flash-Next was run once, at temperature 0, and its quality numbers come from another engine with the same weights. GSM8K is compared on totals only. The 256K check is a three-marker recall smoke test. No claim is made about sustained agent sessions, multi-day stability, or generation speed at a full context."
+}
