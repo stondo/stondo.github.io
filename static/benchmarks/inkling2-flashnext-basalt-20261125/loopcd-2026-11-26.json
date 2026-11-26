@@ -1,0 +1,611 @@
+{
+  "measured_date": "2026-11-26",
+  "what": "LoopCD on against off for Inkling 2 Mini: capy-flash v0.16.5 on one RTX 5090 (32 GB), the harness of 2026-11-05, Linux x86_64, 450 W power limit",
+  "engine": {
+    "capy_flash": "v0.16.5, commit 0bbd5aec757151edb05382d61cde8e312fcd3c39, release built 2026-11-25 on ubuntu 26.04, run in a rootless Podman container on Ubuntu 26.04 libraries",
+    "artifact": "Feyd89/Inkling-2-Mini-NVFP4-capy-flash revision ceb67a49691e6cb953527555461123e656bf09ad, capy-flash-inkling2-mini-nvfp4.ninfer, 19,693,882,100 bytes, SHA-256 verified against SHA256SUMS",
+    "weights": "the released NVFP4 and MXFP8 experts as they are, dense weights BF16, KV bf16"
+  },
+  "server": {
+    "device": "one GPU (--device 0)",
+    "drafter": "on (--spec mtp --draft-tokens 3)",
+    "context": 65536,
+    "prefill_chunk": 4096,
+    "embedding": "host (--embedding-host)",
+    "loopcd_off": "--loopcd off",
+    "loopcd_on": "--loopcd adaptive (default strength 0.5)",
+    "loopcd_omega_0_3": "--loopcd adaptive --loopcd-omega 0.3",
+    "load_seconds": {
+      "off": 6,
+      "on": 5
+    }
+  },
+  "phase_g_greedy_temperature_0": {
+    "budget": {
+      "core": 16384,
+      "humaneval": 8192
+    },
+    "loopcd_off": {
+      "core_thinking_off": {
+        "passed": 14,
+        "total": 16,
+        "ran_out": [
+          "async_ordered_map"
+        ],
+        "wrong": [
+          "merge_patch"
+        ],
+        "tokens": 38986,
+        "seconds": 185
+      },
+      "core_thinking_on": {
+        "passed": 12,
+        "total": 16,
+        "ran_out": [
+          "async_ordered_map",
+          "batch_transactions",
+          "ttl_lru"
+        ],
+        "wrong": [
+          "merge_patch"
+        ],
+        "tokens": 74578,
+        "seconds": 335
+      },
+      "humaneval_subset": {
+        "passed": 31,
+        "total": 32,
+        "failed": [
+          "116(ran out)"
+        ],
+        "tokens": 40760
+      },
+      "speed": {
+        "decode_tps": 151.3,
+        "ttft_s": 0.081,
+        "prompt_tokens": 82,
+        "prefill_short_tps": 8877,
+        "prefill_short_tokens": 2716,
+        "prefill_long_tps": 8647,
+        "prefill_long_tokens": 10505
+      },
+      "attempts": 64,
+      "ran_out_total": 5
+    },
+    "loopcd_on": {
+      "core_thinking_off": {
+        "passed": 14,
+        "total": 16,
+        "ran_out": [],
+        "wrong": [
+          "merge_patch",
+          "sse_parser"
+        ],
+        "tokens": 25719,
+        "seconds": 158
+      },
+      "core_thinking_on": {
+        "passed": 14,
+        "total": 16,
+        "ran_out": [
+          "batch_transactions"
+        ],
+        "wrong": [
+          "merge_patch"
+        ],
+        "tokens": 46814,
+        "seconds": 276
+      },
+      "humaneval_subset": {
+        "passed": 32,
+        "total": 32,
+        "failed": [],
+        "tokens": 33862
+      },
+      "speed": {
+        "decode_tps": 131.9,
+        "ttft_s": 0.087,
+        "prompt_tokens": 82,
+        "prefill_short_tps": 8099,
+        "prefill_short_tokens": 2716,
+        "prefill_long_tps": 7968,
+        "prefill_long_tokens": 10505
+      },
+      "attempts": 64,
+      "ran_out_total": 1
+    },
+    "loopcd_omega_0_3": {
+      "core_thinking_off": {
+        "passed": 15,
+        "total": 16,
+        "ran_out": [],
+        "wrong": [
+          "merge_patch"
+        ],
+        "tokens": 25503,
+        "seconds": 150
+      },
+      "core_thinking_on": {
+        "passed": 14,
+        "total": 16,
+        "ran_out": [
+          "batch_transactions"
+        ],
+        "wrong": [
+          "merge_patch"
+        ],
+        "tokens": 51866,
+        "seconds": 299
+      },
+      "humaneval_subset": {
+        "passed": 32,
+        "total": 32,
+        "failed": [],
+        "tokens": 35343
+      },
+      "speed": {
+        "decode_tps": 131.6,
+        "ttft_s": 0.087,
+        "prompt_tokens": 82,
+        "prefill_short_tps": 8123,
+        "prefill_short_tokens": 2716,
+        "prefill_long_tps": 7965,
+        "prefill_long_tokens": 10505
+      },
+      "attempts": 64,
+      "ran_out_total": 1
+    },
+    "changed_cases": {
+      "loopcd_on_vs_off": {
+        "core_thinking_off": [
+          {
+            "case": "async_ordered_map",
+            "loopcd_off": "ran out of output budget",
+            "loopcd_on": "pass"
+          },
+          {
+            "case": "sse_parser",
+            "loopcd_off": "pass",
+            "loopcd_on": "wrong answer"
+          }
+        ],
+        "core_thinking_on": [
+          {
+            "case": "async_ordered_map",
+            "loopcd_off": "ran out of output budget",
+            "loopcd_on": "pass"
+          },
+          {
+            "case": "ttl_lru",
+            "loopcd_off": "ran out of output budget",
+            "loopcd_on": "pass"
+          }
+        ]
+      },
+      "loopcd_omega_0_3_vs_off": {
+        "core_thinking_off": [
+          {
+            "case": "async_ordered_map",
+            "loopcd_off": "ran out of output budget",
+            "loopcd_on": "pass"
+          }
+        ],
+        "core_thinking_on": [
+          {
+            "case": "async_ordered_map",
+            "loopcd_off": "ran out of output budget",
+            "loopcd_on": "pass"
+          },
+          {
+            "case": "ttl_lru",
+            "loopcd_off": "ran out of output budget",
+            "loopcd_on": "pass"
+          }
+        ]
+      }
+    },
+    "basalt_2026_11_25": {
+      "core_thinking_off": {
+        "passed": 13,
+        "total": 16,
+        "ran_out_of_output_budget": [
+          "async_ordered_map",
+          "merge_patch",
+          "sse_parser"
+        ],
+        "answered_wrong": [],
+        "completion_tokens": 64014,
+        "seconds": 120.468
+      },
+      "core_thinking_on": {
+        "passed": 11,
+        "total": 16,
+        "ran_out_of_output_budget": [
+          "async_ordered_map",
+          "batch_transactions",
+          "merge_patch",
+          "sse_parser"
+        ],
+        "answered_wrong": [
+          "dependency_tool_chain"
+        ],
+        "completion_tokens": 79186,
+        "seconds": 161.094
+      },
+      "humaneval_subset": {
+        "passed": 29,
+        "total": 32,
+        "failed": [
+          {
+            "task": "HumanEval/116",
+            "finish_reason": "length",
+            "completion_tokens": 8192,
+            "code_emitted": false
+          },
+          {
+            "task": "HumanEval/132",
+            "finish_reason": "length",
+            "completion_tokens": 8192,
+            "code_emitted": false
+          },
+          {
+            "task": "HumanEval/147",
+            "finish_reason": "length",
+            "completion_tokens": 8192,
+            "code_emitted": false
+          }
+        ]
+      },
+      "focused_reruns": {
+        "passed": 5,
+        "total": 6,
+        "failures": [
+          "async_ordered_map"
+        ],
+        "total_seconds": 60.311
+      }
+    }
+  },
+  "phase_s_temperature_1": {
+    "sampling": "temperature 1.0, top_p 1.0, top_k 0, min_p 0, seeds 729, 730 and 731; budget 16,384",
+    "loopcd_off": {
+      "scores_by_seed": [
+        {
+          "seed": 729,
+          "thinking off": 15,
+          "thinking on": 14
+        },
+        {
+          "seed": 730,
+          "thinking off": 15,
+          "thinking on": 15
+        },
+        {
+          "seed": 731,
+          "thinking off": 14,
+          "thinking on": 15
+        }
+      ],
+      "totals": {
+        "thinking off": {
+          "passes": 44,
+          "case_runs": 48,
+          "ran_out": 0,
+          "completion_tokens": 105882,
+          "seconds": 632
+        },
+        "thinking on": {
+          "passes": 44,
+          "case_runs": 48,
+          "ran_out": 3,
+          "completion_tokens": 170981,
+          "seconds": 1039
+        }
+      },
+      "outcomes_by_case": {
+        "async_ordered_map": {
+          "thinking off": {
+            "pass": 3
+          },
+          "thinking on": {
+            "pass": 2,
+            "ran out of output budget": 1
+          }
+        },
+        "batch_transactions": {
+          "thinking off": {
+            "pass": 3
+          },
+          "thinking on": {
+            "pass": 3
+          }
+        },
+        "context_records_320": {
+          "thinking off": {
+            "pass": 3
+          },
+          "thinking on": {
+            "pass": 3
+          }
+        },
+        "context_records_600": {
+          "thinking off": {
+            "pass": 3
+          },
+          "thinking on": {
+            "pass": 3
+          }
+        },
+        "context_records_80": {
+          "thinking off": {
+            "pass": 3
+          },
+          "thinking on": {
+            "pass": 3
+          }
+        },
+        "dependency_tool_chain": {
+          "thinking off": {
+            "pass": 3
+          },
+          "thinking on": {
+            "pass": 3
+          }
+        },
+        "literal_tool_payload": {
+          "thinking off": {
+            "pass": 3
+          },
+          "thinking on": {
+            "pass": 3
+          }
+        },
+        "merge_patch": {
+          "thinking off": {
+            "wrong answer": 3
+          },
+          "thinking on": {
+            "wrong answer": 1,
+            "pass": 2
+          }
+        },
+        "pagination_bug": {
+          "thinking off": {
+            "pass": 3
+          },
+          "thinking on": {
+            "pass": 3
+          }
+        },
+        "parallel_tool_arguments": {
+          "thinking off": {
+            "pass": 3
+          },
+          "thinking on": {
+            "pass": 3
+          }
+        },
+        "recursive_redaction": {
+          "thinking off": {
+            "pass": 3
+          },
+          "thinking on": {
+            "pass": 3
+          }
+        },
+        "retry_boundary": {
+          "thinking off": {
+            "pass": 3
+          },
+          "thinking on": {
+            "pass": 3
+          }
+        },
+        "sse_parser": {
+          "thinking off": {
+            "pass": 2,
+            "wrong answer": 1
+          },
+          "thinking on": {
+            "ran out of output budget": 2,
+            "pass": 1
+          }
+        },
+        "stable_toposort": {
+          "thinking off": {
+            "pass": 3
+          },
+          "thinking on": {
+            "pass": 3
+          }
+        },
+        "ttl_lru": {
+          "thinking off": {
+            "pass": 3
+          },
+          "thinking on": {
+            "pass": 3
+          }
+        },
+        "untrusted_document": {
+          "thinking off": {
+            "pass": 3
+          },
+          "thinking on": {
+            "pass": 3
+          }
+        }
+      }
+    },
+    "loopcd_on": {
+      "scores_by_seed": [
+        {
+          "seed": 729,
+          "thinking off": 15,
+          "thinking on": 14
+        },
+        {
+          "seed": 730,
+          "thinking off": 16,
+          "thinking on": 15
+        },
+        {
+          "seed": 731,
+          "thinking off": 14,
+          "thinking on": 15
+        }
+      ],
+      "totals": {
+        "thinking off": {
+          "passes": 45,
+          "case_runs": 48,
+          "ran_out": 0,
+          "completion_tokens": 90539,
+          "seconds": 621
+        },
+        "thinking on": {
+          "passes": 44,
+          "case_runs": 48,
+          "ran_out": 1,
+          "completion_tokens": 131349,
+          "seconds": 896
+        }
+      },
+      "outcomes_by_case": {
+        "async_ordered_map": {
+          "thinking off": {
+            "pass": 3
+          },
+          "thinking on": {
+            "pass": 3
+          }
+        },
+        "batch_transactions": {
+          "thinking off": {
+            "pass": 3
+          },
+          "thinking on": {
+            "ran out of output budget": 1,
+            "pass": 2
+          }
+        },
+        "context_records_320": {
+          "thinking off": {
+            "pass": 3
+          },
+          "thinking on": {
+            "pass": 3
+          }
+        },
+        "context_records_600": {
+          "thinking off": {
+            "pass": 3
+          },
+          "thinking on": {
+            "pass": 3
+          }
+        },
+        "context_records_80": {
+          "thinking off": {
+            "pass": 3
+          },
+          "thinking on": {
+            "pass": 3
+          }
+        },
+        "dependency_tool_chain": {
+          "thinking off": {
+            "pass": 3
+          },
+          "thinking on": {
+            "pass": 3
+          }
+        },
+        "literal_tool_payload": {
+          "thinking off": {
+            "pass": 3
+          },
+          "thinking on": {
+            "pass": 3
+          }
+        },
+        "merge_patch": {
+          "thinking off": {
+            "wrong answer": 2,
+            "pass": 1
+          },
+          "thinking on": {
+            "wrong answer": 2,
+            "pass": 1
+          }
+        },
+        "pagination_bug": {
+          "thinking off": {
+            "pass": 3
+          },
+          "thinking on": {
+            "pass": 3
+          }
+        },
+        "parallel_tool_arguments": {
+          "thinking off": {
+            "pass": 3
+          },
+          "thinking on": {
+            "pass": 3
+          }
+        },
+        "recursive_redaction": {
+          "thinking off": {
+            "pass": 3
+          },
+          "thinking on": {
+            "pass": 3
+          }
+        },
+        "retry_boundary": {
+          "thinking off": {
+            "pass": 3
+          },
+          "thinking on": {
+            "pass": 3
+          }
+        },
+        "sse_parser": {
+          "thinking off": {
+            "pass": 3
+          },
+          "thinking on": {
+            "pass": 2,
+            "wrong answer": 1
+          }
+        },
+        "stable_toposort": {
+          "thinking off": {
+            "pass": 3
+          },
+          "thinking on": {
+            "pass": 3
+          }
+        },
+        "ttl_lru": {
+          "thinking off": {
+            "pass": 2,
+            "wrong answer": 1
+          },
+          "thinking on": {
+            "pass": 3
+          }
+        },
+        "untrusted_document": {
+          "thinking off": {
+            "pass": 3
+          },
+          "thinking on": {
+            "pass": 3
+          }
+        }
+      }
+    }
+  }
+}

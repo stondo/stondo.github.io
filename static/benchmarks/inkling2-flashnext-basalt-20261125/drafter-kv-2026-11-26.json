@@ -1,0 +1,439 @@
+{
+  "measured_date": "2026-11-26",
+  "what": "Inkling 2 Mini on Basalt 0.5.7 at temperature 0 (greedy): drafter on or off, KV cache fp16 or int8. One RTX 5090, 450 W limit, the harness of 2026-11-05, budget 16,384 tokens (HumanEval 8,192), context 262,144, VRAM reserve 3,072 MiB. 64 attempts per configuration: 16 core cases with thinking off, 16 with thinking on, 32 HumanEval problems.",
+  "configurations": {
+    "drafter_off_fp16": {
+      "label": "b-ab-nospec-fp16",
+      "drafter": "off",
+      "kv_cache": "fp16",
+      "core_thinking_off": {
+        "passed": 14,
+        "total": 16,
+        "ran_out_of_output_budget": [
+          "async_ordered_map"
+        ],
+        "answered_wrong": [
+          "merge_patch"
+        ],
+        "completion_tokens": 43295
+      },
+      "core_thinking_on": {
+        "passed": 13,
+        "total": 16,
+        "ran_out_of_output_budget": [
+          "batch_transactions",
+          "ttl_lru"
+        ],
+        "answered_wrong": [
+          "merge_patch"
+        ],
+        "completion_tokens": 73475
+      },
+      "humaneval_subset": {
+        "passed": 30,
+        "total": 32,
+        "ran_out_of_output_budget": [
+          "116",
+          "76"
+        ],
+        "answered_wrong": [],
+        "completion_tokens": 46583
+      },
+      "passes": 57,
+      "ran_out_total": 5,
+      "completion_tokens": 163353,
+      "decode_tps_short_prompt": 252.7
+    },
+    "drafter_on_fp16": {
+      "label": "b-ab-spec-fp16",
+      "drafter": "on",
+      "kv_cache": "fp16",
+      "core_thinking_off": {
+        "passed": 14,
+        "total": 16,
+        "ran_out_of_output_budget": [
+          "async_ordered_map"
+        ],
+        "answered_wrong": [
+          "merge_patch"
+        ],
+        "completion_tokens": 43295
+      },
+      "core_thinking_on": {
+        "passed": 13,
+        "total": 16,
+        "ran_out_of_output_budget": [
+          "batch_transactions",
+          "ttl_lru"
+        ],
+        "answered_wrong": [
+          "merge_patch"
+        ],
+        "completion_tokens": 73475
+      },
+      "humaneval_subset": {
+        "passed": 30,
+        "total": 32,
+        "ran_out_of_output_budget": [
+          "116",
+          "76"
+        ],
+        "answered_wrong": [],
+        "completion_tokens": 46583
+      },
+      "passes": 57,
+      "ran_out_total": 5,
+      "completion_tokens": 163353,
+      "decode_tps_short_prompt": 329.6
+    },
+    "drafter_off_int8": {
+      "label": "b-ab-nospec-int8",
+      "drafter": "off",
+      "kv_cache": "int8",
+      "core_thinking_off": {
+        "passed": 13,
+        "total": 16,
+        "ran_out_of_output_budget": [
+          "async_ordered_map",
+          "merge_patch",
+          "sse_parser"
+        ],
+        "answered_wrong": [],
+        "completion_tokens": 64014
+      },
+      "core_thinking_on": {
+        "passed": 11,
+        "total": 16,
+        "ran_out_of_output_budget": [
+          "async_ordered_map",
+          "batch_transactions",
+          "merge_patch",
+          "sse_parser"
+        ],
+        "answered_wrong": [
+          "dependency_tool_chain"
+        ],
+        "completion_tokens": 79186
+      },
+      "humaneval_subset": {
+        "passed": 29,
+        "total": 32,
+        "ran_out_of_output_budget": [
+          "116",
+          "132",
+          "147"
+        ],
+        "answered_wrong": [],
+        "completion_tokens": 53497
+      },
+      "passes": 53,
+      "ran_out_total": 10,
+      "completion_tokens": 196697,
+      "decode_tps_short_prompt": 259.5
+    },
+    "drafter_on_int8": {
+      "label": "b-ab-spec-int8",
+      "drafter": "on",
+      "kv_cache": "int8",
+      "core_thinking_off": {
+        "passed": 13,
+        "total": 16,
+        "ran_out_of_output_budget": [
+          "async_ordered_map",
+          "merge_patch",
+          "sse_parser"
+        ],
+        "answered_wrong": [],
+        "completion_tokens": 64014
+      },
+      "core_thinking_on": {
+        "passed": 11,
+        "total": 16,
+        "ran_out_of_output_budget": [
+          "async_ordered_map",
+          "batch_transactions",
+          "merge_patch",
+          "sse_parser"
+        ],
+        "answered_wrong": [
+          "dependency_tool_chain"
+        ],
+        "completion_tokens": 79186
+      },
+      "humaneval_subset": {
+        "passed": 29,
+        "total": 32,
+        "ran_out_of_output_budget": [
+          "116",
+          "132",
+          "147"
+        ],
+        "answered_wrong": [],
+        "completion_tokens": 53497
+      },
+      "passes": 53,
+      "ran_out_total": 10,
+      "completion_tokens": 196697,
+      "decode_tps_short_prompt": 321.4
+    },
+    "nov_25_drafter_on_int8": {
+      "label": "inkling2-mx8-basalt-b16k",
+      "drafter": "on",
+      "kv_cache": "int8",
+      "core_thinking_off": {
+        "passed": 13,
+        "total": 16,
+        "ran_out_of_output_budget": [
+          "async_ordered_map",
+          "merge_patch",
+          "sse_parser"
+        ],
+        "answered_wrong": [],
+        "completion_tokens": 64014
+      },
+      "core_thinking_on": {
+        "passed": 11,
+        "total": 16,
+        "ran_out_of_output_budget": [
+          "async_ordered_map",
+          "batch_transactions",
+          "merge_patch",
+          "sse_parser"
+        ],
+        "answered_wrong": [
+          "dependency_tool_chain"
+        ],
+        "completion_tokens": 79186
+      },
+      "humaneval_subset": {
+        "passed": 29,
+        "total": 32,
+        "ran_out_of_output_budget": [
+          "116",
+          "132",
+          "147"
+        ],
+        "answered_wrong": [],
+        "completion_tokens": 53497
+      },
+      "passes": 53,
+      "ran_out_total": 10,
+      "completion_tokens": 196697,
+      "decode_tps_short_prompt": 323.8
+    }
+  },
+  "attempts_not_passed_in_every_configuration": {
+    "HumanEval 116": {
+      "drafter_off_fp16": "ran out of output budget",
+      "drafter_on_fp16": "ran out of output budget",
+      "drafter_off_int8": "ran out of output budget",
+      "drafter_on_int8": "ran out of output budget",
+      "nov_25_drafter_on_int8": "ran out of output budget"
+    },
+    "HumanEval 132": {
+      "drafter_off_fp16": "pass",
+      "drafter_on_fp16": "pass",
+      "drafter_off_int8": "ran out of output budget",
+      "drafter_on_int8": "ran out of output budget",
+      "nov_25_drafter_on_int8": "ran out of output budget"
+    },
+    "HumanEval 147": {
+      "drafter_off_fp16": "pass",
+      "drafter_on_fp16": "pass",
+      "drafter_off_int8": "ran out of output budget",
+      "drafter_on_int8": "ran out of output budget",
+      "nov_25_drafter_on_int8": "ran out of output budget"
+    },
+    "HumanEval 76": {
+      "drafter_off_fp16": "ran out of output budget",
+      "drafter_on_fp16": "ran out of output budget",
+      "drafter_off_int8": "pass",
+      "drafter_on_int8": "pass",
+      "nov_25_drafter_on_int8": "pass"
+    },
+    "thinking off async_ordered_map": {
+      "drafter_off_fp16": "ran out of output budget",
+      "drafter_on_fp16": "ran out of output budget",
+      "drafter_off_int8": "ran out of output budget",
+      "drafter_on_int8": "ran out of output budget",
+      "nov_25_drafter_on_int8": "ran out of output budget"
+    },
+    "thinking off merge_patch": {
+      "drafter_off_fp16": "wrong answer",
+      "drafter_on_fp16": "wrong answer",
+      "drafter_off_int8": "ran out of output budget",
+      "drafter_on_int8": "ran out of output budget",
+      "nov_25_drafter_on_int8": "ran out of output budget"
+    },
+    "thinking off sse_parser": {
+      "drafter_off_fp16": "pass",
+      "drafter_on_fp16": "pass",
+      "drafter_off_int8": "ran out of output budget",
+      "drafter_on_int8": "ran out of output budget",
+      "nov_25_drafter_on_int8": "ran out of output budget"
+    },
+    "thinking on async_ordered_map": {
+      "drafter_off_fp16": "pass",
+      "drafter_on_fp16": "pass",
+      "drafter_off_int8": "ran out of output budget",
+      "drafter_on_int8": "ran out of output budget",
+      "nov_25_drafter_on_int8": "ran out of output budget"
+    },
+    "thinking on batch_transactions": {
+      "drafter_off_fp16": "ran out of output budget",
+      "drafter_on_fp16": "ran out of output budget",
+      "drafter_off_int8": "ran out of output budget",
+      "drafter_on_int8": "ran out of output budget",
+      "nov_25_drafter_on_int8": "ran out of output budget"
+    },
+    "thinking on dependency_tool_chain": {
+      "drafter_off_fp16": "pass",
+      "drafter_on_fp16": "pass",
+      "drafter_off_int8": "wrong answer",
+      "drafter_on_int8": "wrong answer",
+      "nov_25_drafter_on_int8": "wrong answer"
+    },
+    "thinking on merge_patch": {
+      "drafter_off_fp16": "wrong answer",
+      "drafter_on_fp16": "wrong answer",
+      "drafter_off_int8": "ran out of output budget",
+      "drafter_on_int8": "ran out of output budget",
+      "nov_25_drafter_on_int8": "ran out of output budget"
+    },
+    "thinking on sse_parser": {
+      "drafter_off_fp16": "pass",
+      "drafter_on_fp16": "pass",
+      "drafter_off_int8": "ran out of output budget",
+      "drafter_on_int8": "ran out of output budget",
+      "nov_25_drafter_on_int8": "ran out of output budget"
+    },
+    "thinking on ttl_lru": {
+      "drafter_off_fp16": "ran out of output budget",
+      "drafter_on_fp16": "ran out of output budget",
+      "drafter_off_int8": "pass",
+      "drafter_on_int8": "pass",
+      "nov_25_drafter_on_int8": "pass"
+    }
+  },
+  "greedy_output_identity": {
+    "drafter, fp16 cache": {
+      "finished_in_both": 59,
+      "identical_model_output": 59,
+      "different": []
+    },
+    "drafter, int8 cache": {
+      "finished_in_both": 54,
+      "identical_model_output": 54,
+      "different": []
+    },
+    "cache format, drafter off": {
+      "finished_in_both": 52,
+      "identical_model_output": 6,
+      "different": [
+        "HumanEval 105",
+        "HumanEval 108",
+        "HumanEval 11",
+        "HumanEval 110",
+        "HumanEval 12",
+        "HumanEval 122",
+        "HumanEval 124",
+        "HumanEval 127",
+        "HumanEval 142",
+        "HumanEval 151",
+        "HumanEval 154",
+        "HumanEval 157",
+        "HumanEval 158",
+        "HumanEval 161",
+        "HumanEval 17",
+        "HumanEval 25",
+        "HumanEval 32",
+        "HumanEval 38",
+        "HumanEval 41",
+        "HumanEval 43",
+        "HumanEval 47",
+        "HumanEval 6",
+        "HumanEval 68",
+        "HumanEval 78",
+        "HumanEval 80",
+        "HumanEval 86",
+        "HumanEval 96",
+        "thinking off batch_transactions",
+        "thinking off context_records_320",
+        "thinking off context_records_600",
+        "thinking off literal_tool_payload",
+        "thinking off pagination_bug",
+        "thinking off parallel_tool_arguments",
+        "thinking off recursive_redaction",
+        "thinking off retry_boundary",
+        "thinking off stable_toposort",
+        "thinking off ttl_lru",
+        "thinking on context_records_320",
+        "thinking on dependency_tool_chain",
+        "thinking on literal_tool_payload",
+        "thinking on pagination_bug",
+        "thinking on parallel_tool_arguments",
+        "thinking on recursive_redaction",
+        "thinking on retry_boundary",
+        "thinking on stable_toposort",
+        "thinking on untrusted_document"
+      ]
+    },
+    "cache format, drafter on": {
+      "finished_in_both": 52,
+      "identical_model_output": 6,
+      "different": [
+        "HumanEval 105",
+        "HumanEval 108",
+        "HumanEval 11",
+        "HumanEval 110",
+        "HumanEval 12",
+        "HumanEval 122",
+        "HumanEval 124",
+        "HumanEval 127",
+        "HumanEval 142",
+        "HumanEval 151",
+        "HumanEval 154",
+        "HumanEval 157",
+        "HumanEval 158",
+        "HumanEval 161",
+        "HumanEval 17",
+        "HumanEval 25",
+        "HumanEval 32",
+        "HumanEval 38",
+        "HumanEval 41",
+        "HumanEval 43",
+        "HumanEval 47",
+        "HumanEval 6",
+        "HumanEval 68",
+        "HumanEval 78",
+        "HumanEval 80",
+        "HumanEval 86",
+        "HumanEval 96",
+        "thinking off batch_transactions",
+        "thinking off context_records_320",
+        "thinking off context_records_600",
+        "thinking off literal_tool_payload",
+        "thinking off pagination_bug",
+        "thinking off parallel_tool_arguments",
+        "thinking off recursive_redaction",
+        "thinking off retry_boundary",
+        "thinking off stable_toposort",
+        "thinking off ttl_lru",
+        "thinking on context_records_320",
+        "thinking on dependency_tool_chain",
+        "thinking on literal_tool_payload",
+        "thinking on pagination_bug",
+        "thinking on parallel_tool_arguments",
+        "thinking on recursive_redaction",
+        "thinking on retry_boundary",
+        "thinking on stable_toposort",
+        "thinking on untrusted_document"
+      ]
+    },
+    "same configuration, 2026-11-26 against 2026-11-25": {
+      "finished_in_both": 54,
+      "identical_model_output": 54,
+      "different": []
+    }
+  }
+}

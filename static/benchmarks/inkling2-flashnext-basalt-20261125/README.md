@@ -40,6 +40,19 @@ Download all files: [inkling2-flashnext-tests.zip](inkling2-flashnext-tests.zip)
 - `gsm8k-inkling-2-mini-first-200.json`: Inkling 2 Mini's per-problem results for the
   first 200 GSM8K problems, greedy with thinking on. The Flash-Next file of the
   same run no longer exists, so GSM8K is compared on totals only.
+- `loopcd-2026-11-26.json`: the follow-up of 2026-11-26. LoopCD on and off for
+  Inkling 2 Mini with capy-flash 0.16.5 on one RTX 5090, in greedy mode and at
+  temperature 1.0, built by script from the result files of the same harness.
+- `drafter-kv-2026-11-26.json`: the follow-up of 2026-11-26 on Basalt: Inkling 2
+  Mini at temperature 0 with the drafter on and off, and with an fp16 and an
+  int8 cache, built by script from the result files of the same harness.
+- `flashnext-basalt-greedy-2026-11-26.json`: Flash-Next at temperature 0 on Basalt, two
+  passes of the 16 core cases against the running service, with the run of
+  2026-11-05 on Strata as the reference.
+- `both-models-basalt-publisher-2026-11-26.json`: both models on Basalt at the
+  settings their publishers recommend, three runs each, case by case.
+- `flashnext-expert-cache-2026-11-26.json`: the share of Flash-Next's expert lookups
+  that missed the card's cache during those runs, from the service's own log.
 
 The public bundle contains the harness and curated measurements, without local
 provider credentials, private configuration files, result files or

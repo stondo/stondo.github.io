@@ -3,7 +3,7 @@ title: "Inkling 2 Mini vs Qwen3.8-Flash-Next on One RTX 5090: Close on the Tests
 date: 2026-11-25T19:20:57+0100
 draft: false
 description: "Inkling 2 Mini against my Flash-Next IQ4_XS v3.1 deployment on one RTX 5090 with 96 GB of RAM: the same 16 core cases run three times, a 32-problem HumanEval subset, GSM8K, a 256K recall check, speed, token cost, and the temperature trap that changes the scores."
-summary: "Thinking Machines Lab's 26.4B MoE looked strong against the dense Qwen3.8-27B, but my RTX 5090 runs Flash-Next. I ran Inkling 2 Mini through the same tests as my last post, three times at its publisher's recommended temperature. On average it scored within about two cases of Flash-Next on the core cases and within one on HumanEval, 194 against 195 on GSM8K. It decoded 36% faster, read prompts more than twice as fast, and gave back 54 GiB of RAM. At temperature 0 it stalls on the hard cases, and it cannot answer without reasoning. The post gives the settings, the token cost, the cases it fails, and why Flash-Next stays my default."
+summary: "Thinking Machines Lab's 26.4B MoE looked strong against the dense Qwen3.8-27B, but my RTX 5090 runs Flash-Next. I ran Inkling 2 Mini through the same tests as my last post, three times at its publisher's recommended temperature. On average it scored within about two cases of Flash-Next on the core cases and within one on HumanEval, 194 against 195 on GSM8K. It decoded 36% faster, read prompts more than twice as fast, and gave back 54 GiB of RAM. At temperature 0 it stalls on the hard cases, and it cannot answer without reasoning. An update of November 26 puts both models on one engine. With thinking on, the two score the same on the core cases. Inkling 2 Mini takes a quarter fewer tokens in 40 % of the time, so it is my default now."
 tags:
   - llm-inference
   - inkling-2-mini
@@ -109,6 +109,9 @@ Unsloth recommends temperature 1.0, `top_p` 1.0, no top-k and `min_p` 0 for
 this model. Inkling's suite scores from here on use those settings. A
 benchmark that runs this model greedy can underrate it.
 
+An update of November 26 qualifies the stall above: with an fp16 cache it
+halves.
+
 ## One sample is not a score
 
 At temperature 1.0 every answer is a draw. I ran the suite three times with
@@ -123,7 +126,8 @@ cache, on two seeds.
 
 Two runs differ by up to three cases on the same tests. One run cannot rank
 this model, so I count passes over all runs and give ranges. Flash-Next
-answers at temperature 0, so one run is the whole story for it.
+answers at temperature 0, so one run is the whole story for it. An update of
+November 26 corrects this for Flash-Next on Basalt.
 
 | Measurement | Flash-Next IQ4_XS v3.1 | Inkling 2 Mini |
 |---|---:|---:|
@@ -279,24 +283,167 @@ more with it on a B200. I did not test that.
 Basalt's default pack is good enough for this model. The fp16 cache costs
 nothing I can measure on a short prompt, so that is the setting I keep.
 
+## Update of November 26: the same tests on Basalt, LoopCD, and Flash-Next
+
+A reader pointed me to LoopCD, a decoding method for looped transformers
+([arXiv 2610.02185](https://arxiv.org/abs/2610.02185)). The model runs its
+core three times for each token. At each step, LoopCD moves the logits away
+from what the model predicted after the first of those passes. It needs no
+training. Basalt does not have it, so I tested it with capy-flash 0.16.5, the
+engine that implements it, on the same card with the same tests.
+
+That test led to more runs on Basalt. They change three statements in this
+post, and they decided which model I run.
+
+### The stall at temperature 0 follows the cache format
+
+The capy-flash run stalls less at temperature 0 than my Basalt runs above,
+with LoopCD off: 57 of 64 attempts pass against 53, and 5 run out of budget
+against 10. So I looked for the cause on Basalt. I ran the same greedy tests
+with the drafter on and off, and with an fp16 and an int8 cache.
+
+The cache format makes the difference. With the int8 cache, 53 of 64 attempts
+pass and 10 run out of budget. With fp16, 57 pass and 5 run out. The drafter
+changes nothing: every attempt that finished in two runs has the same output.
+The runs above used the int8 cache.
+
+| Greedy, temperature 0, 64 attempts | Passes | Ran out of budget | Decode |
+|---|---:|---:|---:|
+| Basalt 0.5.7, int8 cache | 53 | 10 | 321 tok/s |
+| Basalt 0.5.7, fp16 cache | 57 | 5 | 330 tok/s |
+| capy-flash 0.16.5, LoopCD off | 57 | 5 | 151 tok/s |
+| capy-flash 0.16.5, LoopCD at 0.5 | 60 | 1 | 132 tok/s |
+| capy-flash 0.16.5, LoopCD at 0.3 | 61 | 1 | 132 tok/s |
+
+The 64 attempts are the 16 core cases in both modes and the 32 HumanEval
+problems. Decode is with the drafter on. Without it Basalt runs at 253 and 260
+tok/s. With fp16, 6 attempts pass that fail with int8, and 2 pass with int8
+that run out with fp16. A greedy path changes with the numerics, so one miss
+means little.
+
+### LoopCD on the same tests
+
+On capy-flash, LoopCD made the same three core cases stop looping at both
+strengths, and HumanEval problem 116 passed. One case got worse at strength
+0.5 and none at 0.3. Decode fell by 13 %. The capy-flash docs give 11.5 to
+16.5 %.
+
+At the publisher's settings LoopCD made no difference to the score. Over three
+runs at temperature 1.0, 88 of 96 case-runs passed without it and 89 with it.
+It used 14.5 % fewer completion tokens with thinking off and 23.2 % fewer with
+thinking on.
+
+This is a small suite, and greedy decoding gives one path per case. Read the
+gain as a direction. In Basalt's issue 685 a contributor tested a LoopCD
+variant of their own on the same pack. On the full HumanEval and on MMLU it
+gave no gain.
+
+capy-flash also decoded at 151 tok/s on this card, against Basalt's 330. It is
+text only and serves one request at a time. So Basalt stays my engine for
+Inkling 2 Mini, with an fp16 cache.
+
+### Flash-Next on Basalt
+
+Flash-Next's scores and token counts above come from Strata. I ran the same 16
+core cases on Basalt, on the service I use, which keeps most of the model's
+experts in RAM.
+
+In greedy mode with thinking off, two passes gave 15 of 16.
+`batch_transactions` failed both times: the code checks a duplicate row before
+it ignores it, and the task says to ignore it first.
+
+With thinking on the passes gave 15 of 16 and 16 of 16. The same case ran out
+of budget in the first pass. Five other code cases took 11,900 to 12,700
+tokens each, against 3,300 to 3,450 on Strata. The reasoning lists possible
+hidden tests one by one. One pass took 84,000 tokens and 372 s, against 26,502
+and 185 s above.
+
+Two passes on the same server also gave different output. With thinking off 9
+of 16 answers were the same, with thinking on 2 of 16. Inkling 2 Mini gave the
+same output in 54 of 54 attempts on a freshly started server. I did not
+isolate the cause. The likeliest candidates are the service's warm caches. In
+these requests a median of 18 % of its expert lookups missed the cache on the
+card.
+
+Then I ran each model on Basalt at the settings its publisher recommends,
+three times. Flash-Next got `xhigh` reasoning with thinking on. The HumanEval
+subset ran without thinking for both.
+
+| Both on Basalt, publisher's settings, three runs | Inkling 2 Mini | Flash-Next |
+|---|---:|---:|
+| Core cases, thinking off | 43 of 48 case-runs | 46 of 48 case-runs |
+| Core cases, thinking on | 46 of 48 case-runs | 46 of 48 case-runs |
+| HumanEval subset, no thinking | 92 of 96 case-runs | 92 of 96 case-runs |
+| Six focused reruns | 16 of 18 | 4 of 6, one run |
+| Completion tokens, thinking off | 116,342 | 16,118 |
+| Completion tokens, thinking on | 171,693 | 232,865 |
+| Seconds, thinking off | 334 | 110 |
+| Seconds, thinking on | 478 | 1,208 |
+
+On one engine the two are close in score. With thinking off, Flash-Next passed
+3 more case-runs and used a seventh of the tokens. With thinking on, both
+passed 46 of 48. Inkling 2 Mini used a quarter fewer tokens and 40 % of the
+time. Flash-Next missed `batch_transactions` twice with thinking off and
+`sse_parser` twice with thinking on. In the focused reruns it failed both,
+where Strata passed all six.
+
+### What changes in this post
+
+- Inkling 2 Mini's stall at temperature 0 follows the int8 cache as much as
+  the model. With fp16 it halves.
+- On Basalt, Flash-Next at temperature 0 did not answer every core case, and a
+  second pass did not give the same answer. Its token cost with thinking on is
+  higher than the table above says. It is about 83,000 per run at temperature
+  0 and 78,000 at its publisher's settings, against 26,502 on Strata.
+- On one engine, at the publisher's settings, the two models are close in
+  score. Inkling 2 Mini is the cheaper one with thinking on. Flash-Next is far
+  cheaper with thinking off.
+- Inkling 2 Mini is my default now. My agents run with thinking on, and with
+  thinking on the two score the same on the core cases.
+
+The numbers are in the bundle: the
+[LoopCD](/benchmarks/inkling2-flashnext-basalt-20261125/loopcd-2026-11-26.json),
+[cache
+format](/benchmarks/inkling2-flashnext-basalt-20261125/drafter-kv-2026-11-26.json),
+[Flash-Next
+greedy](/benchmarks/inkling2-flashnext-basalt-20261125/flashnext-basalt-greedy-2026-11-26.json),
+[both
+models](/benchmarks/inkling2-flashnext-basalt-20261125/both-models-basalt-publisher-2026-11-26.json)
+and [expert
+cache](/benchmarks/inkling2-flashnext-basalt-20261125/flashnext-expert-cache-2026-11-26.json)
+measurement files.
+
 ## What runs on the machine now
 
-Flash-Next stays my default. It answered every core case and every focused
-rerun. It does that at temperature 0, where a second run gives the same
-answer.
+I now start Inkling 2 Mini by default, with an fp16 cache. It matches Flash-Next
+with thinking on at a quarter fewer tokens, and it leaves 54 GiB of RAM free.
+During the 256K check, 70.2 GiB of RAM were free with Inkling 2 Mini. With
+Flash-Next, the figure was 15.9 GiB. My agents run with thinking on, so that is
+the comparison that counts.
 
-Inkling 2 Mini is now the second model on this machine. I start it by hand
-when I need the RAM or a fast prompt read:
+This is the command, with the publisher's sampling as the server's defaults:
 
 ```bash
 basalt serve Inkling-2-Mini-NVFP4-MX8.basalt \
-  --kv fp16 --max-context 262144 --parallel 1 --vision dynamic
+  --kv fp16 --max-context 262144 --parallel 1 --vision dynamic \
+  --temperature 1.0 --top-p 1.0 --top-k 0 --min-p 0
 ```
 
-Stop the other model first, because both want the whole card. Inkling loads 17
-GiB, and 1.2 GiB of that stay in RAM. Its fp16 cache takes up to 8 GiB more as
-the context fills. During the 250K-token check the card held about 30 GB,
-desktop included.
+A request that leaves temperature, `top_p`, `top_k` and `min_p` out gets those
+values. It can still send its own. One that sends temperature 0 meets the stall
+described above. The bare command listens on Basalt's default port and reports
+the model as `Inkling 2 Mini`.
+
+The fp16 cache halves the stalls at temperature 0. The slots share the context.
+With one slot the cache holds all 262,144 tokens, and other requests wait. A
+second slot would halve the context of each.
+
+Basalt takes the whole cache up front. The card holds about 30 GB from the
+start, desktop included, on a 32 GB card. The model loads 17 GiB, and 1.2 GiB
+of that stay in RAM. Stop the server before anything else needs most of the
+card.
+
+Flash-Next stays installed, for a session by hand with this server stopped.
 
 OpenCode has one local entry for it, `basalt/inkling-2-mini`. The model's
 `options` carry the publisher's sampling: temperature 1.0, `top_p` 1.0,
@@ -311,8 +458,9 @@ and GSM8K results.
 Inkling's answers at temperature 1.0 are samples. I have three per case, over
 two seeds. I ran Flash-Next once, at temperature 0, so its scores carry no
 sampling noise and no repetition. Its quality numbers come from Strata with
-the same weights. The llama.cpp pass is one run, and its prompt-read numbers
-are not comparable because of prefix caching. I compare GSM8K on totals only.
+the same weights, and the update of November 26 adds three runs of each model
+on Basalt. The llama.cpp pass is one run, and its prompt-read numbers are not
+comparable because of prefix caching. I compare GSM8K on totals only.
 
 The 256K check recovers three markers and says nothing about coding at that
 depth. I did not measure a sustained agent session on Inkling 2 Mini. The

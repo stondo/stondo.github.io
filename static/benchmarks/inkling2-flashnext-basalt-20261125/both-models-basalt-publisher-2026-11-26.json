@@ -1,0 +1,2196 @@
+{
+  "measured_date": "2026-11-25 (Inkling 2 Mini) and 2026-11-26 (Flash-Next)",
+  "what": "Both models on Basalt 0.5.7 on one RTX 5090, each at the settings its publisher recommends, same harness and cases: 16 core cases with thinking off and on, three sampled runs; the 32-problem HumanEval subset, three runs in non-thinking mode; six focused reruns. Budget 16,384 tokens (HumanEval and focused 8,192). Inkling: a fresh single-slot server per run. Flash-Next: the service as it runs (four slots, shared 1,048,576-token context, int8 cache).",
+  "models": {
+    "inkling_2_mini": {
+      "settings": "temperature 1.0, top_p 1.0, top_k 0, min_p 0 (both modes; thinking off means the lowest effort)",
+      "runs": [
+        {
+          "label": "inkling2-mx8-basalt-rec",
+          "seed": 729,
+          "kv_cache": "int8",
+          "core_thinking_off": {
+            "async_ordered_map": {
+              "outcome": "pass",
+              "completion_tokens": 5712,
+              "seconds": 16.9
+            },
+            "batch_transactions": {
+              "outcome": "pass",
+              "completion_tokens": 11749,
+              "seconds": 33.9
+            },
+            "context_records_320": {
+              "outcome": "pass",
+              "completion_tokens": 463,
+              "seconds": 1.5
+            },
+            "context_records_600": {
+              "outcome": "pass",
+              "completion_tokens": 474,
+              "seconds": 2.3
+            },
+            "context_records_80": {
+              "outcome": "pass",
+              "completion_tokens": 264,
+              "seconds": 0.7
+            },
+            "dependency_tool_chain": {
+              "outcome": "pass",
+              "completion_tokens": 125,
+              "seconds": 0.3
+            },
+            "literal_tool_payload": {
+              "outcome": "pass",
+              "completion_tokens": 264,
+              "seconds": 0.7
+            },
+            "merge_patch": {
+              "outcome": "pass",
+              "completion_tokens": 3209,
+              "seconds": 9.0
+            },
+            "pagination_bug": {
+              "outcome": "pass",
+              "completion_tokens": 805,
+              "seconds": 2.0
+            },
+            "parallel_tool_arguments": {
+              "outcome": "pass",
+              "completion_tokens": 132,
+              "seconds": 0.3
+            },
+            "recursive_redaction": {
+              "outcome": "pass",
+              "completion_tokens": 915,
+              "seconds": 2.2
+            },
+            "retry_boundary": {
+              "outcome": "pass",
+              "completion_tokens": 697,
+              "seconds": 1.6
+            },
+            "sse_parser": {
+              "outcome": "pass",
+              "completion_tokens": 7121,
+              "seconds": 19.4
+            },
+            "stable_toposort": {
+              "outcome": "pass",
+              "completion_tokens": 1429,
+              "seconds": 4.1
+            },
+            "ttl_lru": {
+              "outcome": "pass",
+              "completion_tokens": 2536,
+              "seconds": 6.7
+            },
+            "untrusted_document": {
+              "outcome": "pass",
+              "completion_tokens": 104,
+              "seconds": 0.3
+            }
+          },
+          "core_thinking_on": {
+            "async_ordered_map": {
+              "outcome": "ran out of output budget",
+              "completion_tokens": 16384,
+              "seconds": 49.0
+            },
+            "batch_transactions": {
+              "outcome": "pass",
+              "completion_tokens": 12638,
+              "seconds": 35.0
+            },
+            "context_records_320": {
+              "outcome": "pass",
+              "completion_tokens": 686,
+              "seconds": 1.9
+            },
+            "context_records_600": {
+              "outcome": "pass",
+              "completion_tokens": 534,
+              "seconds": 2.5
+            },
+            "context_records_80": {
+              "outcome": "pass",
+              "completion_tokens": 239,
+              "seconds": 0.6
+            },
+            "dependency_tool_chain": {
+              "outcome": "pass",
+              "completion_tokens": 154,
+              "seconds": 0.4
+            },
+            "literal_tool_payload": {
+              "outcome": "pass",
+              "completion_tokens": 436,
+              "seconds": 1.1
+            },
+            "merge_patch": {
+              "outcome": "pass",
+              "completion_tokens": 8893,
+              "seconds": 21.3
+            },
+            "pagination_bug": {
+              "outcome": "pass",
+              "completion_tokens": 1511,
+              "seconds": 3.7
+            },
+            "parallel_tool_arguments": {
+              "outcome": "pass",
+              "completion_tokens": 191,
+              "seconds": 0.5
+            },
+            "recursive_redaction": {
+              "outcome": "pass",
+              "completion_tokens": 852,
+              "seconds": 2.0
+            },
+            "retry_boundary": {
+              "outcome": "pass",
+              "completion_tokens": 921,
+              "seconds": 2.1
+            },
+            "sse_parser": {
+              "outcome": "pass",
+              "completion_tokens": 11288,
+              "seconds": 30.0
+            },
+            "stable_toposort": {
+              "outcome": "pass",
+              "completion_tokens": 3138,
+              "seconds": 7.7
+            },
+            "ttl_lru": {
+              "outcome": "pass",
+              "completion_tokens": 4957,
+              "seconds": 12.3
+            },
+            "untrusted_document": {
+              "outcome": "pass",
+              "completion_tokens": 151,
+              "seconds": 0.4
+            }
+          },
+          "humaneval_subset": {
+            "HumanEval/105": {
+              "outcome": "pass",
+              "completion_tokens": 522,
+              "seconds": 1.3
+            },
+            "HumanEval/108": {
+              "outcome": "pass",
+              "completion_tokens": 931,
+              "seconds": 2.3
+            },
+            "HumanEval/11": {
+              "outcome": "pass",
+              "completion_tokens": 430,
+              "seconds": 1.0
+            },
+            "HumanEval/110": {
+              "outcome": "pass",
+              "completion_tokens": 1964,
+              "seconds": 5.3
+            },
+            "HumanEval/116": {
+              "outcome": "ran out of output budget",
+              "completion_tokens": 8192,
+              "seconds": 23.6
+            },
+            "HumanEval/12": {
+              "outcome": "pass",
+              "completion_tokens": 455,
+              "seconds": 1.0
+            },
+            "HumanEval/122": {
+              "outcome": "pass",
+              "completion_tokens": 624,
+              "seconds": 1.7
+            },
+            "HumanEval/124": {
+              "outcome": "pass",
+              "completion_tokens": 1212,
+              "seconds": 2.5
+            },
+            "HumanEval/127": {
+              "outcome": "pass",
+              "completion_tokens": 1046,
+              "seconds": 2.3
+            },
+            "HumanEval/132": {
+              "outcome": "pass",
+              "completion_tokens": 3245,
+              "seconds": 9.0
+            },
+            "HumanEval/142": {
+              "outcome": "pass",
+              "completion_tokens": 709,
+              "seconds": 1.7
+            },
+            "HumanEval/147": {
+              "outcome": "pass",
+              "completion_tokens": 1390,
+              "seconds": 3.3
+            },
+            "HumanEval/151": {
+              "outcome": "pass",
+              "completion_tokens": 1345,
+              "seconds": 3.1
+            },
+            "HumanEval/154": {
+              "outcome": "pass",
+              "completion_tokens": 1692,
+              "seconds": 4.5
+            },
+            "HumanEval/157": {
+              "outcome": "pass",
+              "completion_tokens": 588,
+              "seconds": 1.4
+            },
+            "HumanEval/158": {
+              "outcome": "pass",
+              "completion_tokens": 831,
+              "seconds": 1.8
+            },
+            "HumanEval/161": {
+              "outcome": "pass",
+              "completion_tokens": 413,
+              "seconds": 0.8
+            },
+            "HumanEval/17": {
+              "outcome": "pass",
+              "completion_tokens": 613,
+              "seconds": 1.3
+            },
+            "HumanEval/25": {
+              "outcome": "pass",
+              "completion_tokens": 481,
+              "seconds": 1.1
+            },
+            "HumanEval/28": {
+              "outcome": "pass",
+              "completion_tokens": 229,
+              "seconds": 0.6
+            },
+            "HumanEval/32": {
+              "outcome": "pass",
+              "completion_tokens": 4428,
+              "seconds": 11.3
+            },
+            "HumanEval/38": {
+              "outcome": "pass",
+              "completion_tokens": 1469,
+              "seconds": 3.1
+            },
+            "HumanEval/41": {
+              "outcome": "pass",
+              "completion_tokens": 1018,
+              "seconds": 2.8
+            },
+            "HumanEval/43": {
+              "outcome": "pass",
+              "completion_tokens": 640,
+              "seconds": 1.6
+            },
+            "HumanEval/47": {
+              "outcome": "pass",
+              "completion_tokens": 4991,
+              "seconds": 14.2
+            },
+            "HumanEval/6": {
+              "outcome": "pass",
+              "completion_tokens": 778,
+              "seconds": 1.5
+            },
+            "HumanEval/68": {
+              "outcome": "pass",
+              "completion_tokens": 518,
+              "seconds": 1.5
+            },
+            "HumanEval/76": {
+              "outcome": "pass",
+              "completion_tokens": 2943,
+              "seconds": 8.2
+            },
+            "HumanEval/78": {
+              "outcome": "pass",
+              "completion_tokens": 443,
+              "seconds": 1.2
+            },
+            "HumanEval/80": {
+              "outcome": "pass",
+              "completion_tokens": 599,
+              "seconds": 1.1
+            },
+            "HumanEval/86": {
+              "outcome": "pass",
+              "completion_tokens": 596,
+              "seconds": 1.5
+            },
+            "HumanEval/96": {
+              "outcome": "pass",
+              "completion_tokens": 706,
+              "seconds": 1.3
+            }
+          }
+        },
+        {
+          "label": "inkling2-mx8-basalt-rec-fp16kv",
+          "seed": 729,
+          "kv_cache": "fp16",
+          "core_thinking_off": {
+            "async_ordered_map": {
+              "outcome": "pass",
+              "completion_tokens": 8926,
+              "seconds": 26.0
+            },
+            "batch_transactions": {
+              "outcome": "pass",
+              "completion_tokens": 10095,
+              "seconds": 30.9
+            },
+            "context_records_320": {
+              "outcome": "pass",
+              "completion_tokens": 669,
+              "seconds": 2.0
+            },
+            "context_records_600": {
+              "outcome": "pass",
+              "completion_tokens": 514,
+              "seconds": 2.5
+            },
+            "context_records_80": {
+              "outcome": "pass",
+              "completion_tokens": 229,
+              "seconds": 0.6
+            },
+            "dependency_tool_chain": {
+              "outcome": "pass",
+              "completion_tokens": 132,
+              "seconds": 0.4
+            },
+            "literal_tool_payload": {
+              "outcome": "wrong answer",
+              "completion_tokens": 534,
+              "seconds": 1.5
+            },
+            "merge_patch": {
+              "outcome": "wrong answer",
+              "completion_tokens": 3507,
+              "seconds": 10.1
+            },
+            "pagination_bug": {
+              "outcome": "pass",
+              "completion_tokens": 1344,
+              "seconds": 3.3
+            },
+            "parallel_tool_arguments": {
+              "outcome": "pass",
+              "completion_tokens": 141,
+              "seconds": 0.3
+            },
+            "recursive_redaction": {
+              "outcome": "pass",
+              "completion_tokens": 895,
+              "seconds": 2.4
+            },
+            "retry_boundary": {
+              "outcome": "pass",
+              "completion_tokens": 421,
+              "seconds": 1.2
+            },
+            "sse_parser": {
+              "outcome": "pass",
+              "completion_tokens": 9393,
+              "seconds": 24.2
+            },
+            "stable_toposort": {
+              "outcome": "pass",
+              "completion_tokens": 1312,
+              "seconds": 3.1
+            },
+            "ttl_lru": {
+              "outcome": "pass",
+              "completion_tokens": 3099,
+              "seconds": 8.2
+            },
+            "untrusted_document": {
+              "outcome": "pass",
+              "completion_tokens": 106,
+              "seconds": 0.3
+            }
+          },
+          "core_thinking_on": {
+            "async_ordered_map": {
+              "outcome": "pass",
+              "completion_tokens": 12711,
+              "seconds": 39.2
+            },
+            "batch_transactions": {
+              "outcome": "pass",
+              "completion_tokens": 8977,
+              "seconds": 24.8
+            },
+            "context_records_320": {
+              "outcome": "pass",
+              "completion_tokens": 465,
+              "seconds": 1.6
+            },
+            "context_records_600": {
+              "outcome": "pass",
+              "completion_tokens": 602,
+              "seconds": 2.8
+            },
+            "context_records_80": {
+              "outcome": "pass",
+              "completion_tokens": 293,
+              "seconds": 0.8
+            },
+            "dependency_tool_chain": {
+              "outcome": "pass",
+              "completion_tokens": 163,
+              "seconds": 0.4
+            },
+            "literal_tool_payload": {
+              "outcome": "pass",
+              "completion_tokens": 237,
+              "seconds": 0.6
+            },
+            "merge_patch": {
+              "outcome": "pass",
+              "completion_tokens": 7114,
+              "seconds": 21.2
+            },
+            "pagination_bug": {
+              "outcome": "pass",
+              "completion_tokens": 633,
+              "seconds": 1.7
+            },
+            "parallel_tool_arguments": {
+              "outcome": "pass",
+              "completion_tokens": 170,
+              "seconds": 0.4
+            },
+            "recursive_redaction": {
+              "outcome": "pass",
+              "completion_tokens": 1242,
+              "seconds": 3.0
+            },
+            "retry_boundary": {
+              "outcome": "pass",
+              "completion_tokens": 938,
+              "seconds": 2.3
+            },
+            "sse_parser": {
+              "outcome": "pass",
+              "completion_tokens": 9468,
+              "seconds": 25.6
+            },
+            "stable_toposort": {
+              "outcome": "pass",
+              "completion_tokens": 3025,
+              "seconds": 7.6
+            },
+            "ttl_lru": {
+              "outcome": "pass",
+              "completion_tokens": 6030,
+              "seconds": 16.0
+            },
+            "untrusted_document": {
+              "outcome": "pass",
+              "completion_tokens": 160,
+              "seconds": 0.4
+            }
+          },
+          "humaneval_subset": {
+            "HumanEval/105": {
+              "outcome": "pass",
+              "completion_tokens": 753,
+              "seconds": 1.9
+            },
+            "HumanEval/108": {
+              "outcome": "pass",
+              "completion_tokens": 898,
+              "seconds": 2.2
+            },
+            "HumanEval/11": {
+              "outcome": "pass",
+              "completion_tokens": 431,
+              "seconds": 1.0
+            },
+            "HumanEval/110": {
+              "outcome": "pass",
+              "completion_tokens": 1167,
+              "seconds": 3.4
+            },
+            "HumanEval/116": {
+              "outcome": "ran out of output budget",
+              "completion_tokens": 8192,
+              "seconds": 23.7
+            },
+            "HumanEval/12": {
+              "outcome": "pass",
+              "completion_tokens": 590,
+              "seconds": 1.2
+            },
+            "HumanEval/122": {
+              "outcome": "pass",
+              "completion_tokens": 468,
+              "seconds": 1.4
+            },
+            "HumanEval/124": {
+              "outcome": "pass",
+              "completion_tokens": 770,
+              "seconds": 1.9
+            },
+            "HumanEval/127": {
+              "outcome": "pass",
+              "completion_tokens": 742,
+              "seconds": 1.6
+            },
+            "HumanEval/132": {
+              "outcome": "pass",
+              "completion_tokens": 5282,
+              "seconds": 14.6
+            },
+            "HumanEval/142": {
+              "outcome": "pass",
+              "completion_tokens": 828,
+              "seconds": 2.0
+            },
+            "HumanEval/147": {
+              "outcome": "pass",
+              "completion_tokens": 2189,
+              "seconds": 5.7
+            },
+            "HumanEval/151": {
+              "outcome": "pass",
+              "completion_tokens": 1554,
+              "seconds": 3.9
+            },
+            "HumanEval/154": {
+              "outcome": "pass",
+              "completion_tokens": 1139,
+              "seconds": 3.1
+            },
+            "HumanEval/157": {
+              "outcome": "pass",
+              "completion_tokens": 756,
+              "seconds": 1.6
+            },
+            "HumanEval/158": {
+              "outcome": "pass",
+              "completion_tokens": 588,
+              "seconds": 1.3
+            },
+            "HumanEval/161": {
+              "outcome": "pass",
+              "completion_tokens": 582,
+              "seconds": 1.3
+            },
+            "HumanEval/17": {
+              "outcome": "pass",
+              "completion_tokens": 650,
+              "seconds": 1.6
+            },
+            "HumanEval/25": {
+              "outcome": "pass",
+              "completion_tokens": 664,
+              "seconds": 1.5
+            },
+            "HumanEval/28": {
+              "outcome": "pass",
+              "completion_tokens": 175,
+              "seconds": 0.4
+            },
+            "HumanEval/32": {
+              "outcome": "pass",
+              "completion_tokens": 3195,
+              "seconds": 8.6
+            },
+            "HumanEval/38": {
+              "outcome": "pass",
+              "completion_tokens": 924,
+              "seconds": 2.0
+            },
+            "HumanEval/41": {
+              "outcome": "pass",
+              "completion_tokens": 606,
+              "seconds": 1.7
+            },
+            "HumanEval/43": {
+              "outcome": "pass",
+              "completion_tokens": 847,
+              "seconds": 2.2
+            },
+            "HumanEval/47": {
+              "outcome": "pass",
+              "completion_tokens": 4865,
+              "seconds": 13.1
+            },
+            "HumanEval/6": {
+              "outcome": "pass",
+              "completion_tokens": 613,
+              "seconds": 1.4
+            },
+            "HumanEval/68": {
+              "outcome": "pass",
+              "completion_tokens": 493,
+              "seconds": 1.3
+            },
+            "HumanEval/76": {
+              "outcome": "pass",
+              "completion_tokens": 4904,
+              "seconds": 14.3
+            },
+            "HumanEval/78": {
+              "outcome": "pass",
+              "completion_tokens": 459,
+              "seconds": 1.0
+            },
+            "HumanEval/80": {
+              "outcome": "pass",
+              "completion_tokens": 510,
+              "seconds": 1.0
+            },
+            "HumanEval/86": {
+              "outcome": "pass",
+              "completion_tokens": 531,
+              "seconds": 1.4
+            },
+            "HumanEval/96": {
+              "outcome": "pass",
+              "completion_tokens": 782,
+              "seconds": 1.7
+            }
+          }
+        },
+        {
+          "label": "inkling2-rec-s730",
+          "seed": 730,
+          "kv_cache": "fp16",
+          "core_thinking_off": {
+            "async_ordered_map": {
+              "outcome": "ran out of output budget",
+              "completion_tokens": 16384,
+              "seconds": 51.7
+            },
+            "batch_transactions": {
+              "outcome": "pass",
+              "completion_tokens": 6620,
+              "seconds": 19.0
+            },
+            "context_records_320": {
+              "outcome": "pass",
+              "completion_tokens": 346,
+              "seconds": 1.5
+            },
+            "context_records_600": {
+              "outcome": "pass",
+              "completion_tokens": 643,
+              "seconds": 2.8
+            },
+            "context_records_80": {
+              "outcome": "pass",
+              "completion_tokens": 240,
+              "seconds": 0.6
+            },
+            "dependency_tool_chain": {
+              "outcome": "pass",
+              "completion_tokens": 175,
+              "seconds": 0.5
+            },
+            "literal_tool_payload": {
+              "outcome": "wrong answer",
+              "completion_tokens": 278,
+              "seconds": 0.8
+            },
+            "merge_patch": {
+              "outcome": "wrong answer",
+              "completion_tokens": 2871,
+              "seconds": 8.1
+            },
+            "pagination_bug": {
+              "outcome": "pass",
+              "completion_tokens": 1187,
+              "seconds": 2.9
+            },
+            "parallel_tool_arguments": {
+              "outcome": "pass",
+              "completion_tokens": 144,
+              "seconds": 0.4
+            },
+            "recursive_redaction": {
+              "outcome": "pass",
+              "completion_tokens": 796,
+              "seconds": 1.9
+            },
+            "retry_boundary": {
+              "outcome": "pass",
+              "completion_tokens": 600,
+              "seconds": 1.5
+            },
+            "sse_parser": {
+              "outcome": "pass",
+              "completion_tokens": 5365,
+              "seconds": 14.6
+            },
+            "stable_toposort": {
+              "outcome": "pass",
+              "completion_tokens": 1885,
+              "seconds": 4.8
+            },
+            "ttl_lru": {
+              "outcome": "pass",
+              "completion_tokens": 1380,
+              "seconds": 3.5
+            },
+            "untrusted_document": {
+              "outcome": "pass",
+              "completion_tokens": 112,
+              "seconds": 0.3
+            }
+          },
+          "core_thinking_on": {
+            "async_ordered_map": {
+              "outcome": "pass",
+              "completion_tokens": 12761,
+              "seconds": 38.5
+            },
+            "batch_transactions": {
+              "outcome": "pass",
+              "completion_tokens": 5224,
+              "seconds": 13.7
+            },
+            "context_records_320": {
+              "outcome": "pass",
+              "completion_tokens": 306,
+              "seconds": 1.4
+            },
+            "context_records_600": {
+              "outcome": "pass",
+              "completion_tokens": 492,
+              "seconds": 2.4
+            },
+            "context_records_80": {
+              "outcome": "pass",
+              "completion_tokens": 242,
+              "seconds": 0.6
+            },
+            "dependency_tool_chain": {
+              "outcome": "pass",
+              "completion_tokens": 150,
+              "seconds": 0.4
+            },
+            "literal_tool_payload": {
+              "outcome": "pass",
+              "completion_tokens": 315,
+              "seconds": 0.8
+            },
+            "merge_patch": {
+              "outcome": "wrong answer",
+              "completion_tokens": 12469,
+              "seconds": 35.3
+            },
+            "pagination_bug": {
+              "outcome": "pass",
+              "completion_tokens": 902,
+              "seconds": 2.3
+            },
+            "parallel_tool_arguments": {
+              "outcome": "pass",
+              "completion_tokens": 166,
+              "seconds": 0.4
+            },
+            "recursive_redaction": {
+              "outcome": "pass",
+              "completion_tokens": 1531,
+              "seconds": 3.6
+            },
+            "retry_boundary": {
+              "outcome": "pass",
+              "completion_tokens": 683,
+              "seconds": 1.7
+            },
+            "sse_parser": {
+              "outcome": "pass",
+              "completion_tokens": 12817,
+              "seconds": 35.6
+            },
+            "stable_toposort": {
+              "outcome": "pass",
+              "completion_tokens": 3054,
+              "seconds": 7.6
+            },
+            "ttl_lru": {
+              "outcome": "pass",
+              "completion_tokens": 5243,
+              "seconds": 14.1
+            },
+            "untrusted_document": {
+              "outcome": "pass",
+              "completion_tokens": 137,
+              "seconds": 0.4
+            }
+          },
+          "humaneval_subset": {
+            "HumanEval/105": {
+              "outcome": "pass",
+              "completion_tokens": 936,
+              "seconds": 2.2
+            },
+            "HumanEval/108": {
+              "outcome": "pass",
+              "completion_tokens": 845,
+              "seconds": 2.2
+            },
+            "HumanEval/11": {
+              "outcome": "pass",
+              "completion_tokens": 635,
+              "seconds": 1.7
+            },
+            "HumanEval/110": {
+              "outcome": "pass",
+              "completion_tokens": 1267,
+              "seconds": 3.3
+            },
+            "HumanEval/116": {
+              "outcome": "wrong answer",
+              "completion_tokens": 4830,
+              "seconds": 14.2
+            },
+            "HumanEval/12": {
+              "outcome": "pass",
+              "completion_tokens": 422,
+              "seconds": 0.9
+            },
+            "HumanEval/122": {
+              "outcome": "pass",
+              "completion_tokens": 406,
+              "seconds": 1.2
+            },
+            "HumanEval/124": {
+              "outcome": "pass",
+              "completion_tokens": 1318,
+              "seconds": 3.1
+            },
+            "HumanEval/127": {
+              "outcome": "pass",
+              "completion_tokens": 1136,
+              "seconds": 2.4
+            },
+            "HumanEval/132": {
+              "outcome": "pass",
+              "completion_tokens": 3889,
+              "seconds": 10.7
+            },
+            "HumanEval/142": {
+              "outcome": "pass",
+              "completion_tokens": 725,
+              "seconds": 1.7
+            },
+            "HumanEval/147": {
+              "outcome": "pass",
+              "completion_tokens": 1284,
+              "seconds": 3.4
+            },
+            "HumanEval/151": {
+              "outcome": "pass",
+              "completion_tokens": 878,
+              "seconds": 2.3
+            },
+            "HumanEval/154": {
+              "outcome": "pass",
+              "completion_tokens": 1456,
+              "seconds": 3.6
+            },
+            "HumanEval/157": {
+              "outcome": "pass",
+              "completion_tokens": 614,
+              "seconds": 1.5
+            },
+            "HumanEval/158": {
+              "outcome": "pass",
+              "completion_tokens": 564,
+              "seconds": 1.4
+            },
+            "HumanEval/161": {
+              "outcome": "pass",
+              "completion_tokens": 703,
+              "seconds": 1.7
+            },
+            "HumanEval/17": {
+              "outcome": "pass",
+              "completion_tokens": 754,
+              "seconds": 1.7
+            },
+            "HumanEval/25": {
+              "outcome": "pass",
+              "completion_tokens": 556,
+              "seconds": 1.4
+            },
+            "HumanEval/28": {
+              "outcome": "pass",
+              "completion_tokens": 294,
+              "seconds": 0.7
+            },
+            "HumanEval/32": {
+              "outcome": "ran out of output budget",
+              "completion_tokens": 8192,
+              "seconds": 24.4
+            },
+            "HumanEval/38": {
+              "outcome": "pass",
+              "completion_tokens": 677,
+              "seconds": 1.5
+            },
+            "HumanEval/41": {
+              "outcome": "pass",
+              "completion_tokens": 805,
+              "seconds": 2.3
+            },
+            "HumanEval/43": {
+              "outcome": "pass",
+              "completion_tokens": 648,
+              "seconds": 1.5
+            },
+            "HumanEval/47": {
+              "outcome": "pass",
+              "completion_tokens": 3955,
+              "seconds": 10.9
+            },
+            "HumanEval/6": {
+              "outcome": "pass",
+              "completion_tokens": 579,
+              "seconds": 1.3
+            },
+            "HumanEval/68": {
+              "outcome": "pass",
+              "completion_tokens": 402,
+              "seconds": 1.2
+            },
+            "HumanEval/76": {
+              "outcome": "pass",
+              "completion_tokens": 2950,
+              "seconds": 8.7
+            },
+            "HumanEval/78": {
+              "outcome": "pass",
+              "completion_tokens": 490,
+              "seconds": 1.1
+            },
+            "HumanEval/80": {
+              "outcome": "pass",
+              "completion_tokens": 412,
+              "seconds": 0.9
+            },
+            "HumanEval/86": {
+              "outcome": "pass",
+              "completion_tokens": 937,
+              "seconds": 2.4
+            },
+            "HumanEval/96": {
+              "outcome": "pass",
+              "completion_tokens": 592,
+              "seconds": 1.4
+            }
+          }
+        }
+      ],
+      "core_thinking_off": {
+        "scores": [
+          16,
+          14,
+          13
+        ],
+        "of": 16,
+        "passes": 43,
+        "case_runs": 48,
+        "ran_out": 1,
+        "completion_tokens": 116342,
+        "seconds": 334,
+        "per_solved_case": {
+          "completion_tokens": 2157,
+          "seconds": 6.1
+        },
+        "not_passed_in_every_run": {
+          "async_ordered_map": [
+            "ran out of output budget"
+          ],
+          "literal_tool_payload": [
+            "wrong answer",
+            "wrong answer"
+          ],
+          "merge_patch": [
+            "wrong answer",
+            "wrong answer"
+          ]
+        }
+      },
+      "core_thinking_on": {
+        "scores": [
+          15,
+          16,
+          15
+        ],
+        "of": 16,
+        "passes": 46,
+        "case_runs": 48,
+        "ran_out": 1,
+        "completion_tokens": 171693,
+        "seconds": 478,
+        "per_solved_case": {
+          "completion_tokens": 3105,
+          "seconds": 8.6
+        },
+        "not_passed_in_every_run": {
+          "async_ordered_map": [
+            "ran out of output budget"
+          ],
+          "merge_patch": [
+            "wrong answer"
+          ]
+        }
+      },
+      "humaneval_subset": {
+        "scores": [
+          31,
+          31,
+          30
+        ],
+        "of": 32,
+        "passes": 92,
+        "case_runs": 96,
+        "ran_out": 3,
+        "completion_tokens": 137339,
+        "seconds": 363,
+        "per_solved_case": {
+          "completion_tokens": 1173,
+          "seconds": 3.0
+        },
+        "not_passed_in_every_run": {
+          "HumanEval/116": [
+            "ran out of output budget",
+            "ran out of output budget",
+            "wrong answer"
+          ],
+          "HumanEval/32": [
+            "ran out of output budget"
+          ]
+        }
+      },
+      "focused_reruns": [
+        {
+          "label": "inkling2-mx8-basalt-b16k",
+          "passed": 5,
+          "total": 6,
+          "failures": [
+            "async_ordered_map"
+          ],
+          "total_seconds": 60
+        },
+        {
+          "label": "inkling2-mx8-basalt-rec",
+          "passed": 5,
+          "total": 6,
+          "failures": [
+            "async_ordered_map"
+          ],
+          "total_seconds": 59
+        },
+        {
+          "label": "inkling2-mx8-basalt-rec-fp16kv",
+          "passed": 6,
+          "total": 6,
+          "failures": [],
+          "total_seconds": 65
+        }
+      ]
+    },
+    "flash_next": {
+      "settings": "thinking mode: temperature 1.0, top_p 0.95, top_k 20, min_p 0, xhigh; non-thinking mode: temperature 0.7, top_p 0.80, top_k 20, min_p 0, presence penalty 1.5",
+      "runs": [
+        {
+          "label": "ff-pub-s729",
+          "seed": 729,
+          "kv_cache": "int8",
+          "core_thinking_off": {
+            "async_ordered_map": {
+              "outcome": "pass",
+              "completion_tokens": 765,
+              "seconds": 3.5
+            },
+            "batch_transactions": {
+              "outcome": "wrong answer",
+              "completion_tokens": 400,
+              "seconds": 2.3
+            },
+            "context_records_320": {
+              "outcome": "pass",
+              "completion_tokens": 41,
+              "seconds": 1.6
+            },
+            "context_records_600": {
+              "outcome": "pass",
+              "completion_tokens": 31,
+              "seconds": 2.6
+            },
+            "context_records_80": {
+              "outcome": "pass",
+              "completion_tokens": 30,
+              "seconds": 1.1
+            },
+            "dependency_tool_chain": {
+              "outcome": "pass",
+              "completion_tokens": 71,
+              "seconds": 1.1
+            },
+            "literal_tool_payload": {
+              "outcome": "pass",
+              "completion_tokens": 51,
+              "seconds": 0.8
+            },
+            "merge_patch": {
+              "outcome": "pass",
+              "completion_tokens": 351,
+              "seconds": 2.0
+            },
+            "pagination_bug": {
+              "outcome": "pass",
+              "completion_tokens": 638,
+              "seconds": 4.8
+            },
+            "parallel_tool_arguments": {
+              "outcome": "pass",
+              "completion_tokens": 81,
+              "seconds": 1.1
+            },
+            "recursive_redaction": {
+              "outcome": "pass",
+              "completion_tokens": 428,
+              "seconds": 3.8
+            },
+            "retry_boundary": {
+              "outcome": "pass",
+              "completion_tokens": 313,
+              "seconds": 3.0
+            },
+            "sse_parser": {
+              "outcome": "pass",
+              "completion_tokens": 698,
+              "seconds": 2.9
+            },
+            "stable_toposort": {
+              "outcome": "pass",
+              "completion_tokens": 637,
+              "seconds": 3.0
+            },
+            "ttl_lru": {
+              "outcome": "pass",
+              "completion_tokens": 565,
+              "seconds": 2.7
+            },
+            "untrusted_document": {
+              "outcome": "pass",
+              "completion_tokens": 14,
+              "seconds": 0.4
+            }
+          },
+          "core_thinking_on": {
+            "async_ordered_map": {
+              "outcome": "pass",
+              "completion_tokens": 12770,
+              "seconds": 61.5
+            },
+            "batch_transactions": {
+              "outcome": "pass",
+              "completion_tokens": 13034,
+              "seconds": 64.8
+            },
+            "context_records_320": {
+              "outcome": "pass",
+              "completion_tokens": 476,
+              "seconds": 3.4
+            },
+            "context_records_600": {
+              "outcome": "pass",
+              "completion_tokens": 253,
+              "seconds": 3.6
+            },
+            "context_records_80": {
+              "outcome": "pass",
+              "completion_tokens": 221,
+              "seconds": 2.2
+            },
+            "dependency_tool_chain": {
+              "outcome": "pass",
+              "completion_tokens": 155,
+              "seconds": 1.6
+            },
+            "literal_tool_payload": {
+              "outcome": "pass",
+              "completion_tokens": 75,
+              "seconds": 0.9
+            },
+            "merge_patch": {
+              "outcome": "pass",
+              "completion_tokens": 12391,
+              "seconds": 66.1
+            },
+            "pagination_bug": {
+              "outcome": "pass",
+              "completion_tokens": 1420,
+              "seconds": 8.9
+            },
+            "parallel_tool_arguments": {
+              "outcome": "pass",
+              "completion_tokens": 182,
+              "seconds": 1.7
+            },
+            "recursive_redaction": {
+              "outcome": "pass",
+              "completion_tokens": 1850,
+              "seconds": 10.1
+            },
+            "retry_boundary": {
+              "outcome": "pass",
+              "completion_tokens": 1276,
+              "seconds": 8.0
+            },
+            "sse_parser": {
+              "outcome": "wrong answer",
+              "completion_tokens": 12735,
+              "seconds": 62.7
+            },
+            "stable_toposort": {
+              "outcome": "pass",
+              "completion_tokens": 7333,
+              "seconds": 39.4
+            },
+            "ttl_lru": {
+              "outcome": "pass",
+              "completion_tokens": 12745,
+              "seconds": 68.2
+            },
+            "untrusted_document": {
+              "outcome": "pass",
+              "completion_tokens": 145,
+              "seconds": 1.1
+            }
+          },
+          "humaneval_subset": {
+            "HumanEval/105": {
+              "outcome": "pass",
+              "completion_tokens": 481,
+              "seconds": 2.6
+            },
+            "HumanEval/108": {
+              "outcome": "pass",
+              "completion_tokens": 268,
+              "seconds": 1.5
+            },
+            "HumanEval/11": {
+              "outcome": "pass",
+              "completion_tokens": 195,
+              "seconds": 1.3
+            },
+            "HumanEval/110": {
+              "outcome": "pass",
+              "completion_tokens": 343,
+              "seconds": 2.1
+            },
+            "HumanEval/116": {
+              "outcome": "pass",
+              "completion_tokens": 198,
+              "seconds": 1.3
+            },
+            "HumanEval/12": {
+              "outcome": "pass",
+              "completion_tokens": 128,
+              "seconds": 0.8
+            },
+            "HumanEval/122": {
+              "outcome": "pass",
+              "completion_tokens": 218,
+              "seconds": 1.3
+            },
+            "HumanEval/124": {
+              "outcome": "pass",
+              "completion_tokens": 553,
+              "seconds": 2.6
+            },
+            "HumanEval/127": {
+              "outcome": "pass",
+              "completion_tokens": 705,
+              "seconds": 3.8
+            },
+            "HumanEval/132": {
+              "outcome": "wrong answer",
+              "completion_tokens": 505,
+              "seconds": 2.7
+            },
+            "HumanEval/142": {
+              "outcome": "pass",
+              "completion_tokens": 241,
+              "seconds": 1.4
+            },
+            "HumanEval/147": {
+              "outcome": "pass",
+              "completion_tokens": 333,
+              "seconds": 1.8
+            },
+            "HumanEval/151": {
+              "outcome": "pass",
+              "completion_tokens": 221,
+              "seconds": 1.4
+            },
+            "HumanEval/154": {
+              "outcome": "pass",
+              "completion_tokens": 182,
+              "seconds": 1.2
+            },
+            "HumanEval/157": {
+              "outcome": "pass",
+              "completion_tokens": 161,
+              "seconds": 1.1
+            },
+            "HumanEval/158": {
+              "outcome": "pass",
+              "completion_tokens": 236,
+              "seconds": 1.7
+            },
+            "HumanEval/161": {
+              "outcome": "pass",
+              "completion_tokens": 197,
+              "seconds": 1.2
+            },
+            "HumanEval/17": {
+              "outcome": "pass",
+              "completion_tokens": 248,
+              "seconds": 1.6
+            },
+            "HumanEval/25": {
+              "outcome": "pass",
+              "completion_tokens": 202,
+              "seconds": 1.2
+            },
+            "HumanEval/28": {
+              "outcome": "pass",
+              "completion_tokens": 70,
+              "seconds": 0.6
+            },
+            "HumanEval/32": {
+              "outcome": "wrong answer",
+              "completion_tokens": 717,
+              "seconds": 4.3
+            },
+            "HumanEval/38": {
+              "outcome": "pass",
+              "completion_tokens": 277,
+              "seconds": 1.7
+            },
+            "HumanEval/41": {
+              "outcome": "pass",
+              "completion_tokens": 163,
+              "seconds": 1.2
+            },
+            "HumanEval/43": {
+              "outcome": "pass",
+              "completion_tokens": 201,
+              "seconds": 1.2
+            },
+            "HumanEval/47": {
+              "outcome": "pass",
+              "completion_tokens": 168,
+              "seconds": 0.9
+            },
+            "HumanEval/6": {
+              "outcome": "pass",
+              "completion_tokens": 214,
+              "seconds": 1.3
+            },
+            "HumanEval/68": {
+              "outcome": "pass",
+              "completion_tokens": 430,
+              "seconds": 2.3
+            },
+            "HumanEval/76": {
+              "outcome": "pass",
+              "completion_tokens": 699,
+              "seconds": 3.4
+            },
+            "HumanEval/78": {
+              "outcome": "pass",
+              "completion_tokens": 368,
+              "seconds": 2.0
+            },
+            "HumanEval/80": {
+              "outcome": "pass",
+              "completion_tokens": 198,
+              "seconds": 1.2
+            },
+            "HumanEval/86": {
+              "outcome": "pass",
+              "completion_tokens": 198,
+              "seconds": 1.3
+            },
+            "HumanEval/96": {
+              "outcome": "pass",
+              "completion_tokens": 298,
+              "seconds": 1.7
+            }
+          }
+        },
+        {
+          "label": "ff-pub-s730",
+          "seed": 730,
+          "kv_cache": "int8",
+          "core_thinking_off": {
+            "async_ordered_map": {
+              "outcome": "pass",
+              "completion_tokens": 515,
+              "seconds": 2.1
+            },
+            "batch_transactions": {
+              "outcome": "pass",
+              "completion_tokens": 446,
+              "seconds": 2.3
+            },
+            "context_records_320": {
+              "outcome": "pass",
+              "completion_tokens": 41,
+              "seconds": 1.6
+            },
+            "context_records_600": {
+              "outcome": "pass",
+              "completion_tokens": 31,
+              "seconds": 2.5
+            },
+            "context_records_80": {
+              "outcome": "pass",
+              "completion_tokens": 40,
+              "seconds": 1.1
+            },
+            "dependency_tool_chain": {
+              "outcome": "pass",
+              "completion_tokens": 71,
+              "seconds": 1.0
+            },
+            "literal_tool_payload": {
+              "outcome": "pass",
+              "completion_tokens": 51,
+              "seconds": 0.8
+            },
+            "merge_patch": {
+              "outcome": "pass",
+              "completion_tokens": 371,
+              "seconds": 1.9
+            },
+            "pagination_bug": {
+              "outcome": "pass",
+              "completion_tokens": 380,
+              "seconds": 3.4
+            },
+            "parallel_tool_arguments": {
+              "outcome": "pass",
+              "completion_tokens": 81,
+              "seconds": 1.1
+            },
+            "recursive_redaction": {
+              "outcome": "pass",
+              "completion_tokens": 380,
+              "seconds": 3.2
+            },
+            "retry_boundary": {
+              "outcome": "pass",
+              "completion_tokens": 460,
+              "seconds": 3.7
+            },
+            "sse_parser": {
+              "outcome": "pass",
+              "completion_tokens": 1469,
+              "seconds": 5.7
+            },
+            "stable_toposort": {
+              "outcome": "pass",
+              "completion_tokens": 611,
+              "seconds": 2.8
+            },
+            "ttl_lru": {
+              "outcome": "pass",
+              "completion_tokens": 676,
+              "seconds": 3.2
+            },
+            "untrusted_document": {
+              "outcome": "pass",
+              "completion_tokens": 14,
+              "seconds": 0.4
+            }
+          },
+          "core_thinking_on": {
+            "async_ordered_map": {
+              "outcome": "pass",
+              "completion_tokens": 12814,
+              "seconds": 61.5
+            },
+            "batch_transactions": {
+              "outcome": "pass",
+              "completion_tokens": 12956,
+              "seconds": 63.1
+            },
+            "context_records_320": {
+              "outcome": "pass",
+              "completion_tokens": 416,
+              "seconds": 3.0
+            },
+            "context_records_600": {
+              "outcome": "pass",
+              "completion_tokens": 432,
+              "seconds": 4.5
+            },
+            "context_records_80": {
+              "outcome": "pass",
+              "completion_tokens": 214,
+              "seconds": 2.0
+            },
+            "dependency_tool_chain": {
+              "outcome": "pass",
+              "completion_tokens": 179,
+              "seconds": 1.7
+            },
+            "literal_tool_payload": {
+              "outcome": "pass",
+              "completion_tokens": 69,
+              "seconds": 0.8
+            },
+            "merge_patch": {
+              "outcome": "pass",
+              "completion_tokens": 6278,
+              "seconds": 32.3
+            },
+            "pagination_bug": {
+              "outcome": "pass",
+              "completion_tokens": 1769,
+              "seconds": 10.7
+            },
+            "parallel_tool_arguments": {
+              "outcome": "pass",
+              "completion_tokens": 191,
+              "seconds": 2.1
+            },
+            "recursive_redaction": {
+              "outcome": "pass",
+              "completion_tokens": 1128,
+              "seconds": 7.2
+            },
+            "retry_boundary": {
+              "outcome": "pass",
+              "completion_tokens": 979,
+              "seconds": 6.6
+            },
+            "sse_parser": {
+              "outcome": "pass",
+              "completion_tokens": 12673,
+              "seconds": 65.2
+            },
+            "stable_toposort": {
+              "outcome": "pass",
+              "completion_tokens": 12654,
+              "seconds": 65.1
+            },
+            "ttl_lru": {
+              "outcome": "pass",
+              "completion_tokens": 12737,
+              "seconds": 64.3
+            },
+            "untrusted_document": {
+              "outcome": "pass",
+              "completion_tokens": 116,
+              "seconds": 1.0
+            }
+          },
+          "humaneval_subset": {
+            "HumanEval/105": {
+              "outcome": "pass",
+              "completion_tokens": 485,
+              "seconds": 2.5
+            },
+            "HumanEval/108": {
+              "outcome": "pass",
+              "completion_tokens": 242,
+              "seconds": 1.3
+            },
+            "HumanEval/11": {
+              "outcome": "pass",
+              "completion_tokens": 140,
+              "seconds": 1.1
+            },
+            "HumanEval/110": {
+              "outcome": "pass",
+              "completion_tokens": 407,
+              "seconds": 2.4
+            },
+            "HumanEval/116": {
+              "outcome": "pass",
+              "completion_tokens": 2829,
+              "seconds": 13.4
+            },
+            "HumanEval/12": {
+              "outcome": "pass",
+              "completion_tokens": 161,
+              "seconds": 0.9
+            },
+            "HumanEval/122": {
+              "outcome": "pass",
+              "completion_tokens": 204,
+              "seconds": 1.2
+            },
+            "HumanEval/124": {
+              "outcome": "pass",
+              "completion_tokens": 646,
+              "seconds": 3.0
+            },
+            "HumanEval/127": {
+              "outcome": "pass",
+              "completion_tokens": 471,
+              "seconds": 2.4
+            },
+            "HumanEval/132": {
+              "outcome": "pass",
+              "completion_tokens": 2246,
+              "seconds": 9.1
+            },
+            "HumanEval/142": {
+              "outcome": "pass",
+              "completion_tokens": 241,
+              "seconds": 1.4
+            },
+            "HumanEval/147": {
+              "outcome": "pass",
+              "completion_tokens": 756,
+              "seconds": 3.4
+            },
+            "HumanEval/151": {
+              "outcome": "pass",
+              "completion_tokens": 234,
+              "seconds": 1.4
+            },
+            "HumanEval/154": {
+              "outcome": "pass",
+              "completion_tokens": 190,
+              "seconds": 1.2
+            },
+            "HumanEval/157": {
+              "outcome": "pass",
+              "completion_tokens": 161,
+              "seconds": 1.1
+            },
+            "HumanEval/158": {
+              "outcome": "pass",
+              "completion_tokens": 210,
+              "seconds": 1.2
+            },
+            "HumanEval/161": {
+              "outcome": "pass",
+              "completion_tokens": 217,
+              "seconds": 1.3
+            },
+            "HumanEval/17": {
+              "outcome": "pass",
+              "completion_tokens": 254,
+              "seconds": 1.6
+            },
+            "HumanEval/25": {
+              "outcome": "pass",
+              "completion_tokens": 215,
+              "seconds": 1.3
+            },
+            "HumanEval/28": {
+              "outcome": "pass",
+              "completion_tokens": 70,
+              "seconds": 0.6
+            },
+            "HumanEval/32": {
+              "outcome": "wrong answer",
+              "completion_tokens": 588,
+              "seconds": 3.5
+            },
+            "HumanEval/38": {
+              "outcome": "pass",
+              "completion_tokens": 270,
+              "seconds": 1.5
+            },
+            "HumanEval/41": {
+              "outcome": "pass",
+              "completion_tokens": 163,
+              "seconds": 1.2
+            },
+            "HumanEval/43": {
+              "outcome": "pass",
+              "completion_tokens": 201,
+              "seconds": 1.1
+            },
+            "HumanEval/47": {
+              "outcome": "pass",
+              "completion_tokens": 155,
+              "seconds": 1.0
+            },
+            "HumanEval/6": {
+              "outcome": "pass",
+              "completion_tokens": 214,
+              "seconds": 1.2
+            },
+            "HumanEval/68": {
+              "outcome": "pass",
+              "completion_tokens": 430,
+              "seconds": 2.3
+            },
+            "HumanEval/76": {
+              "outcome": "pass",
+              "completion_tokens": 217,
+              "seconds": 1.2
+            },
+            "HumanEval/78": {
+              "outcome": "pass",
+              "completion_tokens": 383,
+              "seconds": 1.9
+            },
+            "HumanEval/80": {
+              "outcome": "pass",
+              "completion_tokens": 183,
+              "seconds": 1.5
+            },
+            "HumanEval/86": {
+              "outcome": "pass",
+              "completion_tokens": 205,
+              "seconds": 1.3
+            },
+            "HumanEval/96": {
+              "outcome": "pass",
+              "completion_tokens": 281,
+              "seconds": 1.6
+            }
+          }
+        },
+        {
+          "label": "ff-pub-s731",
+          "seed": 731,
+          "kv_cache": "int8",
+          "core_thinking_off": {
+            "async_ordered_map": {
+              "outcome": "pass",
+              "completion_tokens": 1051,
+              "seconds": 4.4
+            },
+            "batch_transactions": {
+              "outcome": "wrong answer",
+              "completion_tokens": 381,
+              "seconds": 2.1
+            },
+            "context_records_320": {
+              "outcome": "pass",
+              "completion_tokens": 41,
+              "seconds": 1.6
+            },
+            "context_records_600": {
+              "outcome": "pass",
+              "completion_tokens": 41,
+              "seconds": 2.6
+            },
+            "context_records_80": {
+              "outcome": "pass",
+              "completion_tokens": 35,
+              "seconds": 1.0
+            },
+            "dependency_tool_chain": {
+              "outcome": "pass",
+              "completion_tokens": 71,
+              "seconds": 1.0
+            },
+            "literal_tool_payload": {
+              "outcome": "pass",
+              "completion_tokens": 51,
+              "seconds": 0.8
+            },
+            "merge_patch": {
+              "outcome": "pass",
+              "completion_tokens": 406,
+              "seconds": 2.1
+            },
+            "pagination_bug": {
+              "outcome": "pass",
+              "completion_tokens": 762,
+              "seconds": 5.4
+            },
+            "parallel_tool_arguments": {
+              "outcome": "pass",
+              "completion_tokens": 81,
+              "seconds": 1.1
+            },
+            "recursive_redaction": {
+              "outcome": "pass",
+              "completion_tokens": 374,
+              "seconds": 3.3
+            },
+            "retry_boundary": {
+              "outcome": "pass",
+              "completion_tokens": 309,
+              "seconds": 2.8
+            },
+            "sse_parser": {
+              "outcome": "pass",
+              "completion_tokens": 649,
+              "seconds": 2.6
+            },
+            "stable_toposort": {
+              "outcome": "pass",
+              "completion_tokens": 627,
+              "seconds": 2.9
+            },
+            "ttl_lru": {
+              "outcome": "pass",
+              "completion_tokens": 471,
+              "seconds": 2.2
+            },
+            "untrusted_document": {
+              "outcome": "pass",
+              "completion_tokens": 17,
+              "seconds": 0.4
+            }
+          },
+          "core_thinking_on": {
+            "async_ordered_map": {
+              "outcome": "pass",
+              "completion_tokens": 12642,
+              "seconds": 60.8
+            },
+            "batch_transactions": {
+              "outcome": "pass",
+              "completion_tokens": 13070,
+              "seconds": 66.5
+            },
+            "context_records_320": {
+              "outcome": "pass",
+              "completion_tokens": 407,
+              "seconds": 2.9
+            },
+            "context_records_600": {
+              "outcome": "pass",
+              "completion_tokens": 231,
+              "seconds": 3.5
+            },
+            "context_records_80": {
+              "outcome": "pass",
+              "completion_tokens": 240,
+              "seconds": 2.2
+            },
+            "dependency_tool_chain": {
+              "outcome": "pass",
+              "completion_tokens": 159,
+              "seconds": 1.5
+            },
+            "literal_tool_payload": {
+              "outcome": "pass",
+              "completion_tokens": 154,
+              "seconds": 1.2
+            },
+            "merge_patch": {
+              "outcome": "pass",
+              "completion_tokens": 12403,
+              "seconds": 62.5
+            },
+            "pagination_bug": {
+              "outcome": "pass",
+              "completion_tokens": 1259,
+              "seconds": 8.5
+            },
+            "parallel_tool_arguments": {
+              "outcome": "pass",
+              "completion_tokens": 193,
+              "seconds": 1.8
+            },
+            "recursive_redaction": {
+              "outcome": "pass",
+              "completion_tokens": 2938,
+              "seconds": 16.4
+            },
+            "retry_boundary": {
+              "outcome": "pass",
+              "completion_tokens": 1049,
+              "seconds": 7.0
+            },
+            "sse_parser": {
+              "outcome": "wrong answer",
+              "completion_tokens": 12877,
+              "seconds": 60.8
+            },
+            "stable_toposort": {
+              "outcome": "pass",
+              "completion_tokens": 9771,
+              "seconds": 52.0
+            },
+            "ttl_lru": {
+              "outcome": "pass",
+              "completion_tokens": 12704,
+              "seconds": 64.7
+            },
+            "untrusted_document": {
+              "outcome": "pass",
+              "completion_tokens": 102,
+              "seconds": 0.9
+            }
+          },
+          "humaneval_subset": {
+            "HumanEval/105": {
+              "outcome": "pass",
+              "completion_tokens": 481,
+              "seconds": 2.5
+            },
+            "HumanEval/108": {
+              "outcome": "pass",
+              "completion_tokens": 245,
+              "seconds": 1.4
+            },
+            "HumanEval/11": {
+              "outcome": "pass",
+              "completion_tokens": 140,
+              "seconds": 1.0
+            },
+            "HumanEval/110": {
+              "outcome": "pass",
+              "completion_tokens": 352,
+              "seconds": 2.2
+            },
+            "HumanEval/116": {
+              "outcome": "pass",
+              "completion_tokens": 198,
+              "seconds": 1.2
+            },
+            "HumanEval/12": {
+              "outcome": "pass",
+              "completion_tokens": 161,
+              "seconds": 0.9
+            },
+            "HumanEval/122": {
+              "outcome": "pass",
+              "completion_tokens": 206,
+              "seconds": 1.2
+            },
+            "HumanEval/124": {
+              "outcome": "pass",
+              "completion_tokens": 607,
+              "seconds": 2.9
+            },
+            "HumanEval/127": {
+              "outcome": "pass",
+              "completion_tokens": 499,
+              "seconds": 2.6
+            },
+            "HumanEval/132": {
+              "outcome": "wrong answer",
+              "completion_tokens": 874,
+              "seconds": 4.0
+            },
+            "HumanEval/142": {
+              "outcome": "pass",
+              "completion_tokens": 241,
+              "seconds": 1.4
+            },
+            "HumanEval/147": {
+              "outcome": "pass",
+              "completion_tokens": 575,
+              "seconds": 2.6
+            },
+            "HumanEval/151": {
+              "outcome": "pass",
+              "completion_tokens": 219,
+              "seconds": 1.4
+            },
+            "HumanEval/154": {
+              "outcome": "pass",
+              "completion_tokens": 190,
+              "seconds": 1.3
+            },
+            "HumanEval/157": {
+              "outcome": "pass",
+              "completion_tokens": 212,
+              "seconds": 1.5
+            },
+            "HumanEval/158": {
+              "outcome": "pass",
+              "completion_tokens": 224,
+              "seconds": 1.5
+            },
+            "HumanEval/161": {
+              "outcome": "pass",
+              "completion_tokens": 207,
+              "seconds": 1.2
+            },
+            "HumanEval/17": {
+              "outcome": "pass",
+              "completion_tokens": 248,
+              "seconds": 1.6
+            },
+            "HumanEval/25": {
+              "outcome": "pass",
+              "completion_tokens": 188,
+              "seconds": 1.2
+            },
+            "HumanEval/28": {
+              "outcome": "pass",
+              "completion_tokens": 70,
+              "seconds": 0.6
+            },
+            "HumanEval/32": {
+              "outcome": "pass",
+              "completion_tokens": 698,
+              "seconds": 3.8
+            },
+            "HumanEval/38": {
+              "outcome": "pass",
+              "completion_tokens": 291,
+              "seconds": 1.8
+            },
+            "HumanEval/41": {
+              "outcome": "pass",
+              "completion_tokens": 163,
+              "seconds": 1.2
+            },
+            "HumanEval/43": {
+              "outcome": "pass",
+              "completion_tokens": 201,
+              "seconds": 1.2
+            },
+            "HumanEval/47": {
+              "outcome": "pass",
+              "completion_tokens": 153,
+              "seconds": 0.9
+            },
+            "HumanEval/6": {
+              "outcome": "pass",
+              "completion_tokens": 216,
+              "seconds": 1.3
+            },
+            "HumanEval/68": {
+              "outcome": "pass",
+              "completion_tokens": 430,
+              "seconds": 2.3
+            },
+            "HumanEval/76": {
+              "outcome": "pass",
+              "completion_tokens": 720,
+              "seconds": 3.3
+            },
+            "HumanEval/78": {
+              "outcome": "pass",
+              "completion_tokens": 383,
+              "seconds": 2.0
+            },
+            "HumanEval/80": {
+              "outcome": "pass",
+              "completion_tokens": 183,
+              "seconds": 1.1
+            },
+            "HumanEval/86": {
+              "outcome": "pass",
+              "completion_tokens": 187,
+              "seconds": 1.2
+            },
+            "HumanEval/96": {
+              "outcome": "pass",
+              "completion_tokens": 281,
+              "seconds": 1.6
+            }
+          }
+        }
+      ],
+      "core_thinking_off": {
+        "scores": [
+          15,
+          16,
+          15
+        ],
+        "of": 16,
+        "passes": 46,
+        "case_runs": 48,
+        "ran_out": 0,
+        "completion_tokens": 16118,
+        "seconds": 110,
+        "per_solved_case": {
+          "completion_tokens": 333,
+          "seconds": 2.3
+        },
+        "not_passed_in_every_run": {
+          "batch_transactions": [
+            "wrong answer",
+            "wrong answer"
+          ]
+        }
+      },
+      "core_thinking_on": {
+        "scores": [
+          15,
+          16,
+          15
+        ],
+        "of": 16,
+        "passes": 46,
+        "case_runs": 48,
+        "ran_out": 0,
+        "completion_tokens": 232865,
+        "seconds": 1208,
+        "per_solved_case": {
+          "completion_tokens": 4506,
+          "seconds": 23.6
+        },
+        "not_passed_in_every_run": {
+          "sse_parser": [
+            "wrong answer",
+            "wrong answer"
+          ]
+        }
+      },
+      "humaneval_subset": {
+        "scores": [
+          30,
+          31,
+          31
+        ],
+        "of": 32,
+        "passes": 92,
+        "case_runs": 96,
+        "ran_out": 0,
+        "completion_tokens": 33328,
+        "seconds": 183,
+        "per_solved_case": {
+          "completion_tokens": 333,
+          "seconds": 1.8
+        },
+        "not_passed_in_every_run": {
+          "HumanEval/132": [
+            "wrong answer",
+            "wrong answer"
+          ],
+          "HumanEval/32": [
+            "wrong answer",
+            "wrong answer"
+          ]
+        }
+      },
+      "focused_reruns": [
+        {
+          "label": "ff-pub-focused",
+          "passed": 4,
+          "total": 6,
+          "failures": [
+            "sse_parser",
+            "batch_transactions"
+          ],
+          "total_seconds": 119
+        }
+      ]
+    }
+  }
+}

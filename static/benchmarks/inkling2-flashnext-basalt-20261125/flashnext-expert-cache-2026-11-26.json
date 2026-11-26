@@ -1,0 +1,13 @@
+{
+  "source": "user journal of the Flash-Next service, lines `[server] sN done`, field hit",
+  "window": [
+    "2026-11-26 17:55:00",
+    "2026-11-26 18:43:00"
+  ],
+  "requests_with_more_than_200_generated_tokens": 193,
+  "expert_cache_miss_pct": {
+    "min": 1.5,
+    "median": 18.0,
+    "max": 40.6
+  }
+}

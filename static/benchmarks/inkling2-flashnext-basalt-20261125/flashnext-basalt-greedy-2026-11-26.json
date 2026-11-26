@@ -1,0 +1,305 @@
+{
+  "measured_date": "2026-11-26",
+  "what": "Qwen3.8-Flash-Next (Unsloth IQ4_XS v3.1) at temperature 0 (greedy) on Basalt 0.5.7, two passes of the 16 core cases against the service as it runs (four slots, shared 1,048,576-token context, int8 cache, drafting on, experts in RAM); reference: the run of 2026-11-05 on Strata 0.1.57 (one slot, int8 cache, vision off). Same harness and prompts. Budget 16,384 tokens on Basalt and 4,096 on Strata. One RTX 5090, 450 W limit.",
+  "runs": {
+    "thinking_off": {
+      "basalt_pass_1": {
+        "passed": 15,
+        "total": 16,
+        "ran_out_of_output_budget": [],
+        "failed": {
+          "batch_transactions": "^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ |   File \"/work/solution.py\", line 22, in reconcile |     raise ValueError(\"Row lacks required field: account\") | ValueError: Row lacks required field: account | "
+        },
+        "completion_tokens": 5522,
+        "seconds": 37,
+        "median_completion_tokens_per_case": 351.0,
+        "tokens_by_case": {
+          "async_ordered_map": 1105,
+          "batch_transactions": 385,
+          "context_records_320": 31,
+          "context_records_600": 31,
+          "context_records_80": 30,
+          "dependency_tool_chain": 71,
+          "literal_tool_payload": 51,
+          "merge_patch": 397,
+          "pagination_bug": 566,
+          "parallel_tool_arguments": 81,
+          "recursive_redaction": 444,
+          "retry_boundary": 317,
+          "sse_parser": 757,
+          "stable_toposort": 607,
+          "ttl_lru": 635,
+          "untrusted_document": 14
+        }
+      },
+      "basalt_pass_2": {
+        "passed": 15,
+        "total": 16,
+        "ran_out_of_output_budget": [],
+        "failed": {
+          "batch_transactions": "^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ |   File \"/work/solution.py\", line 22, in reconcile |     raise ValueError(\"Row lacks required field: account\") | ValueError: Row lacks required field: account | "
+        },
+        "completion_tokens": 5204,
+        "seconds": 35,
+        "median_completion_tokens_per_case": 391.0,
+        "tokens_by_case": {
+          "async_ordered_map": 681,
+          "batch_transactions": 385,
+          "context_records_320": 31,
+          "context_records_600": 31,
+          "context_records_80": 30,
+          "dependency_tool_chain": 71,
+          "literal_tool_payload": 51,
+          "merge_patch": 397,
+          "pagination_bug": 488,
+          "parallel_tool_arguments": 81,
+          "recursive_redaction": 405,
+          "retry_boundary": 461,
+          "sse_parser": 764,
+          "stable_toposort": 790,
+          "ttl_lru": 524,
+          "untrusted_document": 14
+        }
+      },
+      "strata_2026_11_05": {
+        "passed": 16,
+        "total": 16,
+        "ran_out_of_output_budget": [],
+        "failed": {},
+        "completion_tokens": 5851,
+        "seconds": 53,
+        "median_completion_tokens_per_case": 366.0,
+        "tokens_by_case": {
+          "async_ordered_map": 1114,
+          "batch_transactions": 430,
+          "context_records_320": 31,
+          "context_records_600": 31,
+          "context_records_80": 24,
+          "dependency_tool_chain": 71,
+          "literal_tool_payload": 51,
+          "merge_patch": 372,
+          "pagination_bug": 360,
+          "parallel_tool_arguments": 81,
+          "recursive_redaction": 403,
+          "retry_boundary": 519,
+          "sse_parser": 1236,
+          "stable_toposort": 546,
+          "ttl_lru": 568,
+          "untrusted_document": 14
+        }
+      },
+      "pass_1_against_pass_2": {
+        "cases": 16,
+        "identical_output": 9,
+        "different_output": [
+          "async_ordered_map",
+          "pagination_bug",
+          "recursive_redaction",
+          "retry_boundary",
+          "sse_parser",
+          "stable_toposort",
+          "ttl_lru"
+        ],
+        "different_score": []
+      },
+      "single_answer_code_cases_basalt_pass_1_against_strata": {
+        "cases": [
+          "async_ordered_map",
+          "batch_transactions",
+          "context_records_320",
+          "context_records_600",
+          "context_records_80",
+          "literal_tool_payload",
+          "merge_patch",
+          "parallel_tool_arguments",
+          "sse_parser",
+          "stable_toposort",
+          "ttl_lru",
+          "untrusted_document"
+        ],
+        "basalt_tokens": {
+          "async_ordered_map": 1105,
+          "batch_transactions": 385,
+          "context_records_320": 31,
+          "context_records_600": 31,
+          "context_records_80": 30,
+          "literal_tool_payload": 51,
+          "merge_patch": 397,
+          "parallel_tool_arguments": 81,
+          "sse_parser": 757,
+          "stable_toposort": 607,
+          "ttl_lru": 635,
+          "untrusted_document": 14
+        },
+        "strata_tokens": {
+          "async_ordered_map": 1114,
+          "batch_transactions": 430,
+          "context_records_320": 31,
+          "context_records_600": 31,
+          "context_records_80": 24,
+          "literal_tool_payload": 51,
+          "merge_patch": 372,
+          "parallel_tool_arguments": 81,
+          "sse_parser": 1236,
+          "stable_toposort": 546,
+          "ttl_lru": 568,
+          "untrusted_document": 14
+        }
+      }
+    },
+    "thinking_on": {
+      "basalt_pass_1": {
+        "passed": 15,
+        "total": 16,
+        "ran_out_of_output_budget": [
+          "batch_transactions"
+        ],
+        "failed": {
+          "batch_transactions": "recent call last): |   File \"/work/test.py\", line 4, in <module> |     from solution import reconcile as f |   File \"/work/solution.py\", line 1 |     ```python |     ^ | SyntaxError: invalid syntax | "
+        },
+        "completion_tokens": 83971,
+        "seconds": 372,
+        "median_completion_tokens_per_case": 1192.5,
+        "tokens_by_case": {
+          "async_ordered_map": 12737,
+          "batch_transactions": 16384,
+          "context_records_320": 395,
+          "context_records_600": 426,
+          "context_records_80": 223,
+          "dependency_tool_chain": 159,
+          "literal_tool_payload": 85,
+          "merge_patch": 12400,
+          "pagination_bug": 1340,
+          "parallel_tool_arguments": 169,
+          "recursive_redaction": 1270,
+          "retry_boundary": 1115,
+          "sse_parser": 12703,
+          "stable_toposort": 12534,
+          "ttl_lru": 11893,
+          "untrusted_document": 138
+        }
+      },
+      "basalt_pass_2": {
+        "passed": 16,
+        "total": 16,
+        "ran_out_of_output_budget": [],
+        "failed": {},
+        "completion_tokens": 81516,
+        "seconds": 390,
+        "median_completion_tokens_per_case": 1023.5,
+        "tokens_by_case": {
+          "async_ordered_map": 12810,
+          "batch_transactions": 12907,
+          "context_records_320": 395,
+          "context_records_600": 426,
+          "context_records_80": 224,
+          "dependency_tool_chain": 155,
+          "literal_tool_payload": 109,
+          "merge_patch": 12596,
+          "pagination_bug": 1653,
+          "parallel_tool_arguments": 195,
+          "recursive_redaction": 1248,
+          "retry_boundary": 799,
+          "sse_parser": 12628,
+          "stable_toposort": 12596,
+          "ttl_lru": 12702,
+          "untrusted_document": 73
+        }
+      },
+      "strata_2026_11_05": {
+        "passed": 16,
+        "total": 16,
+        "ran_out_of_output_budget": [],
+        "failed": {},
+        "completion_tokens": 26502,
+        "seconds": 185,
+        "median_completion_tokens_per_case": 1145.5,
+        "tokens_by_case": {
+          "async_ordered_map": 3432,
+          "batch_transactions": 3631,
+          "context_records_320": 395,
+          "context_records_600": 426,
+          "context_records_80": 224,
+          "dependency_tool_chain": 222,
+          "literal_tool_payload": 85,
+          "merge_patch": 3286,
+          "pagination_bug": 2004,
+          "parallel_tool_arguments": 170,
+          "recursive_redaction": 1411,
+          "retry_boundary": 880,
+          "sse_parser": 3446,
+          "stable_toposort": 3376,
+          "ttl_lru": 3441,
+          "untrusted_document": 73
+        }
+      },
+      "pass_1_against_pass_2": {
+        "cases": 16,
+        "identical_output": 2,
+        "different_output": [
+          "async_ordered_map",
+          "batch_transactions",
+          "context_records_80",
+          "dependency_tool_chain",
+          "literal_tool_payload",
+          "merge_patch",
+          "pagination_bug",
+          "parallel_tool_arguments",
+          "recursive_redaction",
+          "retry_boundary",
+          "sse_parser",
+          "stable_toposort",
+          "ttl_lru",
+          "untrusted_document"
+        ],
+        "different_score": [
+          "batch_transactions"
+        ]
+      },
+      "single_answer_code_cases_basalt_pass_1_against_strata": {
+        "cases": [
+          "async_ordered_map",
+          "batch_transactions",
+          "context_records_320",
+          "context_records_600",
+          "context_records_80",
+          "literal_tool_payload",
+          "merge_patch",
+          "parallel_tool_arguments",
+          "sse_parser",
+          "stable_toposort",
+          "ttl_lru",
+          "untrusted_document"
+        ],
+        "basalt_tokens": {
+          "async_ordered_map": 12737,
+          "batch_transactions": 16384,
+          "context_records_320": 395,
+          "context_records_600": 426,
+          "context_records_80": 223,
+          "literal_tool_payload": 85,
+          "merge_patch": 12400,
+          "parallel_tool_arguments": 169,
+          "sse_parser": 12703,
+          "stable_toposort": 12534,
+          "ttl_lru": 11893,
+          "untrusted_document": 138
+        },
+        "strata_tokens": {
+          "async_ordered_map": 3432,
+          "batch_transactions": 3631,
+          "context_records_320": 395,
+          "context_records_600": 426,
+          "context_records_80": 224,
+          "literal_tool_payload": 85,
+          "merge_patch": 3286,
+          "parallel_tool_arguments": 170,
+          "sse_parser": 3446,
+          "stable_toposort": 3376,
+          "ttl_lru": 3441,
+          "untrusted_document": 73
+        }
+      }
+    }
+  }
+}
